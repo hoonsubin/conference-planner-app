@@ -8,6 +8,6 @@ export interface TravelEvent {
     venueAddr: string;
     eventLink: string;
     description: string;
-    eventStart: Date;
-    eventEnd: Date;
+    eventStart: Date | 'TBD';
+    eventEnd: Date | 'TBD';
 }

@@ -14,90 +14,120 @@ import {
   IonCardSubtitle,
   IonText,
   IonLoading,
+  IonSelect,
+  IonSelectOption,
+  IonInput,
 } from "@ionic/react";
-import { AxiosInstance, AxiosResponse } from "axios";
-import ExploreContainer from "../components/ExploreContainer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import * as utils from "../utils";
+import { TravelEvent } from "../types";
 import {
   appConfig,
-  getEventListPrompt,
-  systemPrompt,
-  FetchedEventListType,
+  supportedEventTypes,
+  supportedEventLocations,
 } from "../data";
-import * as utils from "../utils";
-import { PerplexityApiRes, PerplexityApiReq, TravelEvent } from "../types";
 import "./Tab1.css";
-
-const newReq: PerplexityApiReq = {
-  model: "llama-3.1-sonar-small-128k-online",
-  messages: [
-    {
-      role: "system",
-      content: systemPrompt,
-    },
-    {
-      role: "user",
-      content: getEventListPrompt(
-        ["food"],
-        "USA",
-        new Date()
-      ),
-    },
-  ],
-  temperature: 0.2
-};
 
 const Tab1: React.FC = () => {
   const [eventList, setEventList] = useState<TravelEvent[]>([]);
+  const [selectedEventTypes, setEventTypes] = useState("");
+  const [selectedHostLoc, setHostLoc] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const onClickFetchEvents = () => {
+  const [useCustomTag, setCustomTag] = useState("");
+  const [useCustomHostLoc, setCustomHostLoc] = useState("");
+
+  const isUsingCustomTag = useMemo(() => {
+    // the last element in the list is always assumed to be a custom entry
+    return (
+      selectedEventTypes === supportedEventTypes[supportedEventTypes.length - 1]
+    );
+  }, [selectedEventTypes]);
+
+  const isUsingCustomLoc = useMemo(() => {
+    // the last element in the list is always assumed to be a custom entry
+    return (
+      selectedHostLoc ===
+      supportedEventLocations[supportedEventLocations.length - 1]
+    );
+  }, [selectedHostLoc]);
+
+  const canSearch = useMemo(() => {
+    let _hasTagInput = isUsingCustomTag ? !!useCustomTag : !!selectedEventTypes;
+    let _hasLocInput = isUsingCustomLoc
+      ? !!useCustomHostLoc
+      : !!selectedHostLoc;
+
+    // reset the custom location data
+    if (!isUsingCustomLoc && useCustomHostLoc) {
+      setCustomHostLoc("");
+    }
+    if (!isUsingCustomTag && useCustomTag) {
+      setCustomTag("");
+    }
+
+    return _hasTagInput && _hasLocInput;
+  }, [
+    selectedEventTypes,
+    selectedHostLoc,
+    isUsingCustomLoc,
+    isUsingCustomTag,
+    useCustomTag,
+    useCustomHostLoc,
+  ]);
+
+  useEffect(() => {
+    // value logger for debugging
+    console.log({
+      selectedEventTypes,
+      selectedHostLoc,
+      isUsingCustomLoc,
+      isUsingCustomTag,
+      useCustomHostLoc,
+      useCustomTag,
+      canSearch,
+    });
+  }, [
+    selectedEventTypes,
+    selectedHostLoc,
+    isUsingCustomLoc,
+    isUsingCustomTag,
+    useCustomHostLoc,
+    useCustomTag,
+    canSearch,
+  ]);
+
+  const onClickFetchEvents = useCallback(() => {
     setIsLoading(true);
     const api = utils.perplexityApiInst(appConfig.perplexityApi);
+    const fetchConfs = async () => {
+      const tagsToUse = isUsingCustomTag ? useCustomTag : selectedEventTypes;
+      const locToUse = isUsingCustomLoc ? useCustomHostLoc : selectedHostLoc;
 
-    const fetchTrips = async () => {
-      try {
-        const res: AxiosResponse<PerplexityApiRes> = await api.post(
-          "/chat/completions",
-          newReq
-        );
-        return res.data;
-      } catch (err) {
-        console.error(err);
-      }
+      const confList = await utils.fetchConferenceList(
+        api,
+        tagsToUse,
+        locToUse
+      );
+
+      return confList;
     };
 
-    fetchTrips()
-      .then((res) => {
-        const resData = res?.choices[0].message.content
-          .replaceAll("```", "")
-          .replaceAll("json", "")
-          .replaceAll("\n", "");
-        if (resData) {
-          const eventObj = JSON.parse(resData) as FetchedEventListType[];
-          console.log(resData);
-          console.log(eventObj);
-          setEventList(
-            eventObj.map((i) => {
-              return {
-                id: "my-id",
-                name: i.name,
-                description: i.description,
-                eventStart: new Date(i.startDate),
-                eventEnd: new Date(i.endDate),
-                venueAddr: i.venueLocation,
-                eventLink: i.eventLink,
-              };
-            })
-          );
-        } else {
-          console.log([]);
-        }
+    fetchConfs()
+      .then((i) => {
+        setEventList(i);
       })
       .finally(() => {
         setIsLoading(false);
       });
-  };
+  }, [
+    selectedEventTypes,
+    selectedHostLoc,
+    isUsingCustomLoc,
+    isUsingCustomTag,
+    useCustomHostLoc,
+    useCustomTag,
+  ]);
 
   return (
     <IonPage>
@@ -113,13 +143,92 @@ const Tab1: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <div>
-          <IonLoading message="Fetching data..." spinner="circles" isOpen={isLoading} />
-          <IonButton onClick={onClickFetchEvents}>Fetch events</IonButton>
+          <IonLoading
+            message="Fetching data..."
+            spinner="circles"
+            isOpen={isLoading}
+          />
+          <IonCard>
+            <IonCardContent>
+              <IonList>
+                <IonItem>
+                  <IonSelect
+                    label="Conference Category"
+                    labelPlacement="floating"
+                    onIonChange={(e) => {
+                      setEventTypes(e.detail.value);
+                      console.log([e.detail.value]);
+                    }}
+                  >
+                    {supportedEventTypes.map((i) => {
+                      return (
+                        <IonSelectOption key={crypto.randomUUID()} value={i}>
+                          {i}
+                        </IonSelectOption>
+                      );
+                    })}
+                  </IonSelect>
+                </IonItem>
+                {isUsingCustomTag && (
+                  <IonItem>
+                    <IonInput
+                      label="Custom Conference"
+                      labelPlacement="stacked"
+                      placeholder="Enter conference type"
+                      onIonChange={(e) => setCustomTag(e.detail.value || "")}
+                    ></IonInput>
+                  </IonItem>
+                )}
+
+                <IonItem>
+                  <IonSelect
+                    label="Event Location"
+                    labelPlacement="floating"
+                    onIonChange={(e) => {
+                      setHostLoc(e.detail.value);
+                    }}
+                  >
+                    {supportedEventLocations.map((i) => {
+                      return (
+                        <IonSelectOption key={crypto.randomUUID()} value={i}>
+                          {i}
+                        </IonSelectOption>
+                      );
+                    })}
+                  </IonSelect>
+                </IonItem>
+                {isUsingCustomLoc && (
+                  <IonItem>
+                    <IonInput
+                      label="Custom Location"
+                      labelPlacement="stacked"
+                      placeholder="Enter conference location"
+                      onIonChange={(e) =>
+                        setCustomHostLoc(e.detail.value || "")
+                      }
+                    ></IonInput>
+                  </IonItem>
+                )}
+
+                <IonItem>
+                  <IonButton
+                    slot="end"
+                    onClick={onClickFetchEvents}
+                    disabled={!canSearch}
+                    size="large"
+                  >
+                    Fetch events
+                  </IonButton>
+                </IonItem>
+              </IonList>
+            </IonCardContent>
+          </IonCard>
+
           {eventList.length > 0 ? (
             <IonList>
               {eventList.map((i) => {
                 return (
-                  <IonItem key={i.description}>
+                  <IonItem key={crypto.randomUUID()}>
                     <IonCard>
                       <IonCardHeader>
                         <IonCardTitle>{i.name}</IonCardTitle>
@@ -130,7 +239,14 @@ const Tab1: React.FC = () => {
                       <IonCardContent>
                         {i.description}
                         <br />
-                        For more information, visit <a>{i.eventLink}</a>
+                        For more information, visit{" "}
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={i.eventLink}
+                        >
+                          {i.eventLink}
+                        </a>
                       </IonCardContent>
                     </IonCard>
                   </IonItem>
