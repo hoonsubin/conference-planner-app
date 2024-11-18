@@ -1,5 +1,4 @@
 import { TransportType } from "../types";
-import { supportedEventTypes } from "../data";
 
 export const systemPrompt = `Only output the JSON list data without other messages.
 Find at least 10 items per topic for all requests. If there is no item, output an empty JSON array.
@@ -9,12 +8,12 @@ If you could not find a value for a specific property, say 'TBA' except for URLs
 const eventListTypeDescriptor = {
   name: "Name of the event",
   description:
-    "The detailed description of the event and what to expect from it",
+    "A long and detailed description of the event, agenda, the target audience, and what to expect from it",
   eventLink: "The URL of the official event page",
   venueLocation:
     "The full event venue address (TBD or only the city if the venue is not known yet)",
-  startDate: "ISO standard time of when the event starts",
-  endDate: "ISO standard time of when the event officially ends",
+  startDate: "ISO standard time (year, month, day, time) of when the event starts",
+  endDate: "ISO standard time (year, month, day, time) of when the event officially ends",
 };
 
 export type FetchedEventListType = typeof eventListTypeDescriptor;
@@ -37,8 +36,8 @@ const transportListTypeDescriptor = {
     "The complete address of the departing location (either a train station or an airport)",
   arrivingLocation:
     "The complete address of the arriving location (either a train station or an airport)",
-  departDate: "UTC unix epoch time of when I should depart",
-  arrivalDate: "UTC unix epoch time of when I will be arriving",
+  departDate: "ISO standard time (year, month, day, time) of when I should depart",
+  arrivalDate: "ISO standard time (year, month, day, time) of when I will be arriving",
 };
 
 export type FetchedTransportListType = typeof transportListTypeDescriptor;

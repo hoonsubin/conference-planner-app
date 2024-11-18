@@ -1,5 +1,3 @@
-import { M } from "vite/dist/node/types.d-aGj9QkWt";
-
 export const appConfig = {
   perplexityApi: "", // only for testing. Do not commit
   perplexityEndpoint: "https://api.perplexity.ai",
