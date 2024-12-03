@@ -15,10 +15,15 @@ type Budget = {
     currency: string;
 }
 
+type HomeCity = {
+    cityName: string;
+    countryName: string;
+}
+
 export interface Attendee {
     name: string;
-    homeCity: string;
+    homeCity: HomeCity;
     departTime: Date;
     arriveTime: Date;
-    maxBudget: Budget;
+    maxBudget?: Budget;
 }
