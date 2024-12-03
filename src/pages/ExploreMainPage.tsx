@@ -26,9 +26,8 @@ import {
   supportedEventTypes,
   supportedEventLocations,
 } from "../data";
-import "./Tab1.css";
 
-const Tab1: React.FC = () => {
+const ExploreMainPage: React.FC = () => {
   const [eventList, setEventList] = useState<TravelEvent[]>([]);
   const [selectedEventTypes, setEventTypes] = useState("");
   const [selectedHostLoc, setHostLoc] = useState("");
@@ -76,26 +75,26 @@ const Tab1: React.FC = () => {
     useCustomHostLoc,
   ]);
 
-  useEffect(() => {
-    // value logger for debugging
-    console.log({
-      selectedEventTypes,
-      selectedHostLoc,
-      isUsingCustomLoc,
-      isUsingCustomTag,
-      useCustomHostLoc,
-      useCustomTag,
-      canSearch,
-    });
-  }, [
-    selectedEventTypes,
-    selectedHostLoc,
-    isUsingCustomLoc,
-    isUsingCustomTag,
-    useCustomHostLoc,
-    useCustomTag,
-    canSearch,
-  ]);
+  // useEffect(() => {
+  //   // value logger for debugging
+  //   console.log({
+  //     selectedEventTypes,
+  //     selectedHostLoc,
+  //     isUsingCustomLoc,
+  //     isUsingCustomTag,
+  //     useCustomHostLoc,
+  //     useCustomTag,
+  //     canSearch,
+  //   });
+  // }, [
+  //   selectedEventTypes,
+  //   selectedHostLoc,
+  //   isUsingCustomLoc,
+  //   isUsingCustomTag,
+  //   useCustomHostLoc,
+  //   useCustomTag,
+  //   canSearch,
+  // ]);
 
   const onClickFetchEvents = useCallback(() => {
     setIsLoading(true);
@@ -133,13 +132,13 @@ const Tab1: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Explore</IonTitle>
+          <IonTitle>Upcoming</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Explore</IonTitle>
+            <IonTitle size="large">Upcoming</IonTitle>
           </IonToolbar>
         </IonHeader>
         <div>
@@ -262,4 +261,4 @@ const Tab1: React.FC = () => {
   );
 };
 
-export default Tab1;
+export default ExploreMainPage;
