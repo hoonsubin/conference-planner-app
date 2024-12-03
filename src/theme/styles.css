@@ -1,0 +1,12 @@
+.interactive-card {
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .interactive-card:hover {
+    transform: translateY(-5px);
+    --background: var(--ion-color-light-shade);
+    --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }

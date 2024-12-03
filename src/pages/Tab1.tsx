@@ -133,13 +133,13 @@ const Tab1: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Tab 1</IonTitle>
+          <IonTitle>Explore</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Tab 1</IonTitle>
+            <IonTitle size="large">Explore</IonTitle>
           </IonToolbar>
         </IonHeader>
         <div>
@@ -229,7 +229,7 @@ const Tab1: React.FC = () => {
               {eventList.map((i) => {
                 return (
                   <IonItem key={crypto.randomUUID()}>
-                    <IonCard>
+                    <IonCard className="interactive-card ion-activatable" onClick={()=> console.log("Hello world")}>
                       <IonCardHeader>
                         <IonCardTitle>{i.name}</IonCardTitle>
                         <IonCardSubtitle>

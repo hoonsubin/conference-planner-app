@@ -1,5 +1,3 @@
-import { TransportType } from "../types";
-
 export const systemPrompt = `Only output the JSON list data without other messages.
 Find at least 10 items per topic for all requests. If there is no item, output an empty JSON array.
 If you could not find a value for a specific property, say 'TBA' except for URLs`;
@@ -46,8 +44,7 @@ export const getBestPathPrompt = (
   confLoc: string,
   startLoc: string,
   startDate: Date,
-  method: TransportType
-) => `I want to travel to ${confLoc} from ${startLoc} using ${method} on ${startDate}. What is the optimal way? Create a list of all the optimal ways to travel there as a JSON file.
+) => `I want to travel to ${confLoc} from ${startLoc} on ${startDate}. What is the optimal way? Create a list of all the optimal ways to travel there as a JSON file.
 
 The output should be a JSON data with the following properties:
 ${JSON.stringify(transportListTypeDescriptor)}
