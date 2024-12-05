@@ -27,7 +27,7 @@ import {
   supportedEventTypes,
   supportedEventLocations,
 } from "../data";
-import SelectAttendees from "../components/SelectAttendees";
+import SelectAttendeesPage from "./SelectAttendeesPage";
 
 const ExploreMainPage: React.FC = () => {
   const [eventList, setEventList] = useState<TravelEvent[]>([]);
@@ -211,7 +211,7 @@ const ExploreMainPage: React.FC = () => {
                   <IonItem key={crypto.randomUUID()}>
                     <IonNavLink
                       routerDirection="forward"
-                      component={() => <SelectAttendees />}
+                      component={() => <SelectAttendeesPage />}
                     >
                       <IonCard className="interactive-card ion-activatable">
                         <IonCardHeader>

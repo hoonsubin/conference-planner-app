@@ -31,6 +31,7 @@ export const testAttendees: Attendee[] = [
   {
     id: crypto.randomUUID(),
     name: "Hoon",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
@@ -41,6 +42,7 @@ export const testAttendees: Attendee[] = [
   {
     id: crypto.randomUUID(),
     name: "Kai",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
@@ -51,6 +53,7 @@ export const testAttendees: Attendee[] = [
   {
     id: crypto.randomUUID(),
     name: "Yo mama",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
@@ -61,6 +64,7 @@ export const testAttendees: Attendee[] = [
   {
     id: crypto.randomUUID(),
     name: "Ben Dover",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
@@ -71,6 +75,7 @@ export const testAttendees: Attendee[] = [
   {
     id: crypto.randomUUID(),
     name: "Moe Lester",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
