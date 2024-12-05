@@ -1,9 +1,11 @@
 import { Attendee } from "../types";
 
 export const appConfig = {
-  perplexityApi: "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", // only for testing. Do not commit
+  perplexityApi: "", // only for testing. Do not commit
   perplexityEndpoint: "https://api.perplexity.ai",
   perplexityModel: "llama-3.1-sonar-large-128k-online",
+  attendeeListSaveKey: "ATT",
+  eventListSaveKey: "EV"
 };
 
 export const supportedEventTypes = [
@@ -27,6 +29,7 @@ export const supportedEventLocations = [
 
 export const testAttendees: Attendee[] = [
   {
+    id: crypto.randomUUID(),
     name: "Hoon",
     departTime: new Date(),
     arriveTime: new Date(),
@@ -36,6 +39,7 @@ export const testAttendees: Attendee[] = [
     }
   },
   {
+    id: crypto.randomUUID(),
     name: "Kai",
     departTime: new Date(),
     arriveTime: new Date(),
@@ -45,6 +49,7 @@ export const testAttendees: Attendee[] = [
     }
   },
   {
+    id: crypto.randomUUID(),
     name: "Yo mama",
     departTime: new Date(),
     arriveTime: new Date(),
@@ -54,6 +59,7 @@ export const testAttendees: Attendee[] = [
     }
   },
   {
+    id: crypto.randomUUID(),
     name: "Ben Dover",
     departTime: new Date(),
     arriveTime: new Date(),
@@ -63,6 +69,7 @@ export const testAttendees: Attendee[] = [
     },
   },
   {
+    id: crypto.randomUUID(),
     name: "Moe Lester",
     departTime: new Date(),
     arriveTime: new Date(),

@@ -27,7 +27,8 @@ ${JSON.stringify(eventListTypeDescriptor)}
 `;
 
 const transportListTypeDescriptor = {
-  name: "Flight name or the train name",
+  name: "Flight provider",
+  flightNo: "Flight number",
   method: "The travel method",
   bookingLink: "Where to book it",
   departLocation:
