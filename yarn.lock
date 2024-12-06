@@ -4598,6 +4598,11 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
+react-country-state-city@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/react-country-state-city/-/react-country-state-city-1.1.7.tgz#4177fbca5f9bdc93e3d63f104f97cc01948ff051"
+  integrity sha512-Dzwm9/IY8eA94MYP03Dg+6APzmSv5mfIblGca6PZr4nzCCkqspubzvyrqXm277UQCFk/eu21UwqOZbiuU5+rWw==
+
 react-dom@^18.2.0:
   version "18.3.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.3.1.tgz#c2265d79511b57d479b3dd3fdfa51536494c5cb4"

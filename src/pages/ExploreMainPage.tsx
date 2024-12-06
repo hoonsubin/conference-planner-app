@@ -211,7 +211,7 @@ const ExploreMainPage: React.FC = () => {
                   <IonItem key={crypto.randomUUID()}>
                     <IonNavLink
                       routerDirection="forward"
-                      component={() => <SelectAttendeesPage />}
+                      component={() => <SelectAttendeesPage selectedEvent={i} />}
                     >
                       <IonCard className="interactive-card ion-activatable">
                         <IonCardHeader>
