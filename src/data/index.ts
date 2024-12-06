@@ -1,9 +1,11 @@
 import { Attendee } from "../types";
 
 export const appConfig = {
-  perplexityApi: "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", // only for testing. Do not commit
+  perplexityApi: "", // only for testing. Do not commit
   perplexityEndpoint: "https://api.perplexity.ai",
   perplexityModel: "llama-3.1-sonar-large-128k-online",
+  attendeeListSaveKey: "ATT",
+  eventListSaveKey: "EV"
 };
 
 export const supportedEventTypes = [
@@ -27,7 +29,9 @@ export const supportedEventLocations = [
 
 export const testAttendees: Attendee[] = [
   {
+    id: crypto.randomUUID(),
     name: "Hoon",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
@@ -36,7 +40,9 @@ export const testAttendees: Attendee[] = [
     }
   },
   {
+    id: crypto.randomUUID(),
     name: "Kai",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
@@ -45,7 +51,9 @@ export const testAttendees: Attendee[] = [
     }
   },
   {
+    id: crypto.randomUUID(),
     name: "Yo mama",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
@@ -54,7 +62,9 @@ export const testAttendees: Attendee[] = [
     }
   },
   {
+    id: crypto.randomUUID(),
     name: "Ben Dover",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
@@ -63,7 +73,9 @@ export const testAttendees: Attendee[] = [
     },
   },
   {
+    id: crypto.randomUUID(),
     name: "Moe Lester",
+    email: "hello@email.lol",
     departTime: new Date(),
     arriveTime: new Date(),
     homeCity: {
