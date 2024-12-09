@@ -23,32 +23,61 @@ import { testAttendees } from "../data";
 import { person, add } from "ionicons/icons";
 import { useTravelEventContext } from "../context/TravelDataContext";
 import AddAttendeeModal from "../components/AddAttendeeModal";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
-import { TravelEvent } from "../types";
+import { TravelEvent, Attendee } from "../types";
 
 interface SelectAttendeesPageProp {
   selectedEvent: TravelEvent;
 }
 
 const SelectAttendeesPage: React.FC<SelectAttendeesPageProp> = (props) => {
-  const [isModalOpen, setModalOpen] = useState(false);
+  //const [isModalOpen, setModalOpen] = useState(false);
+  const [activeAttendees, setActiveAttendees] = useState<Attendee[]>([]);
 
   const [present, dismiss] = useIonModal(AddAttendeeModal, {
     dismiss: (data: string, role: string) => dismiss(data, role),
   });
 
-  const { attendees } = useTravelEventContext();
+  const { attendees, addAttendee } = useTravelEventContext();
+
+  const isAttendeeActive = useCallback(
+    (attendeeId: string) => {
+      return activeAttendees.some((i) => i.id === attendeeId);
+    },
+    [activeAttendees]
+  );
 
   const openAddAttendeeModal = () => {
     present({
       onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
         if (ev.detail.role === "confirm") {
-          console.log(ev.detail);
+          const newUser = ev.detail.data;
+          console.log(newUser);
+          if (!newUser) {
+            throw new Error(
+              `Could not get proper submission of new user data.`
+            );
+          }
+          addAttendee(newUser);
         }
       },
     });
   };
+
+  const onSelectAttendee = useCallback(
+    (selectedAttendee: Attendee) => {
+      if (isAttendeeActive(selectedAttendee.id)) {
+        // remove the attendee from the list if its already active
+        setActiveAttendees(
+          activeAttendees.filter((i) => i.id !== selectedAttendee.id)
+        );
+      } else {
+        setActiveAttendees([...activeAttendees, selectedAttendee]);
+      }
+    },
+    [activeAttendees]
+  );
 
   return (
     <>
@@ -66,30 +95,75 @@ const SelectAttendeesPage: React.FC<SelectAttendeesPageProp> = (props) => {
           <IonText>Who's attending the {props.selectedEvent.name}?</IonText>
           <>
             <IonList>
-              <IonListHeader>
-              People
-              </IonListHeader>
-              {testAttendees.map((i) => {
-                return (
-                  <IonItem key={crypto.randomUUID()}>
-                    <IonIcon slot="start" icon={person}></IonIcon>
-                    <IonLabel>
-                      <strong>{i.name}</strong>
-                      <br />
-                      <IonText>
-                        {i.homeCity.cityName}, {i.homeCity.countryName}
-                      </IonText>
-                    </IonLabel>
+              <IonListHeader>People</IonListHeader>
+              {attendees.length > 0
+                ? attendees.map((i) => {
+                    return (
+                      <IonItem key={crypto.randomUUID()} button>
+                        <IonIcon slot="start" icon={person}></IonIcon>
+                        <IonLabel>
+                          <strong>{i.name}</strong>
+                          <br />
+                          <IonText>
+                            {i.homeCity.cityName}, {i.homeCity.countryName}
+                          </IonText>
 
-                    <IonCheckbox slot="end"></IonCheckbox>
-                  </IonItem>
-                );
-              })}
+                          {!i.arriveTime ||
+                            (!i.departTime ? (
+                              <>
+                                <br />
+                                <IonText color="danger">
+                                  Please add a date
+                                </IonText>
+                              </>
+                            ) : (
+                              <></>
+                            ))}
+                        </IonLabel>
+
+                        <IonCheckbox
+                          checked={isAttendeeActive(i.id)}
+                          onIonChange={() => onSelectAttendee(i)}
+                          slot="end"
+                        ></IonCheckbox>
+                      </IonItem>
+                    );
+                  })
+                : testAttendees.map((i) => {
+                    return (
+                      <IonItem key={crypto.randomUUID()}>
+                        <IonIcon slot="start" icon={person}></IonIcon>
+                        <IonLabel>
+                          <strong>{i.name}</strong>
+                          <br />
+                          <IonText>
+                            {i.homeCity.cityName}, {i.homeCity.countryName}
+                          </IonText>
+
+                          {!i.arriveTime ||
+                            (!i.departTime && (
+                              <>
+                                <br />
+                                <IonText color="danger">
+                                  Please add a date
+                                </IonText>
+                              </>
+                            ))}
+                        </IonLabel>
+
+                        <IonCheckbox
+                          checked={isAttendeeActive(i.id)}
+                          onIonChange={() => onSelectAttendee(i)}
+                          slot="end"
+                        ></IonCheckbox>
+                      </IonItem>
+                    );
+                  })}
             </IonList>
           </>
         </div>
-        <IonButton expand="block">
-              Next
+        <IonButton disabled={activeAttendees.length < 1} expand="block">
+          Next
         </IonButton>
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <IonFabButton onClick={() => openAddAttendeeModal()}>

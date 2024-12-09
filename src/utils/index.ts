@@ -8,7 +8,8 @@ export const saveListLocally = <T>(listToSave: T[], saveKey: string) => {
   }
 
   const listString = JSON.stringify(listToSave);
-  const serializedData = Buffer.from(listString).toString("base64");
+  // const serializedData = Buffer.from(listString, "utf-8").toString("base64");
+  const serializedData = btoa(listString);
 
   localStorage.setItem(saveKey, serializedData);
 };
@@ -22,9 +23,11 @@ export const loadListLocally = <T>(loadKey: string) => {
   if (!savedSerializedData) {
     return [];
   }
-  const decodedStringData = Buffer.from(savedSerializedData, "base64").toString(
-    "utf-8"
-  );
+  // const decodedStringData = Buffer.from(savedSerializedData, "base64").toString(
+  //   "utf-8"
+  // );
+
+  const decodedStringData = atob(savedSerializedData);
 
   return JSON.parse(decodedStringData) as T[];
 };

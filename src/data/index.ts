@@ -32,8 +32,6 @@ export const testAttendees: Attendee[] = [
     id: crypto.randomUUID(),
     name: "Hoon",
     email: "hello@email.lol",
-    departTime: new Date(),
-    arriveTime: new Date(),
     homeCity: {
       cityName: "Munich",
       countryName: "Germany"
@@ -43,8 +41,6 @@ export const testAttendees: Attendee[] = [
     id: crypto.randomUUID(),
     name: "Kai",
     email: "hello@email.lol",
-    departTime: new Date(),
-    arriveTime: new Date(),
     homeCity: {
       cityName: "Munich",
       countryName: "Germany"
@@ -54,8 +50,6 @@ export const testAttendees: Attendee[] = [
     id: crypto.randomUUID(),
     name: "Yo mama",
     email: "hello@email.lol",
-    departTime: new Date(),
-    arriveTime: new Date(),
     homeCity: {
       cityName: "Mane",
       countryName: "USA"
@@ -65,8 +59,6 @@ export const testAttendees: Attendee[] = [
     id: crypto.randomUUID(),
     name: "Ben Dover",
     email: "hello@email.lol",
-    departTime: new Date(),
-    arriveTime: new Date(),
     homeCity: {
       cityName: "Idaho",
       countryName: "USA"
@@ -76,8 +68,6 @@ export const testAttendees: Attendee[] = [
     id: crypto.randomUUID(),
     name: "Moe Lester",
     email: "hello@email.lol",
-    departTime: new Date(),
-    arriveTime: new Date(),
     homeCity: {
       cityName: "Barcelona",
       countryName: "Spain"

@@ -14,7 +14,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useMemo } from "react";
 import { Attendee } from "../types";
 import { CountrySelect, CitySelect } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
@@ -24,57 +24,77 @@ type CloseRole = "confirm" | "cancel";
 const AddAttendeeModal: React.FC<{
   dismiss: (data?: any | null, role?: CloseRole) => void;
 }> = ({ dismiss }) => {
-  const nameRef = useRef<HTMLIonInputElement>(null);
-  const emailRef = useRef<HTMLIonInputElement>(null);
-  const cityRef = useRef<HTMLIonInputElement>(null);
-  const countryRef = useRef<HTMLIonInputElement>(null);
-  const budgetRef = useRef<HTMLIonInputElement>(null);
+  const [nameInput, setName] = useState("");
+  const [emailInput, setEmail] = useState("");
+  const [departingCityInput, setDepartingCity] = useState("");
+  const [departingCountryInput, setDepartingCountry] = useState("");
+  const [budgetInput, setBudget] = useState(0);
+  const [departingDate, setDepartingDate] = useState<Date>();
+  const [arrivingDate, setArrivingDate] = useState<Date>();
 
-  const [areAllInputsFilled, setAreAllInputsFilled] = useState(false);
+  const canAddAttendee = useMemo(() => {
+    console.log({
+      nameInput,
+      emailInput,
+      departingCityInput,
+      departingCountryInput,
+      budgetInput,
+      departingDate,
+      arrivingDate,
+    });
+    // todo: ensure that the departing date is not later than the arrival date
 
-  const handleInputChange = useCallback(() => {
-    const nameValue = nameRef.current?.value;
-    const emailValue = emailRef.current?.value;
-    const cityValue = cityRef.current?.value;
-    const countryValue = countryRef.current?.value;
-    const budgetValue = budgetRef.current?.value;
-
-    if (nameValue && emailValue && cityValue && budgetValue && countryValue) {
-      setAreAllInputsFilled(true);
-    } else {
-      setAreAllInputsFilled(false);
-    }
-  }, [nameRef, emailRef, cityRef, budgetRef, countryRef]);
+    return (
+      !!nameInput &&
+      !!emailInput &&
+      !!departingCityInput &&
+      !!departingCountryInput &&
+      !!budgetInput &&
+      !!departingDate &&
+      !!arrivingDate
+    );
+  }, [
+    nameInput,
+    emailInput,
+    departingCityInput,
+    departingCountryInput,
+    budgetInput,
+    departingDate,
+    arrivingDate,
+  ]);
 
   const onClickAdd = useCallback(() => {
-    const nameValue = nameRef.current?.value;
-    const emailValue = emailRef.current?.value;
-    const cityValue = cityRef.current?.value;
-    const countryValue = countryRef.current?.value;
-    const budgetValue = budgetRef.current?.value;
-
     // todo: also update the local storage list
 
-    if (nameValue && emailValue && cityValue && budgetValue && countryValue) {
+    if (canAddAttendee) {
       const attendee: Attendee = {
         id: crypto.randomUUID(),
-        name: nameValue as string,
-        email: emailValue as string,
-        departTime: new Date(),
-        arriveTime: new Date(),
+        name: nameInput as string,
+        email: emailInput as string,
+        departTime: departingDate!, // we know that there is a value because of the above check
+        arriveTime: arrivingDate!,
         homeCity: {
-          cityName: cityValue as string,
-          countryName: countryValue as string,
+          cityName: departingCityInput as string,
+          countryName: departingCountryInput as string,
         },
         maxBudget: {
-          amount: parseFloat(budgetValue as string),
-          currency: "EUR",
+          amount: budgetInput,
+          currency: "EUR", // placeholder
         },
         // Add other properties as necessary
       };
       dismiss(attendee, "confirm");
     }
-  }, [nameRef, emailRef, cityRef, budgetRef, countryRef]);
+  }, [
+    canAddAttendee,
+    nameInput,
+    emailInput,
+    departingCityInput,
+    departingCountryInput,
+    budgetInput,
+    departingDate,
+    arrivingDate,
+  ]);
 
   return (
     <IonPage>
@@ -91,32 +111,39 @@ const AddAttendeeModal: React.FC<{
       <IonContent className="ion-padding">
         <IonItem>
           <IonInput
-            ref={nameRef}
             labelPlacement="stacked"
             label="Enter attendee name"
             placeholder="Attendee name"
             type="text"
-            onIonChange={handleInputChange}
+            onIonInput={(e) => setName(e.target.value as string)}
           />
         </IonItem>
         <IonItem>
           <IonInput
-            ref={emailRef}
             labelPlacement="stacked"
             label="Enter attendee email"
             type="email"
             placeholder="attendee@trippinglobes.lol"
-            onIonChange={handleInputChange}
+            onIonInput={(e) => setEmail(e.target.value as string)}
           />
         </IonItem>
         <IonItem>
           {/* todo: refactor this to accept the city and the country separately */}
-          <IonLabel position="stacked">Departing Country</IonLabel>
+          {/* <IonLabel position="stacked">Departing Country</IonLabel>
           <CountrySelect
             onChange={(e) => {
               console.log(e);
+              setDepartingCountry(e.toString());
             }}
             placeHolder="Select departing country"
+          /> */}
+
+          <IonInput
+            labelPlacement="stacked"
+            label="Departing Country"
+            type="text"
+            placeholder="Germany"
+            onIonInput={(e) => setDepartingCountry(e.target.value as string)}
           />
 
           {/* <IonInput
@@ -135,38 +162,56 @@ const AddAttendeeModal: React.FC<{
           /> */}
         </IonItem>
         <IonItem>
-          <IonLabel position="stacked">Departing City</IonLabel>
+          {/* <IonLabel position="stacked">Departing City</IonLabel>
           <CitySelect
             countryid={0}
             stateid={0}
             onChange={(e) => {
               console.log(e);
+              setDepartingCity(e.toString());
             }}
             placeHolder="Select departing city"
+          /> */}
+
+          <IonInput
+            labelPlacement="stacked"
+            label="Departing City"
+            type="text"
+            placeholder="Munich"
+            onIonInput={(e) => setDepartingCity(e.target.value as string)}
           />
         </IonItem>
         <IonItem>
           <IonLabel position="stacked">Departing Day</IonLabel>
-          <IonDatetime presentation="date" onIonChange={(e) => console.log(e.detail.value)} />
+          <IonDatetime
+            presentation="date"
+            onIonChange={(e) =>
+              setDepartingDate(new Date(e.target.value as string))
+            }
+          />
         </IonItem>
         <IonItem>
           <IonLabel position="stacked">Arriving Day (Local)</IonLabel>
-          <IonDatetime presentation="date" onIonChange={(e) => console.log(e.detail.value)} />
+          <IonDatetime
+            presentation="date"
+            onIonChange={(e) =>
+              setArrivingDate(new Date(e.target.value as string))
+            }
+          />
         </IonItem>
         <IonItem>
           <IonInput
-            ref={budgetRef}
             labelPlacement="stacked"
             label="Enter travel budget (EUR)"
             placeholder="2000"
             type="number"
-            onIonChange={handleInputChange}
+            onIonInput={(e) => setBudget(parseFloat(e.target.value as string))}
           />
         </IonItem>
         <IonButton
           expand="block"
           onClick={onClickAdd}
-          disabled={!areAllInputsFilled}
+          disabled={!canAddAttendee}
         >
           Add
         </IonButton>
