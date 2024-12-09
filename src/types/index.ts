@@ -21,9 +21,11 @@ type HomeCity = {
 }
 
 export interface Attendee {
+    id: string;
     name: string;
+    email: string;
     homeCity: HomeCity;
-    departTime: Date;
-    arriveTime: Date;
+    departTime?: Date;
+    arriveTime?: Date;
     maxBudget?: Budget;
 }
