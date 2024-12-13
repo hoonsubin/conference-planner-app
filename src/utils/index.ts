@@ -12,6 +12,7 @@ export const saveListLocally = <T>(listToSave: T[], saveKey: string) => {
   const serializedData = btoa(listString);
 
   localStorage.setItem(saveKey, serializedData);
+  console.log("Saved attendee data");
 };
 
 export const loadListLocally = <T>(loadKey: string) => {
@@ -29,5 +30,8 @@ export const loadListLocally = <T>(loadKey: string) => {
 
   const decodedStringData = atob(savedSerializedData);
 
-  return JSON.parse(decodedStringData) as T[];
+  const loadedData = JSON.parse(decodedStringData) as T[];
+
+  console.log("Loading saved data:\n" + JSON.stringify(loadedData));
+  return loadedData;
 };

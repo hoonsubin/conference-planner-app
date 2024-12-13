@@ -17,32 +17,46 @@ import {
 import { useRef, useState, useCallback, useMemo } from "react";
 import { Attendee } from "../types";
 import { CountrySelect, CitySelect } from "react-country-state-city";
-import "react-country-state-city/dist/react-country-state-city.css";
+//import "react-country-state-city/dist/react-country-state-city.css";
+import { DateTime } from "luxon";
 
-type CloseRole = "confirm" | "cancel";
+interface ManageAttendeeModalProps {
+  dismiss: (data?: Attendee | null, role?: "confirm" | "cancel") => void;
+  attendeeToUpdate?: Attendee;
+}
 
-const AddAttendeeModal: React.FC<{
-  dismiss: (data?: any | null, role?: CloseRole) => void;
-}> = ({ dismiss }) => {
-  const [nameInput, setName] = useState("");
-  const [emailInput, setEmail] = useState("");
-  const [departingCityInput, setDepartingCity] = useState("");
-  const [departingCountryInput, setDepartingCountry] = useState("");
-  const [budgetInput, setBudget] = useState(0);
-  const [departingDate, setDepartingDate] = useState<Date>();
-  const [arrivingDate, setArrivingDate] = useState<Date>();
+const ManageAttendeeModal: React.FC<ManageAttendeeModalProps> = ({
+  dismiss,
+  attendeeToUpdate,
+}) => {
+  const [nameInput, setName] = useState(attendeeToUpdate?.name || "");
+  const [emailInput, setEmail] = useState(attendeeToUpdate?.email || "");
+  const [departingCityInput, setDepartingCity] = useState(
+    attendeeToUpdate?.homeCity.cityName || ""
+  );
+  const [departingCountryInput, setDepartingCountry] = useState(
+    attendeeToUpdate?.homeCity.countryName || ""
+  );
+  const [budgetInput, setBudget] = useState(
+    attendeeToUpdate?.maxBudget?.amount || 0
+  );
+  const [departingDate, setDepartingDate] = useState<DateTime>(
+    attendeeToUpdate?.departTime
+      ? DateTime.fromISO(attendeeToUpdate.departTime)
+      : DateTime.now()
+  );
+  const [arrivingDate, setArrivingDate] = useState<DateTime>(
+    attendeeToUpdate?.arriveTime
+      ? DateTime.fromISO(attendeeToUpdate.arriveTime)
+      : DateTime.now()
+  );
 
   const canAddAttendee = useMemo(() => {
-    console.log({
-      nameInput,
-      emailInput,
-      departingCityInput,
-      departingCountryInput,
-      budgetInput,
-      departingDate,
-      arrivingDate,
-    });
-    // todo: ensure that the departing date is not later than the arrival date
+    const correctDepart =
+      !!departingDate && !!arrivingDate
+        ? departingDate.valueOf() > DateTime.now().valueOf() &&
+          departingDate.valueOf() < arrivingDate.valueOf()
+        : false;
 
     return (
       !!nameInput &&
@@ -50,8 +64,7 @@ const AddAttendeeModal: React.FC<{
       !!departingCityInput &&
       !!departingCountryInput &&
       !!budgetInput &&
-      !!departingDate &&
-      !!arrivingDate
+      correctDepart
     );
   }, [
     nameInput,
@@ -68,11 +81,11 @@ const AddAttendeeModal: React.FC<{
 
     if (canAddAttendee) {
       const attendee: Attendee = {
-        id: crypto.randomUUID(),
+        id: attendeeToUpdate ? attendeeToUpdate.id : crypto.randomUUID(),
         name: nameInput as string,
         email: emailInput as string,
-        departTime: departingDate!, // we know that there is a value because of the above check
-        arriveTime: arrivingDate!,
+        departTime: departingDate ? departingDate.toISO()! : undefined, // we know that there is a value because of the above check
+        arriveTime: arrivingDate ? arrivingDate.toISO()! : undefined,
         homeCity: {
           cityName: departingCityInput as string,
           countryName: departingCountryInput as string,
@@ -100,7 +113,11 @@ const AddAttendeeModal: React.FC<{
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Add New Attendee</IonTitle>
+          <IonTitle>
+            {attendeeToUpdate
+              ? "Editing " + attendeeToUpdate.name
+              : "Add New Attendee"}
+          </IonTitle>
           <IonButtons slot="end">
             <IonButton color="medium" onClick={() => dismiss(null, "cancel")}>
               Cancel
@@ -115,6 +132,7 @@ const AddAttendeeModal: React.FC<{
             label="Enter attendee name"
             placeholder="Attendee name"
             type="text"
+            value={nameInput}
             onIonInput={(e) => setName(e.target.value as string)}
           />
         </IonItem>
@@ -123,6 +141,7 @@ const AddAttendeeModal: React.FC<{
             labelPlacement="stacked"
             label="Enter attendee email"
             type="email"
+            value={emailInput}
             placeholder="attendee@trippinglobes.lol"
             onIonInput={(e) => setEmail(e.target.value as string)}
           />
@@ -143,6 +162,7 @@ const AddAttendeeModal: React.FC<{
             label="Departing Country"
             type="text"
             placeholder="Germany"
+            value={departingCountryInput}
             onIonInput={(e) => setDepartingCountry(e.target.value as string)}
           />
 
@@ -178,33 +198,40 @@ const AddAttendeeModal: React.FC<{
             label="Departing City"
             type="text"
             placeholder="Munich"
+            value={departingCityInput}
             onIonInput={(e) => setDepartingCity(e.target.value as string)}
           />
         </IonItem>
         <IonItem>
-          <IonLabel position="stacked">Departing Day</IonLabel>
+          <IonLabel position="stacked">Departing Day (Optional)</IonLabel>
           <IonDatetime
             presentation="date"
+            min={DateTime.now().toISO()}
+            value={departingDate.toISO()}
             onIonChange={(e) =>
-              setDepartingDate(new Date(e.target.value as string))
+              setDepartingDate(DateTime.fromISO(e.target.value as string))
             }
           />
         </IonItem>
         <IonItem>
-          <IonLabel position="stacked">Arriving Day (Local)</IonLabel>
+          <IonLabel position="stacked">Arriving Day (Optional)</IonLabel>
           <IonDatetime
             presentation="date"
+            min={departingDate?.toISO() || DateTime.now().toISO()}
+            value={arrivingDate.toISO()}
             onIonChange={(e) =>
-              setArrivingDate(new Date(e.target.value as string))
+              setArrivingDate(DateTime.fromISO(e.target.value as string))
             }
           />
         </IonItem>
         <IonItem>
+          {/* todo: add custom currency */}
           <IonInput
             labelPlacement="stacked"
             label="Enter travel budget (EUR)"
             placeholder="2000"
             type="number"
+            value={budgetInput}
             onIonInput={(e) => setBudget(parseFloat(e.target.value as string))}
           />
         </IonItem>
@@ -213,7 +240,7 @@ const AddAttendeeModal: React.FC<{
           onClick={onClickAdd}
           disabled={!canAddAttendee}
         >
-          Add
+          {attendeeToUpdate ? "Update" : "Add"}
         </IonButton>
         {/* <IonModal keepContentsMounted={true}>
           <IonDatetime id="datetime"></IonDatetime>
@@ -223,4 +250,4 @@ const AddAttendeeModal: React.FC<{
   );
 };
 
-export default AddAttendeeModal;
+export default ManageAttendeeModal;

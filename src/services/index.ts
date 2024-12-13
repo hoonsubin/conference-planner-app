@@ -3,6 +3,7 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { appConfig } from "../data";
 import { PerplexityApiRes, PerplexityApiReq, TravelEvent } from "../types";
 import stripJsonComments from "strip-json-comments";
+import { DateTime } from "luxon";
 
 export const perplexityApiInst = (apiKey: string) => {
   const apiInst = axios.create({
@@ -21,7 +22,7 @@ export const fetchConferenceList = async (
   api: AxiosInstance,
   eventTags: string,
   location: string,
-  when: Date = new Date()
+  when: DateTime = DateTime.now()
 ) => {
   if (!eventTags) {
     throw new Error("No event tag was provided");
@@ -47,6 +48,7 @@ export const fetchConferenceList = async (
   };
 
   try {
+    // todo: handle timeout errors or when the AI cannot find any results
     // send the prompts to the LLM API
     const res: AxiosResponse<PerplexityApiRes> = await api.post(
       "/chat/completions",
@@ -80,9 +82,9 @@ export const fetchConferenceList = async (
           venueAddr: i.venueLocation,
           eventLink: i.eventLink,
           eventStart: i.startDate.match("TB")
-            ? new Date(i.startDate)
+            ? DateTime.fromISO(i.startDate)
             : i.startDate,
-          eventEnd: i.endDate.match("TB") ? new Date(i.endDate) : i.startDate,
+          eventEnd: i.endDate.match("TB") ? DateTime.fromISO(i.endDate) : i.startDate,
         } as TravelEvent;
       });
     } else {

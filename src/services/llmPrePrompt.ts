@@ -1,3 +1,5 @@
+import {DateTime} from 'luxon';
+
 export const systemPrompt = `Only output the JSON list data without other messages.
 Find at least 10 items per topic for all requests. If there is no item, output an empty JSON array.
 If you could not find a value for a specific property, say 'TBA' except for URLs.
@@ -20,8 +22,8 @@ export type FetchedEventListType = typeof eventListTypeDescriptor;
 export const getEventListPrompt = (
   confType: string,
   confLoc: string,
-  startDate: Date
-) => `Create a list of conferences and events regarding ${confType} or other related topics near ${confLoc} from ${startDate.toISOString()} and onwards.
+  startDate: DateTime
+) => `Create a list of conferences and events regarding ${confType} or other related topics near ${confLoc} from ${startDate.toISO()} and onwards.
 
 The output should be a JSON data with the following properties:
 ${JSON.stringify(eventListTypeDescriptor)}
@@ -45,9 +47,9 @@ export type FetchedTransportListType = typeof transportListTypeDescriptor;
 export const getBestPathPrompt = (
   confLoc: string,
   startLoc: string,
-  startDate: Date,
-) => `I want to travel to ${confLoc} from ${startLoc} on ${startDate}.
-Search for all flight options departing from ${startLoc} around ${startDate} or other the closest time as a JSON file.
+  startDate: DateTime,
+) => `I want to travel to ${confLoc} from ${startLoc} on ${startDate.toISO()}.
+Search for all flight options departing from ${startLoc} around ${startDate.toISO()} or other the closest time as a JSON file.
 
 The output should be a JSON data with the following properties:
 ${JSON.stringify(transportListTypeDescriptor)}

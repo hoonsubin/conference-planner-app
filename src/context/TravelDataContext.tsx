@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { TravelEvent, Attendee } from "../types";
 import * as utils from "../utils";
 import { appConfig } from "../data";
@@ -8,6 +8,7 @@ interface TravelDataContextType {
   travelEvents: TravelEvent[];
   addAttendee: (newAttendee: Attendee) => void;
   removeAttendee: (attendeeToRemove: Attendee) => void;
+  getAttendee: (attendeeId: string) => Attendee | null;
   addTravelEvent: (newEvent: TravelEvent) => void;
   removeTravelEvent: (eventToRemove: TravelEvent) => void;
 }
@@ -17,6 +18,7 @@ const TravelDataContext = React.createContext<TravelDataContextType>({
   travelEvents: [],
   addAttendee: () => {},
   removeAttendee: () => {},
+  getAttendee: () => null,
   addTravelEvent: () => {},
   removeTravelEvent: () => {},
 });
@@ -24,6 +26,7 @@ const TravelDataContext = React.createContext<TravelDataContextType>({
 export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  // todo: ensure that the first attendee is the current user profile
   const [attendees, setAttendees] = useState<Attendee[]>(
     utils.loadListLocally(appConfig.attendeeListSaveKey) || []
   );
@@ -32,24 +35,74 @@ export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const addAttendee = (newAttendee: Attendee) => {
-    setAttendees([...attendees, newAttendee]);
+    //setAttendees([...attendees, newAttendee]);
+
+    setAttendees((currentAttendees) => {
+      const existingAttendeeIndex = currentAttendees.findIndex(
+        (attendee) => attendee.id === newAttendee.id
+      );
+
+      // Update existing attendee if the ID exists
+      if (existingAttendeeIndex !== -1) {
+        const updatedAttendees = [...currentAttendees];
+        updatedAttendees[existingAttendeeIndex] = {
+          ...currentAttendees[existingAttendeeIndex],
+          ...newAttendee,
+        };
+        return updatedAttendees;
+      }
+
+      // Add new attendee
+      return [...currentAttendees, newAttendee];
+    });
   };
 
-  const removeAttendee = (attendeeToRemove: Attendee) => {
-    setAttendees(attendees.filter((attendee) => attendee !== attendeeToRemove));
-  };
+  const removeAttendee = useCallback(
+    (attendeeToRemove: Attendee) => {
+      setAttendees(
+        attendees.filter((attendee) => attendee !== attendeeToRemove)
+      );
+    },
+    [attendees]
+  );
 
-  const addTravelEvent = (newEvent: TravelEvent) => {
-    setTravelEvents([...travelEvents, newEvent]);
-  };
+  const getAttendee = useCallback(
+    (attendeeId: string) => {
+      if (!attendeeId) {
+        return null;
+      }
 
-  const removeTravelEvent = (eventToRemove: TravelEvent) => {
-    setTravelEvents(travelEvents.filter((event) => event !== eventToRemove));
-  };
+      const attendeeIndex = attendees.findIndex(
+        (attendee) => attendee.id === attendeeId
+      );
+
+      if (attendeeIndex === -1) {
+        return null;
+      }
+      return attendees[attendeeIndex];
+    },
+    [attendees]
+  );
+
+  const addTravelEvent = useCallback(
+    (newEvent: TravelEvent) => {
+      setTravelEvents([...travelEvents, newEvent]);
+    },
+    [travelEvents]
+  );
+
+  const removeTravelEvent = useCallback(
+    (eventToRemove: TravelEvent) => {
+      setTravelEvents(travelEvents.filter((event) => event !== eventToRemove));
+    },
+    [travelEvents]
+  );
 
   useEffect(() => {
-    attendees.length > 0 && utils.saveListLocally(attendees, appConfig.attendeeListSaveKey);
-    travelEvents.length > 0 && utils.saveListLocally(travelEvents, appConfig.eventListSaveKey);
+    attendees.length > 0 &&
+      utils.saveListLocally(attendees, appConfig.attendeeListSaveKey);
+    travelEvents.length > 0 &&
+      utils.saveListLocally(travelEvents, appConfig.eventListSaveKey);
   }, [attendees, travelEvents]);
 
   return (
@@ -59,6 +112,7 @@ export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
         travelEvents,
         addAttendee,
         removeAttendee,
+        getAttendee,
         addTravelEvent,
         removeTravelEvent,
       }}

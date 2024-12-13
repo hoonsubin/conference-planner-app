@@ -18,28 +18,32 @@ import {
   IonFabButton,
   IonList,
   IonListHeader,
+  IonAccordionGroup,
+  IonAccordion,
 } from "@ionic/react";
-import { testAttendees } from "../data";
 import { person, add } from "ionicons/icons";
 import { useTravelEventContext } from "../context/TravelDataContext";
-import AddAttendeeModal from "../components/AddAttendeeModal";
-import { useState, useCallback } from "react";
+import ManageAttendeeModal from "../components/ManageAttendeeModal";
+import { useState, useCallback, useMemo } from "react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { TravelEvent, Attendee } from "../types";
+import { DateTime } from "luxon";
 
 interface SelectAttendeesPageProp {
   selectedEvent: TravelEvent;
 }
 
 const SelectAttendeesPage: React.FC<SelectAttendeesPageProp> = (props) => {
-  //const [isModalOpen, setModalOpen] = useState(false);
+  const [attendeeIdToEdit, setAttendeeToEdit] = useState("");
   const [activeAttendees, setActiveAttendees] = useState<Attendee[]>([]);
 
-  const [present, dismiss] = useIonModal(AddAttendeeModal, {
-    dismiss: (data: string, role: string) => dismiss(data, role),
-  });
+  const { attendees, addAttendee, getAttendee } = useTravelEventContext();
 
-  const { attendees, addAttendee } = useTravelEventContext();
+  const [present, dismiss] = useIonModal(ManageAttendeeModal, {
+    dismiss: (data: Attendee, role: "confirm" | "cancel") =>
+      dismiss(data, role),
+    attendeeToUpdate: getAttendee(attendeeIdToEdit),
+  });
 
   const isAttendeeActive = useCallback(
     (attendeeId: string) => {
@@ -48,12 +52,54 @@ const SelectAttendeesPage: React.FC<SelectAttendeesPageProp> = (props) => {
     [activeAttendees]
   );
 
-  const openAddAttendeeModal = () => {
+  const needTravelDateInput = (attendee: Attendee) => {
+    const today = DateTime.now();
+    const hasTravelDate = !!attendee.arriveTime && !!attendee.departTime;
+
+    if (!hasTravelDate) {
+      return true;
+    } else if (attendee.arriveTime && attendee.departTime) {
+      const needNewTravelDate =
+        DateTime.fromISO(attendee.arriveTime).valueOf() < today.valueOf() ||
+        DateTime.fromISO(attendee.departTime).valueOf() < today.valueOf();
+
+      return needNewTravelDate;
+    } else {
+      return false;
+    }
+  };
+
+  const openEditAttendeeModal = (attendeeEdit: Attendee) => {
+    console.log(`Editing ${attendeeEdit.name}`);
+
+    // todo: refactor this to handle attendee editing behavior
+
+    setAttendeeToEdit(attendeeEdit.id);
+    present({
+      onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
+        if (ev.detail.role === "confirm") {
+          const editingAttendee = ev.detail.data;
+          if (!editingAttendee) {
+            throw new Error(
+              `Could not get proper submission of new user data.`
+            );
+          }
+          // update the existing attendee
+          addAttendee(editingAttendee);
+        }
+      },
+    });
+  };
+
+  const openAttendeeModal = useCallback(() => {
+    if (attendeeIdToEdit) {
+      setAttendeeToEdit("");
+    }
+
     present({
       onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
         if (ev.detail.role === "confirm") {
           const newUser = ev.detail.data;
-          console.log(newUser);
           if (!newUser) {
             throw new Error(
               `Could not get proper submission of new user data.`
@@ -63,7 +109,7 @@ const SelectAttendeesPage: React.FC<SelectAttendeesPageProp> = (props) => {
         }
       },
     });
-  };
+  }, [attendeeIdToEdit]);
 
   const onSelectAttendee = useCallback(
     (selectedAttendee: Attendee) => {
@@ -96,77 +142,71 @@ const SelectAttendeesPage: React.FC<SelectAttendeesPageProp> = (props) => {
           <>
             <IonList>
               <IonListHeader>People</IonListHeader>
-              {attendees.length > 0
-                ? attendees.map((i) => {
-                    return (
-                      <IonItem key={crypto.randomUUID()} button>
-                        <IonIcon slot="start" icon={person}></IonIcon>
-                        <IonLabel>
-                          <strong>{i.name}</strong>
-                          <br />
-                          <IonText>
-                            {i.homeCity.cityName}, {i.homeCity.countryName}
-                          </IonText>
+              {attendees.length > 0 ? (
+                attendees.map((i) => {
+                  return (
+                    <IonItem
+                      className="people-item"
+                      key={crypto.randomUUID()}
+                      button
+                      onClick={() => openEditAttendeeModal(i)}
+                    >
+                      <IonIcon slot="start" icon={person}></IonIcon>
+                      <IonLabel>
+                        <strong>{i.name}</strong>
+                        <br />
+                        <IonText>
+                          {i.homeCity.cityName}, {i.homeCity.countryName}
+                        </IonText>
+                        {/* todo: make sure that the user provides the latest schedule for each attendees before adding them */}
+                        {needTravelDateInput(i) ? (
+                          <>
+                            <br />
+                            <IonText color="danger">
+                              Travel dates are incorrect
+                            </IonText>
+                          </>
+                        ) : (
+                          <>
+                            <br />
+                            <IonText>
+                              Departing on {DateTime.fromISO(i.departTime!).day}
+                            </IonText>{" "}
+                            <IonText>
+                              Arrival {DateTime.fromISO(i.arriveTime!).day}
+                            </IonText>
+                          </>
+                        )}
+                      </IonLabel>
 
-                          {!i.arriveTime ||
-                            (!i.departTime ? (
-                              <>
-                                <br />
-                                <IonText color="danger">
-                                  Please add a date
-                                </IonText>
-                              </>
-                            ) : (
-                              <></>
-                            ))}
-                        </IonLabel>
-
-                        <IonCheckbox
-                          checked={isAttendeeActive(i.id)}
-                          onIonChange={() => onSelectAttendee(i)}
-                          slot="end"
-                        ></IonCheckbox>
-                      </IonItem>
-                    );
-                  })
-                : testAttendees.map((i) => {
-                    return (
-                      <IonItem key={crypto.randomUUID()}>
-                        <IonIcon slot="start" icon={person}></IonIcon>
-                        <IonLabel>
-                          <strong>{i.name}</strong>
-                          <br />
-                          <IonText>
-                            {i.homeCity.cityName}, {i.homeCity.countryName}
-                          </IonText>
-
-                          {!i.arriveTime ||
-                            (!i.departTime && (
-                              <>
-                                <br />
-                                <IonText color="danger">
-                                  Please add a date
-                                </IonText>
-                              </>
-                            ))}
-                        </IonLabel>
-
-                        <IonCheckbox
-                          checked={isAttendeeActive(i.id)}
-                          onIonChange={() => onSelectAttendee(i)}
-                          slot="end"
-                        ></IonCheckbox>
-                      </IonItem>
-                    );
-                  })}
+                      <IonCheckbox
+                        checked={isAttendeeActive(i.id)}
+                        onIonChange={(e) => {
+                          e.stopPropagation();
+                          onSelectAttendee(i);
+                        }}
+                        slot="end"
+                      ></IonCheckbox>
+                    </IonItem>
+                  );
+                })
+              ) : (
+                <h1>Please add an attendee</h1>
+              )}
             </IonList>
           </>
         </div>
-        <IonButton disabled={activeAttendees.length < 1} expand="block">
+        <IonButton
+          disabled={activeAttendees.length < 1}
+          expand="block"
+          onClick={() => {
+            console.log(`Selected ${activeAttendees.length} users`);
+          }}
+        >
           Next
         </IonButton>
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton onClick={() => openAddAttendeeModal()}>
+          <IonFabButton onClick={() => openAttendeeModal()}>
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonFab>
