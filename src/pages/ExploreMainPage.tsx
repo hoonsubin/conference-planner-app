@@ -17,15 +17,17 @@ import {
   IonSelect,
   IonSelectOption,
   IonInput,
+  IonNavLink,
 } from "@ionic/react";
-import { useEffect, useState, useMemo, useCallback } from "react";
-import * as utils from "../utils";
+import { useState, useMemo, useCallback } from "react";
+import * as utils from "../services";
 import { TravelEvent } from "../types";
 import {
   appConfig,
   supportedEventTypes,
   supportedEventLocations,
 } from "../data";
+import SelectAttendeesPage from "./SelectAttendeesPage";
 
 const ExploreMainPage: React.FC = () => {
   const [eventList, setEventList] = useState<TravelEvent[]>([]);
@@ -75,27 +77,6 @@ const ExploreMainPage: React.FC = () => {
     useCustomHostLoc,
   ]);
 
-  // useEffect(() => {
-  //   // value logger for debugging
-  //   console.log({
-  //     selectedEventTypes,
-  //     selectedHostLoc,
-  //     isUsingCustomLoc,
-  //     isUsingCustomTag,
-  //     useCustomHostLoc,
-  //     useCustomTag,
-  //     canSearch,
-  //   });
-  // }, [
-  //   selectedEventTypes,
-  //   selectedHostLoc,
-  //   isUsingCustomLoc,
-  //   isUsingCustomTag,
-  //   useCustomHostLoc,
-  //   useCustomTag,
-  //   canSearch,
-  // ]);
-
   const onClickFetchEvents = useCallback(() => {
     setIsLoading(true);
     const api = utils.perplexityApiInst(appConfig.perplexityApi);
@@ -132,13 +113,13 @@ const ExploreMainPage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Upcoming</IonTitle>
+          <IonTitle>Explore</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Upcoming</IonTitle>
+            <IonTitle size="large">Explore</IonTitle>
           </IonToolbar>
         </IonHeader>
         <div>
@@ -228,26 +209,32 @@ const ExploreMainPage: React.FC = () => {
               {eventList.map((i) => {
                 return (
                   <IonItem key={crypto.randomUUID()}>
-                    <IonCard className="interactive-card ion-activatable" onClick={()=> console.log("Hello world")}>
-                      <IonCardHeader>
-                        <IonCardTitle>{i.name}</IonCardTitle>
-                        <IonCardSubtitle>
-                          Starts from {i.eventStart.toString()} at {i.venueAddr}
-                        </IonCardSubtitle>
-                      </IonCardHeader>
-                      <IonCardContent>
-                        {i.description}
-                        <br />
-                        For more information, visit{" "}
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href={i.eventLink}
-                        >
-                          {i.eventLink}
-                        </a>
-                      </IonCardContent>
-                    </IonCard>
+                    <IonNavLink
+                      routerDirection="forward"
+                      component={() => <SelectAttendeesPage selectedEvent={i} />}
+                    >
+                      <IonCard className="interactive-card ion-activatable">
+                        <IonCardHeader>
+                          <IonCardTitle>{i.name}</IonCardTitle>
+                          <IonCardSubtitle>
+                            Starts from {i.eventStart.toString()} at{" "}
+                            {i.venueAddr}
+                          </IonCardSubtitle>
+                        </IonCardHeader>
+                        <IonCardContent>
+                          {i.description}
+                          <br />
+                          For more information, visit{" "}
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={i.eventLink}
+                          >
+                            {i.eventLink}
+                          </a>
+                        </IonCardContent>
+                      </IonCard>
+                    </IonNavLink>
                   </IonItem>
                 );
               })}
