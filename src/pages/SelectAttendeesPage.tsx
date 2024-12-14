@@ -28,6 +28,7 @@ import { useState, useCallback, useMemo } from "react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { TravelEvent, Attendee } from "../types";
 import { DateTime } from "luxon";
+import UserItineraryPage from "./UserItineraryPage";
 
 interface SelectAttendeesPageProp {
   selectedEvent: TravelEvent;
@@ -196,24 +197,24 @@ const SelectAttendeesPage: React.FC<SelectAttendeesPageProp> = (props) => {
             </IonList>
           </>
         </div>
-        <IonButton
-          disabled={activeAttendees.length < 1}
-          expand="block"
-          onClick={() => {
-            console.log(`Selected ${activeAttendees.length} users`);
-          }}
+        {activeAttendees.length > 0 && <IonNavLink
+          routerDirection="forward"
+          component={() => (
+            <UserItineraryPage
+              selectedEvent={props.selectedEvent}
+              attendees={activeAttendees}
+            />
+          )}
         >
-          Next
-        </IonButton>
+          <IonButton disabled={activeAttendees.length < 1} expand="block">
+            Next
+          </IonButton>
+        </IonNavLink>}
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <IonFabButton onClick={() => openAttendeeModal()}>
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonFab>
-
-        {/* <IonNavLink routerDirection="forward" component={() => <PageThree />}>
-          <IonButton fill="outline">Next</IonButton>
-        </IonNavLink> */}
       </IonContent>
     </>
   );
