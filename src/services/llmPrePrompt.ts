@@ -1,4 +1,4 @@
-import {DateTime} from 'luxon';
+import { DateTime } from "luxon";
 
 export const systemPrompt = `Only output the JSON list data without other messages.
 Find at least 10 items per topic for all requests. If there is no item, output an empty JSON array.
@@ -13,8 +13,10 @@ const eventListTypeDescriptor = {
   eventLink: "The URL of the official event page",
   venueLocation:
     "The full event venue address (TBD or only the city if the venue is not known yet)",
-  startDate: "ISO standard time (year, month, day, time) of when the event starts",
-  endDate: "ISO standard time (year, month, day, time) of when the event officially ends",
+  startDate:
+    "ISO standard time (year, month, day, time) of when the event starts",
+  endDate:
+    "ISO standard time (year, month, day, time) of when the event officially ends",
 };
 
 export type FetchedEventListType = typeof eventListTypeDescriptor;
@@ -38,8 +40,10 @@ const transportListTypeDescriptor = {
     "The complete address of the departing location (either a train station or an airport)",
   arrivingLocation:
     "The complete address of the arriving location (either a train station or an airport)",
-  departDate: "ISO standard time (year, month, day, time) of when I should depart",
-  arrivalDate: "ISO standard time (year, month, day, time) of when I will be arriving",
+  departDate:
+    "ISO standard time (year, month, day, time) of when I should depart",
+  arrivalDate:
+    "ISO standard time (year, month, day, time) of when I will be arriving",
 };
 
 export type FetchedTransportListType = typeof transportListTypeDescriptor;
@@ -47,7 +51,7 @@ export type FetchedTransportListType = typeof transportListTypeDescriptor;
 export const getBestPathPrompt = (
   confLoc: string,
   startLoc: string,
-  startDate: DateTime,
+  startDate: DateTime
 ) => `I want to travel to ${confLoc} from ${startLoc} on ${startDate.toISO()}.
 Search for all flight options departing from ${startLoc} around ${startDate.toISO()} or other the closest time as a JSON file.
 

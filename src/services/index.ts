@@ -18,6 +18,10 @@ export const perplexityApiInst = (apiKey: string) => {
   return apiInst;
 };
 
+export const fetchFlightPath = async (api: AxiosInstance) => {
+  
+}
+
 export const fetchConferenceList = async (
   api: AxiosInstance,
   eventTags: string,
