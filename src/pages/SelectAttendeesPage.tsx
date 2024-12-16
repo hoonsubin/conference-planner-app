@@ -197,19 +197,21 @@ const SelectAttendeesPage: React.FC<SelectAttendeesPageProp> = (props) => {
             </IonList>
           </>
         </div>
-        {activeAttendees.length > 0 && <IonNavLink
-          routerDirection="forward"
-          component={() => (
-            <UserItineraryPage
-              selectedEvent={props.selectedEvent}
-              attendees={activeAttendees}
-            />
-          )}
-        >
-          <IonButton disabled={activeAttendees.length < 1} expand="block">
-            Next
-          </IonButton>
-        </IonNavLink>}
+        {activeAttendees.length > 0 && (
+          <IonNavLink
+            routerDirection="forward"
+            component={() => (
+              <UserItineraryPage
+                selectedEvent={props.selectedEvent}
+                attendees={activeAttendees}
+              />
+            )}
+          >
+            <IonButton disabled={activeAttendees.length < 1} expand="block">
+              Next
+            </IonButton>
+          </IonNavLink>
+        )}
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <IonFabButton onClick={() => openAttendeeModal()}>
             <IonIcon icon={add}></IonIcon>

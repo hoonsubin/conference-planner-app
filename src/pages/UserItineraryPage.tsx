@@ -14,13 +14,19 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonLoading,
+  IonNavLink,
   IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { Attendee, TravelEvent } from "../types";
+import { Attendee, TravelEvent, FlightPlan } from "../types";
 import { person } from "ionicons/icons";
 import { DateTime } from "luxon";
+import * as services from "../services";
+import { useLlmApiContext } from "../context/LlmApiContext";
+import { useState } from "react";
+import ShareGenItineraryPage from "./ShareGenItineraryPage";
 
 interface UserItineraryPageProps {
   selectedEvent: TravelEvent;
@@ -28,6 +34,21 @@ interface UserItineraryPageProps {
 }
 
 const UserItineraryPage: React.FC<UserItineraryPageProps> = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [flightPlans, setFlightPlans] = useState<FlightPlan[]>([]);
+  const { api } = useLlmApiContext();
+
+  const onClickGenerate = async () => {
+    setIsLoading(true);
+    services
+      .fetchFlightPath(api, props.selectedEvent, props.attendees)
+      .then((i) => {
+        console.log(i);
+        setFlightPlans(i);
+        setIsLoading(false);
+      });
+  };
+
   return (
     <>
       <IonHeader>
@@ -39,6 +60,11 @@ const UserItineraryPage: React.FC<UserItineraryPageProps> = (props) => {
         </IonToolbar>
       </IonHeader>
       <IonContent class="ion-padding">
+        <IonLoading
+          message="Generating..."
+          spinner="circles"
+          isOpen={isLoading}
+        />
         <h1>Conference</h1>
         <IonCard>
           <IonCardHeader>
@@ -84,12 +110,26 @@ const UserItineraryPage: React.FC<UserItineraryPageProps> = (props) => {
           )}
         </IonList>
 
-        <IonButton
-          expand="block"
-          onClick={() => console.log("implement this behavior")}
-        >
-          Generate Itinerary
-        </IonButton>
+        {flightPlans.length > 0 ? (
+          <IonNavLink
+            routerDirection="forward"
+            component={() => (
+              <ShareGenItineraryPage
+                selectedEvent={props.selectedEvent}
+                attendees={props.attendees}
+                flightPlans={flightPlans}
+              />
+            )}
+          >
+            <IonButton color="danger" expand="block">
+              Next
+            </IonButton>
+          </IonNavLink>
+        ) : (
+          <IonButton expand="block" onClick={() => onClickGenerate()}>
+            Generate Itinerary
+          </IonButton>
+        )}
       </IonContent>
     </>
   );

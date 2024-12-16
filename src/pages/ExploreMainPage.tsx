@@ -28,6 +28,7 @@ import {
   supportedEventLocations,
 } from "../data";
 import SelectAttendeesPage from "./SelectAttendeesPage";
+import { useLlmApiContext } from "../context/LlmApiContext";
 
 const ExploreMainPage: React.FC = () => {
   const [eventList, setEventList] = useState<TravelEvent[]>([]);
@@ -37,6 +38,8 @@ const ExploreMainPage: React.FC = () => {
 
   const [useCustomTag, setCustomTag] = useState("");
   const [useCustomHostLoc, setCustomHostLoc] = useState("");
+
+  const { api } = useLlmApiContext();
 
   const isUsingCustomTag = useMemo(() => {
     // the last element in the list is always assumed to be a custom entry
@@ -79,7 +82,6 @@ const ExploreMainPage: React.FC = () => {
 
   const onClickFetchEvents = useCallback(() => {
     setIsLoading(true);
-    const api = utils.perplexityApiInst(appConfig.perplexityApi);
     const fetchConfs = async () => {
       const tagsToUse = isUsingCustomTag ? useCustomTag : selectedEventTypes;
       const locToUse = isUsingCustomLoc ? useCustomHostLoc : selectedHostLoc;
@@ -211,7 +213,9 @@ const ExploreMainPage: React.FC = () => {
                   <IonItem key={crypto.randomUUID()}>
                     <IonNavLink
                       routerDirection="forward"
-                      component={() => <SelectAttendeesPage selectedEvent={i} />}
+                      component={() => (
+                        <SelectAttendeesPage selectedEvent={i} />
+                      )}
                     >
                       <IonCard className="interactive-card ion-activatable">
                         <IonCardHeader>

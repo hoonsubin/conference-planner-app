@@ -31,3 +31,15 @@ export interface Attendee {
   arriveTime?: string;
   maxBudget?: Budget;
 }
+
+export interface FlightPlan {
+  attendeeId: string;
+  name: string;
+  flightNo: string;
+  airline: string;
+  bookingLink: string;
+  departLocation: string;
+  arrivingLocation: string;
+  departDate: string;
+  arrivalDate: string;
+}
