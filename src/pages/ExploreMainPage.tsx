@@ -28,7 +28,7 @@ import {
   supportedEventLocations,
 } from "../data";
 import SelectAttendeesPage from "./SelectAttendeesPage";
-import { useTravelEventContext } from "../context/LlmApiContext";
+import { useLlmApiContext } from "../context/LlmApiContext";
 
 const ExploreMainPage: React.FC = () => {
   const [eventList, setEventList] = useState<TravelEvent[]>([]);
@@ -39,7 +39,7 @@ const ExploreMainPage: React.FC = () => {
   const [useCustomTag, setCustomTag] = useState("");
   const [useCustomHostLoc, setCustomHostLoc] = useState("");
 
-  const { api } = useTravelEventContext();
+  const { api } = useLlmApiContext();
 
   const isUsingCustomTag = useMemo(() => {
     // the last element in the list is always assumed to be a custom entry

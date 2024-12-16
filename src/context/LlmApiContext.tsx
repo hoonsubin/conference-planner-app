@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import * as services from "../services";
 import { appConfig } from "../data";
 import { AxiosInstance } from "axios";
@@ -16,7 +22,7 @@ export const LlmApiContextProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const api = useMemo(() => {
     return services.perplexityApiInst(appConfig.perplexityApi);
-  }, [appConfig.perplexityApi])
+  }, [appConfig.perplexityApi]);
 
   return (
     <LlmApiContext.Provider
@@ -29,6 +35,6 @@ export const LlmApiContextProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useTravelEventContext = () => {
+export const useLlmApiContext = () => {
   return useContext(LlmApiContext);
 };
