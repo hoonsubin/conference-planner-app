@@ -36,49 +36,50 @@ const EventResults: React.FC = () => {
     const loc = useLocation();
     const { api } = useLlmApiContext();
     const data = loc.state as { event: string, location: string };
-    const eventStr = data.event;
-    const locationStr = data.location;
     const [events, setEvents] = useState<TravelEvent[]>([]);
 
     useEffect(() => {
+        console.log("triggerd useEffect");
         const fetchEventsAsync = async () => {
             console.log("fetching events");
-            const fetchedEvents = await utils.fetchConferenceList(api, eventStr, locationStr);
+            const fetchedEvents = await utils.fetchConferenceList(api, data.event, data.location);
             // console.log("fetchedEvents", fetchedEvents);
             // setEvents(fetchedEvents);
             // console.log("events", events);
             return fetchedEvents;
         }
-        fetchEventsAsync()
-        .then((e) => {
-            setEvents(e);
-            console.log("events", events);
-          })
+        if (events.length === 0) {
+            fetchEventsAsync()
+            .then((e) => {
+                setEvents(e);
+                console.log("events", events);
+            })
+        }
     }, [useIonViewDidEnter]);
 
 return (
-    <IonContent>
+    <IonPage>
+        <IonHeader>
+            <IonToolbar>
+                <IonButtons slot="start">
+                    <IonBackButton></IonBackButton>
+                </IonButtons>
+                <IonTitle>Results</IonTitle>
+            </IonToolbar>
+            {/* <h2 className="ion-padding-start">{eventStr} in {locationStr}:</h2> */}
+        </IonHeader>
     {
-        events.length === 0 ?
-        // loading spinnner
-        <IonContent>
-            <IonLoading
-                message="Fetching events..."
-                spinner="circles"
-                isOpen={events.length === 0}
-            />
-        </IonContent>
-        :
-        <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonBackButton></IonBackButton>
-                    </IonButtons>
-                    <IonTitle>Results</IonTitle>
-                </IonToolbar>
-                {/* <h2 className="ion-padding-start">{eventStr} in {locationStr}:</h2> */}
-            </IonHeader>
+        data ?
+            events.length === 0 ?
+            // loading spinnner
+            <IonContent>
+                <IonLoading
+                    message="Fetching events..."
+                    spinner="circles"
+                    isOpen={events.length === 0}
+                />
+            </IonContent>
+            :
             <IonContent>
                 <IonList>
                 {events.map((event) => (
@@ -87,7 +88,7 @@ return (
                     onClick={
                         () => {
                             history.push({
-                                pathname: `/explore/event/${event.id}`, 
+                                pathname: `/explore/event-detail`, 
                                 state: { event: event}
                             });
                         }
@@ -129,9 +130,12 @@ return (
                 ))}
                 </IonList>
             </IonContent>
-        </IonPage>
+        :
+        <IonContent class="ion-padding ion-text-center">
+            <IonText class="ion-text-center">No event type specified</IonText>
+        </IonContent>
     }
-    </IonContent>
+    </IonPage>
 );
 };
 

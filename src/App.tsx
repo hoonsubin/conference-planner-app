@@ -52,6 +52,7 @@ import EventSearch from "./components/EventSearch";
 import LocationSearch from "./components/LocationSearch";
 import EventResults from "./components/EventResults";
 import CreateJourney from "./components/CreateJourney";
+import Itinerary from "./components/Itinerary";
 
 setupIonicReact();
 
@@ -65,15 +66,16 @@ const App: React.FC = () => (
               <Route exact path="/upcoming">
                 <UpcomingTab />
               </Route>
-              <Route path="/upcoming/events/:id" component={EventDetail} />
+              <Route exact path="/upcoming/events/:id" component={EventDetail} />
               <Route exact path="/explore">
                 <ExploreTab />
               </Route>
               {/* <Route path="/explore" component={EventSearch} /> */}
-              <Route path="/explore/location" component={LocationSearch} />
-              <Route path="/explore/events" component={EventResults} />
-              <Route path="/explore/event/:id" component={EventDetail} />
-              <Route path="/explore/journey/:id" component={CreateJourney} />
+              <Route exact path="/explore/location" component={LocationSearch} />
+              <Route exact path="/explore/events" component={EventResults} />
+              <Route exact path="/explore/event-detail" component={EventDetail} />
+              <Route exact path="/explore/journey" component={CreateJourney} />
+              <Route exact path="/explore/itinerary" component={Itinerary} />
               {/* <Route path="/explore/journey/:id/budget" component={} /> */}
               <Route path="/account">
                 <AccountTab />

@@ -4,14 +4,7 @@ import {
     IonPage,
     IonTitle,
     IonToolbar,
-    IonList,
-    IonItem,
     IonButton,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardSubtitle,
     IonText,
     IonBackButton,
     IonButtons,
@@ -19,7 +12,7 @@ import {
   } from "@ionic/react";
 import { TravelEvent } from "../types";
 import { RouteComponentProps, useHistory, useLocation } from "react-router";
-import { linkOutline, pinOutline, timeOutline } from "ionicons/icons";
+import { pinOutline } from "ionicons/icons";
 
 
 interface EventDetailProps 
@@ -32,11 +25,10 @@ extends RouteComponentProps<{
     // event: TravelEvent;
 }
 
-const EventDetail: React.FC<EventDetailProps> = ({ match }) => {
+const EventDetail: React.FC<EventDetailProps> = ({}) => {
     const history = useHistory();
     const loc = useLocation();
     const data = loc.state as { event: TravelEvent };
-    const event = data.event;
 return (
     <IonPage>
         <IonHeader>
@@ -44,51 +36,58 @@ return (
                 <IonButtons slot="start">
                     <IonBackButton></IonBackButton>
                 </IonButtons>
-                <IonTitle>{event.name}</IonTitle>
+                <IonTitle>{data ? data.event.name : "Event Detail"}</IonTitle>
             </IonToolbar>
         </IonHeader>
-        <IonContent class="ion-padding">
-            <h1>{event.name}</h1>
-            <h4>
-                {event.eventStart ? event.eventStart.toLocaleString().split('T')[0] : "no date available"}
-            </h4>
-            <p>{event.description}</p>
-            <br></br>
-            <IonIcon icon={pinOutline} className="ion-padding-end"></IonIcon>
-            <IonText>{event.venueAddr}</IonText>
-            <br></br>
-            <br></br>
-            {event.eventLink != "TBA" &&
-            <span className="ion-align-items-center">
-                <IonIcon icon={linkOutline} className="ion-padding-end"></IonIcon>
-                <a 
-                // href={event.eventLink}
+        {
+            data ?
+            <IonContent class="ion-padding">
+                <h1>{data.event.name}</h1>
+                <h4>
+                    {data.event.eventStart ? data.event.eventStart.toLocaleString().split('T')[0] : "no date available"}
+                </h4>
+                <p>{data.event.description}</p>
+                <br></br>
+                <IonIcon icon={pinOutline} className="ion-padding-end"></IonIcon>
+                <IonText>{data.event.venueAddr}</IonText>
+                <br></br>
+                <br></br>
+                {/* {data.event.eventLink != "TBA" &&
+                <span className="ion-align-items-center">
+                    <IonIcon icon={linkOutline} className="ion-padding-end"></IonIcon>
+                    <a 
+                    // href={data.event.eventLink}
+                    >
+                        {
+                            data.event.eventLink.split('//')[1].includes('/') ?
+                            data.event.eventLink.split('//')[1].split('/')[0] :
+                            data.event.eventLink.split('//')[1]
+                        }
+                    </a>
+                </span>
+                } */}
+                <br></br>
+                <br></br>
+                <IonButton
+                    // routerLink={`/explore/journey/${data.event.id}`}
+                    expand="block"
+                    onClick={
+                        () => {
+                            history.push({
+                                pathname: `/explore/journey`, 
+                                state: { event: data.event}
+                            });
+                        }
+                    }
                 >
-                    {
-                        event.eventLink.split('//')[1].includes('/') ?
-                        event.eventLink.split('//')[1].split('/')[0] :
-                        event.eventLink.split('//')[1]
-                    }
-                </a>
-            </span>
-            }
-            <br></br>
-            <br></br>
-            <IonButton
-                // routerLink={`/explore/journey/${event.id}`}
-                expand="block"
-                onClick={
-                    () => {
-                        history.push({
-                            pathname: `/explore/journey/${event.id}`, 
-                            state: { event: event}
-                        });
-                    }
-                }
-            >
-                Create journey
-            </IonButton>
-        </IonContent>
+                    Create journey
+                </IonButton>
+            </IonContent>
+            :
+            <IonContent class="ion-padding ion-text-center">
+                <IonText class="ion-text-center">No event specified</IonText>
+            </IonContent>
+        }
     </IonPage>
 );
 };

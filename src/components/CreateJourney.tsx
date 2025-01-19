@@ -18,167 +18,175 @@ import {
     IonLabel,
     IonModal,
     IonFooter,
-  } from "@ionic/react";
-import { supportedEventLocations, supportedEventTypes } from "../data";
-import { useHistory, useLocation } from "react-router-dom";
+    IonToggle,
+    IonRange,
+    IonIcon,
+} from "@ionic/react";
+import { appConfig, supportedEventLocations, supportedEventTypes } from "../data";
+import { RouteComponentProps, useHistory, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { TravelEvent, Attendee } from "../types";
+import { loadListLocally } from "../utils";
+import { set } from "react-hook-form";
+import dummyData from "../data/dummyData";
+import { logoEuro, logoUsd } from "ionicons/icons";
+import React from "react";
+import AddAttendeeModal from "./AddAttendeeModal";
 
-interface CreateJourneyProps {
-    
+
+interface CreateJourneyProps extends RouteComponentProps<{}> {
+
 }
 
-const CreateJourney: React.FC<CreateJourneyProps> = ({ }) => {
-    const history = useHistory();
+
+const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
+    // const history = useHistory();
     const loc = useLocation();
     const data = loc.state as { event: TravelEvent };
     const event = data.event;
-    const attendees: Attendee[] = 
-    [
-        {
-            id: "1",
-            name: "John Doe",
-            email: "john.doe@example.com",
-            homeCity:  { cityName: "New York", countryName: "USA" },
-            departTime: "2023-10-01T08:00:00Z",
-            arriveTime: "2023-10-01T12:00:00Z",
-            maxBudget: { amount: 500, currency: "USD" }
-        },
-        {
-            id: "2",
-            name: "Jane Smith",
-            email: "jane.smith@example.com",
-            homeCity:  { cityName: "Los Angeles", countryName: "USA" },
-            departTime: "2023-10-02T09:00:00Z",
-            arriveTime: "2023-10-02T13:00:00Z",
-            maxBudget: { amount: 600, currency: "USD" }
-        },
-        {
-            id: "3",
-            name: "Alice Johnson",
-            email: "alice.johnson@example.com",
-            homeCity:  { cityName: "Chicago", countryName: "USA" },
-            departTime: "2023-10-03T10:00:00Z",
-            arriveTime: "2023-10-03T14:00:00Z",
-            maxBudget: { amount: 700, currency: "USD" }
-        }
-    ]
+    const [attendees, setAttendees] = useState<Attendee[]>([]);
+    const [selectedAttendees, setSelectedAttendees] = useState<Attendee[]>([]);
     const [locations] = useState(supportedEventLocations);
     const [searchQuery, setSearchQuery] = useState("");
     const filteredLocations = locations.filter((item) =>
         item.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    const [newAttendee, setNewAttendee] = useState<Attendee>({
+        id: "",
+        name: "",
+        email: "",
+        homeCity: {
+            cityName: "",
+            countryName: ""
+        }
+    });
+    const [matchFlights, setMatchFlights] = useState(false);
 
     const modal = useRef<HTMLIonModalElement>(null);
     const page = useRef(null);
     const [presentingElement, setPresentingElement] = useState<HTMLElement | null>(null);
     useEffect(() => {
         setPresentingElement(page.current);
+        //setAttendees(loadListLocally(appConfig.attendeeListSaveKey));
     }, []);
     function dismiss() {
+        setNewAttendee({ ...newAttendee, id: attendees.length.toString() });
+        console.log("newAttendee", newAttendee);
+        setAttendees([...attendees, newAttendee]);
+        // clear newAttendee
+        setNewAttendee({
+            id: "",
+            name: "",
+            email: "",
+            homeCity: {
+                cityName: "",
+                countryName: ""
+            }
+        });
         modal.current?.dismiss();
     }
-    const newAttendee: Attendee = {
-        id: attendees.length + 1 + "",
-        name: "",
-        email: "",
-        homeCity: { cityName: "", countryName: "" },
-        departTime: "",
-        arriveTime: "",
-        maxBudget: { amount: 0, currency: "" }
-    } as Attendee;
 
-return (
-    <IonPage>
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-                <IonBackButton></IonBackButton>
-            </IonButtons>
-            <IonTitle>{event.name}</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent class="ion-padding" fullscreen>
-            <h1>People</h1>
-            <p>Who are you going with?</p>
-            <IonList>
-                {attendees.map((attendee, index) => (
-                    <IonItem key={attendee.id} className="item item-text-wrap">
-                        <IonCheckbox slot="end" aria-label="Toggle attendence"></IonCheckbox>
-                        <IonLabel>
-                            <strong>{attendee.name}</strong>
-                            <IonText></IonText>
-                            <br />
-                            <IonNote color="medium" className="ion-text-wrap">
-                                {attendee.homeCity.cityName}, {attendee.homeCity.countryName}
-                            </IonNote>
-                        </IonLabel>
-                  </IonItem>
-                ))}
-            </IonList>
-            <br></br>
-            <IonButton id="open-modal" expand="block">
-                Add attendee
-            </IonButton>
-            {/* Modal */}
-                    <IonModal ref={modal} trigger="open-modal" canDismiss={true} presentingElement={presentingElement!} initialBreakpoint={0.75} breakpoints={[0.5, 0.75, 0.9]} backdropDismiss={true}>
-                      <IonContent className="ion-padding">
-                        <h2>Add attendee</h2>
-                        <br></br>
-                        <h3>Personal information</h3>
-                        <IonInput 
-                            label="Name"
-                            labelPlacement="floating"
-                            clearInput={true}
-                            placeholder="Attendee name"
-                            value={newAttendee.name}
-                            fill="outline"
-                            className="ion-padding-top">
-                        </IonInput>
-                        <br></br>
-                        <IonInput 
-                            label="Email"
-                            labelPlacement="floating"
-                            clearInput={true}
-                            placeholder="Attendee email"
-                            value={newAttendee.email}
-                            fill="outline"
-                            className="ion-padding-top">
-                        </IonInput>
-                        <br></br>
-                        <IonInput 
-                            label="Location"
-                            labelPlacement="floating"
-                            clearInput={true}
-                            placeholder="Attendee location"
-                            value={newAttendee.homeCity.cityName}
-                            fill="outline"
-                            className="ion-padding-top">
-                        </IonInput>
-                        <br></br>
-                        <IonButton
-                            onClick={dismiss} 
-                            expand="block" 
-                            className="ion-padding-top">
-                            Add attendee
-                        </IonButton>
-                      </IonContent>
-                    </IonModal>
-        </IonContent>
-        <IonFooter>
-            <IonButton className="ion-float-right ion-padding" onClick={
+
+    return (
+        <IonPage>
+            <IonHeader>
+                <IonToolbar>
+                    <IonButtons slot="start">
+                        <IonBackButton></IonBackButton>
+                    </IonButtons>
+                    <IonTitle>{event.name}</IonTitle>
+                </IonToolbar>
+            </IonHeader>
+            <IonContent class="ion-padding" fullscreen>
+                <h1>People</h1>
+                <p>Who are you going with?</p>
+                {
+                    attendees.length === 0 ?
+                        <div className="ion-padding ion-text-center ion-align-items-center ion-justify-content-center" style={{ height: "70%", display: "flex" }}>
+                            <IonText>
+                                No attendees yet
+                                <br />
+                                <br />
+                                Add your first attendee
+                            </IonText>
+                        </div>
+                        :
+                        <IonList>
+                            {attendees.map((attendee, index) => (
+                                <IonItem key={attendee.id} className="item item-text-wrap">
+                                    <IonCheckbox
+                                        slot="end"
+                                        aria-label="Toggle attendence"
+                                        checked={selectedAttendees.includes(attendee)}
+                                        onIonChange={e => {
+                                            const checked = e.detail.checked;
+                                            if (checked) {
+                                                setSelectedAttendees([...selectedAttendees, attendee]);
+                                            } else {
+                                                setSelectedAttendees(selectedAttendees.filter(a => a.id !== attendee.id));
+                                            }
+                                        }}
+                                    >
+                                    </IonCheckbox>
+                                    <IonLabel>
+                                        <strong>{attendee.name}</strong>
+                                        <IonText></IonText>
+                                        <br />
+                                        <IonNote color="medium" className="ion-text-wrap">
+                                            {attendee.homeCity.cityName}, {attendee.homeCity.countryName}
+                                        </IonNote>
+                                    </IonLabel>
+                                </IonItem>
+                            ))}
+                        </IonList>
+                }
+                <AddAttendeeModal newAttendee={newAttendee} setNewAttendee={setNewAttendee} modal={modal} presentingElement={presentingElement} dismiss={dismiss}></AddAttendeeModal>
+            </IonContent>
+            <IonFooter class="ion-padding" color="primary" style={{ backgroundColor: "#000000" }}>
+                <br></br>
+                <IonButton className="ion-padding" id="open-modal" expand="block" fill="outline">
+                    Add attendee
+                </IonButton>
+                <br></br>
+                <IonItem className="item item-text-wrap">
+                    <IonToggle 
+                        slot="end" 
+                        aria-label="Toggle match flights"
+                        checked={matchFlights}
+                        onIonChange={e => setMatchFlights(e.detail.checked)}
+                    ></IonToggle>
+                    <IonLabel>
+                        <strong>Match flights</strong>
+                        <br />
+                        <IonNote color="medium" className="ion-text-wrap" style={{ fontSize: "small" }}>
+                            We will try to match flights of attendees
+                        </IonNote>
+                    </IonLabel>
+                </IonItem>
+                <br></br>
+                {/* <IonButton className="ion-float-right ion-padding" onClick={
                 () => {
                     history.push({
-                        pathname: `/explore/journey/${event.id}/budget`, 
+                        pathname: `/explore/journey/budget`, 
                         state: { event: event, attendees: attendees,}
                     });
                 }
             } fill="outline">
                 Next
-            </IonButton>
-        </IonFooter>
-    </IonPage>
-);
+            </IonButton> */}
+                <IonButton className="ion-padding" onClick={
+                    () => {
+                        history.push({
+                            pathname: '/explore/itinerary',
+                            state: { event: event, attendees: selectedAttendees, matchFlights: matchFlights }
+                        });
+                    }
+                } expand="block">
+                    Create itinerary
+                </IonButton>
+            </IonFooter>
+        </IonPage>
+    );
 };
 
 export default CreateJourney;
