@@ -95,10 +95,13 @@ const UserItineraryPage: React.FC<UserItineraryPageProps> = (props) => {
                     <>
                       <br />
                       <IonText>
-                        Departing on {DateTime.fromISO(i.departTime!).day}
-                      </IonText>{" "}
+                        Departing on{" "}
+                        {DateTime.fromISO(i.departTime!).toFormat("yyyy.MM.dd")}
+                      </IonText>
+                      <br />
                       <IonText>
-                        Arrival {DateTime.fromISO(i.arriveTime!).day}
+                        Arriving on{" "}
+                        {DateTime.fromISO(i.arriveTime!).toFormat("yyyy.MM.dd")}
                       </IonText>
                     </>
                   </IonLabel>

@@ -1,6 +1,6 @@
 import * as llmPrompts from "./llmPrePrompt";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { appConfig } from "../data";
+import { appConfig } from "../config";
 import {
   PerplexityApiRes,
   PerplexityApiReq,

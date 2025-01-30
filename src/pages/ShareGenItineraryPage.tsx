@@ -1,6 +1,5 @@
 import {
   IonBackButton,
-  IonButton,
   IonButtons,
   IonCard,
   IonCardContent,
@@ -10,23 +9,25 @@ import {
   IonContent,
   IonDatetime,
   IonHeader,
-  IonIcon,
   IonItem,
   IonLabel,
   IonList,
   IonListHeader,
-  IonLoading,
   IonNote,
   IonText,
-  IonThumbnail,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { Attendee, FlightPlan, TravelEvent } from "../types";
-import { useCallback, useEffect, useState } from "react";
-import { useLlmApiContext } from "../context/LlmApiContext";
-import * as services from "../services";
 import { DateTime, Interval } from "luxon";
+// import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Autoplay, Keyboard, Pagination } from 'swiper/modules';
+// import { IonicSlides } from '@ionic/react';
+// import 'swiper/css';
+// import 'swiper/css/autoplay';
+// import 'swiper/css/keyboard';
+// import 'swiper/css/pagination';
+// import '@ionic/react/css/ionic-swiper.css';
 
 interface ShareGenItineraryPageProps {
   selectedEvent: TravelEvent;
@@ -89,16 +90,16 @@ const ShareGenItineraryPage: React.FC<ShareGenItineraryPageProps> = (props) => {
                   highlightedDates={travelDates}
                 ></IonDatetime>
                 <IonList>
-                    <IonListHeader>Flight Options</IonListHeader>
+                  <IonListHeader>Flight Options</IonListHeader>
                   {getFlightItinerary(attendee.id).map((flight) => {
                     return (
                       <IonItem key={crypto.randomUUID()}>
                         <IonLabel>
                           <strong>{flight.name}</strong>
                           <br />
-                          <IonText>Airline: {flight.airline}</IonText>
+                          <IonText>Airport: {flight.arrivingLocation}</IonText>
                           <br />
-                          <IonText>Flight No.: {flight.flightNo}</IonText>
+                          <IonText>Airline: {flight.airline}</IonText>
                           <br />
                           <a
                             target="_blank"
@@ -110,11 +111,10 @@ const ShareGenItineraryPage: React.FC<ShareGenItineraryPageProps> = (props) => {
 
                           <br />
                           <IonNote color="medium" className="ion-text-wrap">
-                            Departing from {flight.departLocation} and arriving
-                            at {flight.arrivingLocation}
+                            Departing from <em>{flight.departLocation}</em> and arriving
+                            at <em>{flight.arrivingLocation}</em>
                           </IonNote>
                         </IonLabel>
-                        {/* <IonLabel>{flight.name}</IonLabel> */}
                       </IonItem>
                     );
                   })}

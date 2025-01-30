@@ -26,7 +26,7 @@ import {
   appConfig,
   supportedEventTypes,
   supportedEventLocations,
-} from "../data";
+} from "../config";
 import SelectAttendeesPage from "./SelectAttendeesPage";
 import { useLlmApiContext } from "../context/LlmApiContext";
 

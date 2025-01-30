@@ -1,12 +1,9 @@
 import React, {
-  useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
 } from "react";
 import * as services from "../services";
-import { appConfig } from "../data";
+import { appConfig } from "../config";
 import { AxiosInstance } from "axios";
 
 interface LlmApiContextType {

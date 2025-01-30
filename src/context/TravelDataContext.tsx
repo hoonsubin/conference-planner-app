@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { TravelEvent, Attendee } from "../types";
 import * as utils from "../utils";
-import { appConfig } from "../data";
+import { appConfig } from "../config";
 
 interface TravelDataContextType {
   attendees: Attendee[];

@@ -12,19 +12,16 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
-  IonInput,
   useIonModal,
   IonFab,
   IonFabButton,
   IonList,
   IonListHeader,
-  IonAccordionGroup,
-  IonAccordion,
 } from "@ionic/react";
 import { person, add } from "ionicons/icons";
 import { useTravelEventContext } from "../context/TravelDataContext";
 import ManageAttendeeModal from "../components/ManageAttendeeModal";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { TravelEvent, Attendee } from "../types";
 import { DateTime } from "luxon";
@@ -171,10 +168,16 @@ const SelectAttendeesPage: React.FC<SelectAttendeesPageProp> = (props) => {
                           <>
                             <br />
                             <IonText>
-                              Departing on {DateTime.fromISO(i.departTime!).day}
+                              Departing on{" "}
+                              {DateTime.fromISO(i.departTime!).toFormat(
+                                "yyyy.MM.dd"
+                              )}
                             </IonText>{" "}
                             <IonText>
-                              Arrival {DateTime.fromISO(i.arriveTime!).day}
+                              Arrival{" "}
+                              {DateTime.fromISO(i.arriveTime!).toFormat(
+                                "yyyy.MM.dd"
+                              )}
                             </IonText>
                           </>
                         )}

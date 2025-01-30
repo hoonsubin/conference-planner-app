@@ -1,9 +1,7 @@
-import { Attendee } from "../types";
-
 export const appConfig = {
   perplexityApi: "", // only for testing. Do not commit
   perplexityEndpoint: "https://api.perplexity.ai",
-  perplexityModel: "llama-3.1-sonar-large-128k-online",
+  perplexityModel: "sonar-pro",
   attendeeListSaveKey: "ATT",
   eventListSaveKey: "EV"
 };
