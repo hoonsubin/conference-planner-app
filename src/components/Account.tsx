@@ -7,33 +7,39 @@ import {
     IonLabel,
     IonNote,
     IonFooter,
-    useIonActionSheet,
-    IonButtons,
-    IonModal,
-    IonTitle,
-    IonToolbar,
-    IonInput,
-    IonTextarea,
   } from "@ionic/react";
 import { Attendee, TravelEvent } from "../types";
 import { useEffect, useRef, useState } from "react";
+import { useTravelEventContext } from "../context/TravelDataContext";
+import AddAttendeeModal from "./AddAttendeeModal";
+import { useHistory } from "react-router-dom";
 
 
 interface AccountProps {
-    adminAttendee: Attendee;
-    attendees: Attendee[];
 }
 
-const Account: React.FC<AccountProps> = ({ adminAttendee, attendees }) => {
+const Account: React.FC<AccountProps> = ({ }) => {
 
-    const modal = useRef<HTMLIonModalElement>(null);
+    const history = useHistory();
+    const addAttendeeModal = useRef<HTMLIonModalElement>(null);
     const page = useRef(null);
-    const [presentingElement, setPresentingElement] = useState<HTMLElement | null>(null);
+    const [addAttendeeModalPresent, setAddAttendeePresent] = useState<HTMLElement | null>(null);
+    const { attendees, addAttendee, getAttendee } = useTravelEventContext();
+    const [newAttendee, setNewAttendee] = useState<Attendee>({
+        id: "",
+        name: "",
+        email: "",
+        homeCity: {
+            cityName: "",
+            countryName: ""
+        }
+    });
     useEffect(() => {
-        setPresentingElement(page.current);
+        setAddAttendeePresent(page.current);
     }, []);
-    function dismiss() {
-        modal.current?.dismiss();
+    function dismissAddAttendeeModal() {
+        addAttendee(newAttendee);
+        addAttendeeModal.current?.dismiss();
     }
 
 return (
@@ -42,21 +48,51 @@ return (
         <h3>Personal Information</h3>
         </IonHeader>
         <IonList>
-            <IonItem button={true} id="open-modal">
-                <IonLabel>Name</IonLabel>
-                <IonNote slot="end">{adminAttendee.name}</IonNote>
+            <IonItem 
+                button={true} 
+                onClick={
+                    (e) => {
+                        e.preventDefault();
+                        history.push({
+                            pathname: `/edit`, 
+                            state: { type: "Name", value: attendees[0]?.name}
+                        });
+                    }
+                }>
+            <IonLabel>Name</IonLabel>
+            <IonNote slot="end">{attendees[0]?.name}</IonNote>
             </IonItem>
-            <IonItem button={true}>
-                <IonLabel>Email</IonLabel>
-                <IonNote slot="end">{adminAttendee.email}</IonNote>
+            <IonItem 
+                button={true} 
+                onClick={
+                    (e) => {
+                        e.preventDefault();
+                        history.push({
+                            pathname: `/account/edit`, 
+                            state: { type: "Email", value: attendees[0]?.email}
+                        });
+                    }
+                }>
+            <IonLabel>Email</IonLabel>
+            <IonNote slot="end">{attendees[0]?.email}</IonNote>
             </IonItem>
             <IonItem button={true}>
                 <IonLabel>Your role</IonLabel>
                 <IonNote slot="end">Admin</IonNote>
             </IonItem>
-            <IonItem button={true}>
-                <IonLabel>Home city</IonLabel>
-                <IonNote slot="end">{adminAttendee.homeCity.cityName}, {adminAttendee.homeCity.countryName}</IonNote>
+            <IonItem 
+                button={true} 
+                onClick={
+                    (e) => {
+                        e.preventDefault();
+                        history.push({
+                            pathname: `/account/edit`, 
+                            state: { type: "Home city", value: attendees[0]?.homeCity.cityName}
+                        });
+                    }
+                }>
+            <IonLabel>Home city</IonLabel>
+            <IonNote slot="end">{attendees[0]?.homeCity.cityName}, {attendees[0]?.homeCity.countryName}</IonNote>
             </IonItem>
         </IonList>
         <IonHeader class="ion-padding ion-padding-top">
@@ -65,41 +101,24 @@ return (
         </IonHeader>
         <IonList>
             {attendees.map((attendee) => (
-                <IonItem button={true}>
+                <IonItem key={attendee.id} button={true}>
                     <IonLabel>{attendee.name}</IonLabel>
                     <IonNote slot="end">{attendee.homeCity.cityName}, {attendee.homeCity.countryName}</IonNote>
                 </IonItem>
             ))}
         </IonList>
+        <AddAttendeeModal
+            newAttendee={newAttendee} 
+            setNewAttendee={setNewAttendee} 
+            modal={addAttendeeModal} 
+            presentingElement={addAttendeeModalPresent}
+            dismiss={() => dismissAddAttendeeModal()}
+        ></AddAttendeeModal>
         <IonFooter class="ion-padding ion-padding-vertical">
-            <IonButton expand="block" routerLink="/account/add-employee">
+            <IonButton expand="block" id="open-modal">
                 <IonLabel>Add employee</IonLabel>
             </IonButton>
         </IonFooter>
-
-        {/* Modal */}
-        <IonModal ref={modal} trigger="open-modal" canDismiss={true} presentingElement={presentingElement!} initialBreakpoint={0.5} breakpoints={[0, 0.25, 0.5, 0.75]} backdropDismiss={true}>
-          <IonContent className="ion-padding">
-            <h2>Name</h2>
-            <br></br>
-            <IonInput 
-                label="Your name"
-                labelPlacement="floating"
-                clearInput={true}
-                placeholder="Your name"
-                value={adminAttendee.name}
-                fill="outline"
-                className="ion-padding-top">
-            </IonInput>
-            <br></br>
-            <IonButton
-                onClick={dismiss} 
-                expand="block" 
-                className="ion-padding-top">
-                Save
-            </IonButton>
-          </IonContent>
-        </IonModal>
     </IonContent>
 );
 };

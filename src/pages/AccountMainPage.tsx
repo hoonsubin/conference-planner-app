@@ -16,30 +16,7 @@ const AccountMainPage: React.FC = () => {
             <IonTitle size="large">Account</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <Account 
-        adminAttendee={
-            {
-                id: "1",
-                name: "John Doe",
-                email: "john.doe@company.com",
-                homeCity: { cityName: "New York", countryName: "USA" },
-            }}
-        attendees=
-            {[
-                {
-                    id: "2",
-                    name: "Jane Doe",
-                    email: "",
-                    homeCity: { cityName: "Los Angeles", countryName: "USA" },
-                },
-                {
-                    id: "3",
-                    name: "Jim Doe",
-                    email: "",
-                    homeCity: { cityName: "Chicago", countryName: "USA" },
-                },
-            ]}
-        ></Account>
+        <Account/>
       </IonContent>
     </IonPage>
   );

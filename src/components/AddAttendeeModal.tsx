@@ -76,6 +76,7 @@ class AddAttendeeModal extends React.Component<AddAttendeeModalProps> {
                     <br></br>
                     <IonButton onClick={
                         () => {
+                            console.log("new attendee", this.props.newAttendee);
                             this.props.dismiss();
                         }
                     } expand="block" className="ion-padding-top">
