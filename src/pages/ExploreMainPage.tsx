@@ -29,6 +29,7 @@ import {
 } from "../config";
 import SelectAttendeesPage from "./SelectAttendeesPage";
 import { useLlmApiContext } from "../context/LlmApiContext";
+import EventSearch from "../components/EventSearch";
 
 const ExploreMainPage: React.FC = () => {
   const [eventList, setEventList] = useState<TravelEvent[]>([]);
@@ -114,139 +115,18 @@ const ExploreMainPage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Explore</IonTitle>
-        </IonToolbar>
+          <IonToolbar>
+              <IonTitle>Search Events</IonTitle>
+          </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Explore</IonTitle>
+            <IonTitle size="large">Search events</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <div>
-          <IonLoading
-            message="Fetching data..."
-            spinner="circles"
-            isOpen={isLoading}
-          />
-          <IonCard>
-            <IonCardContent>
-              <IonList>
-                <IonItem>
-                  <IonSelect
-                    label="Conference Category"
-                    labelPlacement="floating"
-                    onIonChange={(e) => {
-                      setEventTypes(e.detail.value);
-                      console.log([e.detail.value]);
-                    }}
-                  >
-                    {supportedEventTypes.map((i) => {
-                      return (
-                        <IonSelectOption key={crypto.randomUUID()} value={i}>
-                          {i}
-                        </IonSelectOption>
-                      );
-                    })}
-                  </IonSelect>
-                </IonItem>
-                {isUsingCustomTag && (
-                  <IonItem>
-                    <IonInput
-                      label="Custom Conference"
-                      labelPlacement="stacked"
-                      placeholder="Enter conference type"
-                      onIonChange={(e) => setCustomTag(e.detail.value || "")}
-                    ></IonInput>
-                  </IonItem>
-                )}
-
-                <IonItem>
-                  <IonSelect
-                    label="Event Location"
-                    labelPlacement="floating"
-                    onIonChange={(e) => {
-                      setHostLoc(e.detail.value);
-                    }}
-                  >
-                    {supportedEventLocations.map((i) => {
-                      return (
-                        <IonSelectOption key={crypto.randomUUID()} value={i}>
-                          {i}
-                        </IonSelectOption>
-                      );
-                    })}
-                  </IonSelect>
-                </IonItem>
-                {isUsingCustomLoc && (
-                  <IonItem>
-                    <IonInput
-                      label="Custom Location"
-                      labelPlacement="stacked"
-                      placeholder="Enter conference location"
-                      onIonChange={(e) =>
-                        setCustomHostLoc(e.detail.value || "")
-                      }
-                    ></IonInput>
-                  </IonItem>
-                )}
-
-                <IonItem>
-                  <IonButton
-                    slot="end"
-                    onClick={onClickFetchEvents}
-                    disabled={!canSearch}
-                    size="large"
-                  >
-                    Fetch events
-                  </IonButton>
-                </IonItem>
-              </IonList>
-            </IonCardContent>
-          </IonCard>
-
-          {eventList.length > 0 ? (
-            <IonList>
-              {eventList.map((i) => {
-                return (
-                  <IonItem key={crypto.randomUUID()}>
-                    <IonNavLink
-                      routerDirection="forward"
-                      component={() => (
-                        <SelectAttendeesPage selectedEvent={i} />
-                      )}
-                    >
-                      <IonCard className="interactive-card ion-activatable">
-                        <IonCardHeader>
-                          <IonCardTitle>{i.name}</IonCardTitle>
-                          <IonCardSubtitle>
-                            Starts from {i.eventStart.toString()} at{" "}
-                            {i.venueAddr}
-                          </IonCardSubtitle>
-                        </IonCardHeader>
-                        <IonCardContent>
-                          {i.description}
-                          <br />
-                          For more information, visit{" "}
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={i.eventLink}
-                          >
-                            {i.eventLink}
-                          </a>
-                        </IonCardContent>
-                      </IonCard>
-                    </IonNavLink>
-                  </IonItem>
-                );
-              })}
-            </IonList>
-          ) : (
-            <IonText>No Events</IonText>
-          )}
-        </div>
+        <EventSearch>
+        </EventSearch>
       </IonContent>
     </IonPage>
   );

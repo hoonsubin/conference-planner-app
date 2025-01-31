@@ -5,7 +5,6 @@ import App from "./App";
 const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
-  <React.StrictMode>
+  // removed the <React.StrictMode> tag
       <App />
-  </React.StrictMode>
 );

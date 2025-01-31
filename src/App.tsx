@@ -47,6 +47,13 @@ import "@ionic/react/css/palettes/dark.system.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/styles.css";
+import EventDetail from "./components/EventDetail";
+import EventSearch from "./components/EventSearch";
+import LocationSearch from "./components/LocationSearch";
+import EventResults from "./components/EventResults";
+import CreateJourney from "./components/CreateJourney";
+import Itinerary from "./components/Itinerary";
+import EditDetails from "./components/EditDetails";
 
 setupIonicReact();
 
@@ -60,12 +67,21 @@ const App: React.FC = () => (
               <Route exact path="/upcoming">
                 <UpcomingTab />
               </Route>
+              <Route exact path="/upcoming/events/:id" component={EventDetail} />
               <Route exact path="/explore">
                 <ExploreTab />
               </Route>
+              {/* <Route path="/explore" component={EventSearch} /> */}
+              <Route exact path="/explore/location" component={LocationSearch} />
+              <Route exact path="/explore/events" component={EventResults} />
+              <Route exact path="/explore/event-detail" component={EventDetail} />
+              <Route exact path="/explore/journey" component={CreateJourney} />
+              <Route exact path="/explore/itinerary" component={Itinerary} />
+              {/* <Route path="/explore/journey/:id/budget" component={} /> */}
               <Route path="/account">
                 <AccountTab />
               </Route>
+              <Route exact path="/account/edit" component={EditDetails} />
               <Route exact path="/">
                 <Redirect to="/explore" />
               </Route>

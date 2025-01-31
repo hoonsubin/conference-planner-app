@@ -1,5 +1,5 @@
 export const appConfig = {
-  perplexityApi: "", // only for testing. Do not commit
+  perplexityApi: "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", // only for testing. Do not commit
   perplexityEndpoint: "https://api.perplexity.ai",
   perplexityModel: "sonar-pro",
   attendeeListSaveKey: "ATT",
