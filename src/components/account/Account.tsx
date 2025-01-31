@@ -7,11 +7,12 @@ import {
     IonLabel,
     IonNote,
     IonFooter,
+    IonChip,
   } from "@ionic/react";
-import { Attendee, TravelEvent } from "../types";
+import { Attendee, TravelEvent } from "../../types";
 import { useEffect, useRef, useState } from "react";
-import { useTravelEventContext } from "../context/TravelDataContext";
-import AddAttendeeModal from "./AddAttendeeModal";
+import { useTravelEventContext } from "../../context/TravelDataContext";
+import AddAttendeeModal from "../AddAttendeeModal";
 import { useHistory } from "react-router-dom";
 
 
@@ -36,6 +37,17 @@ const Account: React.FC<AccountProps> = ({ }) => {
     });
     useEffect(() => {
         setAddAttendeePresent(page.current);
+        if (attendees.length === 0) {
+            addAttendee({
+                id: "0",
+                name: "",
+                email: "",
+                homeCity: {
+                    cityName: "",
+                    countryName: ""
+                }
+            });
+        }
     }, []);
     function dismissAddAttendeeModal() {
         addAttendee(newAttendee);
@@ -54,8 +66,8 @@ return (
                     (e) => {
                         e.preventDefault();
                         history.push({
-                            pathname: `/edit`, 
-                            state: { type: "Name", value: attendees[0]?.name}
+                            pathname: `/edit-name`, 
+                            state: { attendee: attendees[0]}
                         });
                     }
                 }>
@@ -68,8 +80,8 @@ return (
                     (e) => {
                         e.preventDefault();
                         history.push({
-                            pathname: `/account/edit`, 
-                            state: { type: "Email", value: attendees[0]?.email}
+                            pathname: `/edit-email`, 
+                            state: { attendee: attendees[0]}
                         });
                     }
                 }>
@@ -86,13 +98,27 @@ return (
                     (e) => {
                         e.preventDefault();
                         history.push({
-                            pathname: `/account/edit`, 
-                            state: { type: "Home city", value: attendees[0]?.homeCity.cityName}
+                            pathname: `/edit-location`, 
+                            state: { attendee: attendees[0]}
                         });
                     }
                 }>
             <IonLabel>Home city</IonLabel>
-            <IonNote slot="end">{attendees[0]?.homeCity.cityName}, {attendees[0]?.homeCity.countryName}</IonNote>
+            <IonNote slot="end">{attendees[0]?.homeCity?.cityName}, {attendees[0]?.homeCity?.countryName}</IonNote>
+            </IonItem>
+            <IonItem 
+                button={true} 
+                onClick={
+                    (e) => {
+                        e.preventDefault();
+                        history.push({
+                            pathname: `/edit-budget`, 
+                            state: { attendee: attendees[0]}
+                        });
+                    }
+                }>
+            <IonLabel>Budget</IonLabel>
+            <IonNote slot="end">{attendees[0]?.maxBudget?.toString() + "€"}</IonNote>
             </IonItem>
         </IonList>
         <IonHeader class="ion-padding ion-padding-top">
@@ -102,17 +128,24 @@ return (
         <IonList>
             {attendees.map((attendee) => (
                 <IonItem key={attendee.id} button={true}>
-                    <IonLabel>{attendee.name}</IonLabel>
-                    <IonNote slot="end">{attendee.homeCity.cityName}, {attendee.homeCity.countryName}</IonNote>
+                    <IonLabel>
+                        {attendee.name}
+                        {" "}
+                        {
+                            attendee.id === "0" ?
+                            <IonChip color="primary">You</IonChip> : ""
+                        }
+                    </IonLabel>
+                    <IonNote slot="end">{attendee.homeCity?.cityName}, {attendee.homeCity?.countryName}</IonNote>
                 </IonItem>
             ))}
         </IonList>
         <AddAttendeeModal
             newAttendee={newAttendee} 
             setNewAttendee={setNewAttendee} 
-            modal={addAttendeeModal} 
+            modal={addAttendeeModal}
             presentingElement={addAttendeeModalPresent}
-            dismiss={() => dismissAddAttendeeModal()}
+            dismiss={dismissAddAttendeeModal}
         ></AddAttendeeModal>
         <IonFooter class="ion-padding ion-padding-vertical">
             <IonButton expand="block" id="open-modal">

@@ -10,18 +10,25 @@ import {
     IonBackButton,
     IonButtons,
   } from "@ionic/react";
-import { supportedEventLocations, supportedEventTypes } from "../data";
+import { supportedEventLocations, supportedEventTypes } from "../../data";
 import { useHistory, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { Attendee } from "../../types";
+import { useTravelEventContext } from "../../context/TravelDataContext";
 
-interface EditDetailsProps {
+interface EditNameProps {
     
 }
 
-const EditDetails: React.FC<EditDetailsProps> = ({ }) => {
+const EditName: React.FC<EditNameProps> = ({ }) => {
     const history = useHistory();
     const loc = useLocation();
-    const data = loc.state as { type: string, value: string };
+    const data = loc.state as { attendee: Attendee};
+    const [attendee, setAttendee] = useState<Attendee>(data?.attendee ?? "");
+    const { attendees, addAttendee, getAttendee } = useTravelEventContext();
+    function saveAttendee() {
+        addAttendee(attendee);
+    }
     
 return (
     <IonPage>
@@ -30,20 +37,21 @@ return (
             <IonButtons slot="start">
                 <IonBackButton></IonBackButton>
             </IonButtons>
-            <IonTitle>{data?.type}</IonTitle>
+            <IonTitle>Change name</IonTitle>
           </IonToolbar>
         </IonHeader>
         {
             data ?
             <IonContent className="ion-padding">
-            <h2>{data.type}</h2>
+            <h2>Edit your name</h2>
             <br></br>
             <IonInput 
-                label={data.type}
+                label="Name"
                 labelPlacement="floating"
                 clearInput={true}
-                placeholder={data.type}
-                value={data.value}
+                placeholder="Enter your name"
+                value={attendee?.name}
+                onIonInput={(e: any) => setAttendee({ ...attendee, name: e.target.value })}
                 fill="outline"
                 className="ion-padding-top">
             </IonInput>
@@ -51,6 +59,7 @@ return (
             <IonButton
                 onClick={
                     () => {
+                        saveAttendee();
                         history.goBack();
                     }
                 }
@@ -68,4 +77,4 @@ return (
 );
 };
 
-export default EditDetails;
+export default EditName;

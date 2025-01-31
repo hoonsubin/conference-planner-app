@@ -47,7 +47,7 @@ class AddAttendeeModal extends React.Component<AddAttendeeModalProps> {
                     <br></br>
                     <IonInput label="Country" labelPlacement="floating" clearInput={true} placeholder="Attendee country" value={this.props.newAttendee.homeCity.countryName} onIonInput={(e: any) => this.props.setNewAttendee({
                         ...this.props.newAttendee,
-                        homeCity: {
+                        homeCity: { 
                             ...this.props.newAttendee.homeCity,
                             countryName: e.target.value
                         }
@@ -80,7 +80,7 @@ class AddAttendeeModal extends React.Component<AddAttendeeModalProps> {
                             this.props.dismiss();
                         }
                     } expand="block" className="ion-padding-top">
-                        Add attendee
+                        {this.props.newAttendee.id ? "Save" : "Add attendee"}
                     </IonButton>
                 </IonContent>
             </IonModal>

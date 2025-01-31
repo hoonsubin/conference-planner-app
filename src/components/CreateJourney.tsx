@@ -32,6 +32,7 @@ import dummyData from "../config/dummyData";
 import { logoEuro, logoUsd } from "ionicons/icons";
 import React from "react";
 import AddAttendeeModal from "./AddAttendeeModal";
+import { useTravelEventContext } from "../context/TravelDataContext";
 
 
 interface CreateJourneyProps extends RouteComponentProps<{}> {
@@ -44,7 +45,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
     const loc = useLocation();
     const data = loc.state as { event: TravelEvent };
     const event = data.event;
-    const [attendees, setAttendees] = useState<Attendee[]>([]);
+    const { attendees, addAttendee, getAttendee } = useTravelEventContext();
     const [selectedAttendees, setSelectedAttendees] = useState<Attendee[]>([]);
     const [locations] = useState(supportedEventLocations);
     const [searchQuery, setSearchQuery] = useState("");
@@ -72,7 +73,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
     function dismiss() {
         setNewAttendee({ ...newAttendee, id: attendees.length.toString() });
         console.log("newAttendee", newAttendee);
-        setAttendees([...attendees, newAttendee]);
+        addAttendee(newAttendee);
         // clear newAttendee
         setNewAttendee({
             id: "",

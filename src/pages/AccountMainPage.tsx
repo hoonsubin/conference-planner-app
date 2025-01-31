@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
-import Account from '../components/Account';
+import Account from '../components/account/Account';
 
 const AccountMainPage: React.FC = () => {
   return (
