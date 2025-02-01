@@ -4,8 +4,10 @@ import { appConfig } from "../config";
 import {
   PerplexityApiRes,
   PerplexityApiReq,
-  TravelEvent,
+  ConferenceEvent,
   Attendee,
+  Location,
+  FlightItinerary,
 } from "../types";
 import stripJsonComments from "strip-json-comments";
 import { DateTime } from "luxon";
@@ -23,96 +25,81 @@ export const perplexityApiInst = (apiKey: string) => {
   return apiInst;
 };
 
-export const fetchFlightPath = async (
+export const fetchFlightSchedule = async (
   api: AxiosInstance,
-  conference: TravelEvent,
-  attendees: Attendee[]
+  conference: ConferenceEvent,
+  attendee: Attendee,
+  flightArrivalTime?: DateTime // defaults to the conference start day if none
 ) => {
-  const promps: PerplexityApiReq[] = attendees.map((i) => {
-    const departCity = `${i.homeCity.cityName}, ${i.homeCity.countryName}`;
+  const arrivalTime = flightArrivalTime || conference.eventStartDate;
 
-    // create a prompt for the LLM
-    const newReq: PerplexityApiReq = {
-      model: appConfig.perplexityModel,
-      messages: [
-        {
-          role: "system",
-          content: llmPrompts.systemPrompt,
-        },
-        {
-          role: "user",
-          content: llmPrompts.getBestPathPrompt(
-            conference.venueAddr,
-            departCity,
-            DateTime.fromISO(i.arriveTime!)
-          ),
-        },
-      ],
-      temperature: 0,
-    };
-    return newReq;
-  });
+  const newReq = llmPrompts.fetchFlightsApiPayload(
+    conference.venueAddress,
+    attendee.departLocation,
+    arrivalTime
+  );
 
-  const flightsPromise = promps.map(async (i, index) => {
-    const currentAttendeeId = attendees[index].id;
+  try {
+    // todo: handle timeout errors or when the AI cannot find any results
+    // send the prompts to the LLM API
+    const res: AxiosResponse<PerplexityApiRes> = await api.post(
+      "/chat/completions",
+      newReq
+    );
 
-    try {
-      // todo: handle timeout errors or when the AI cannot find any results
-      // send the prompts to the LLM API
-      const res: AxiosResponse<PerplexityApiRes> = await api.post(
-        "/chat/completions",
-        i
+    const resData = res.data;
+
+    if (resData) {
+      console.log(resData.choices[0].message.content);
+
+      // clean the response to be a proper JSON string
+      const cleanJsonString = stripJsonComments(
+        resData.choices[0].message.content
+          .replaceAll("```", "")
+          .replaceAll("json", "")
+          .replaceAll("\n", "")
       );
 
-      const resData = res.data;
+      console.log(cleanJsonString);
 
-      if (resData) {
-        //console.log(resData);
+      const transportOptionObj: llmPrompts.FetchedTransportListType[] =
+        JSON.parse(cleanJsonString);
 
-        console.log(resData.choices[0].message.content);
-
-        // clean the response to be a proper JSON string
-        const cleanJsonString = stripJsonComments(
-          resData.choices[0].message.content
-            .replaceAll("```", "")
-            .replaceAll("json", "")
-            .replaceAll("\n", "")
-        );
-
-        console.log(cleanJsonString);
-
-        const transportOptionObj: llmPrompts.FetchedTransportListType[] =
-          JSON.parse(cleanJsonString);
-
-        //return transportOptionObj;
-        return transportOptionObj.map((i) => {
-          return {
-            ...i,
-            attendeeId: currentAttendeeId,
-          };
-        });
-      } else {
-        throw new Error(
-          "Error with the response. Status: " + res.status.toString()
-        );
-      }
-    } catch (err) {
-      // todo: retry the API call if the result was not desirable.
-      console.error(err);
-
-      return [];
+      //return transportOptionObj;
+      return transportOptionObj.map((i) => {
+        return {
+          id: crypto.randomUUID(),
+          flightNo: i.flightNo,
+          airline: i.airline,
+          bookingLink: i.bookingLink,
+          departAddress: {
+            //todo: fix these
+            city: i.departLocation,
+          },
+          arrivalAddress: {
+            city: i.arrivingLocation,
+          },
+          departTime: DateTime.fromISO(i.departDate),
+          arrivalTime: DateTime.fromISO(i.arrivalDate),
+        };
+      }) as FlightItinerary[];
+    } else {
+      throw new Error(
+        "Error with the response. Status: " + res.status.toString()
+      );
     }
-  });
+  } catch (err) {
+    // todo: retry the API call if the result was not desirable.
+    console.error(err);
 
-  const resolvedRes = Promise.all(flightsPromise);
-
-  return (await resolvedRes).flat();
+    return [];
+  }
 };
 
 export const fetchConferenceList = async (
   api: AxiosInstance,
   eventTags: string,
-  location: string,
+  location: Location,
   when: DateTime = DateTime.now()
 ) => {
   if (!eventTags) {
@@ -123,20 +110,7 @@ export const fetchConferenceList = async (
   }
 
   // create a prompt for the LLM
-  const newReq: PerplexityApiReq = {
-    model: appConfig.perplexityModel,
-    messages: [
-      {
-        role: "system",
-        content: llmPrompts.systemPrompt,
-      },
-      {
-        role: "user",
-        content: llmPrompts.getEventListPrompt(eventTags, location, when),
-      },
-    ],
-    temperature: 0,
-  };
+  const newReq = llmPrompts.fetchEventsApiPayload(eventTags, location, when);
 
   try {
     // todo: handle timeout errors or when the AI cannot find any results
@@ -164,7 +138,7 @@ export const fetchConferenceList = async (
       const eventObj: llmPrompts.FetchedEventListType[] =
         JSON.parse(cleanJsonString);
 
-      // although we can easily modify FetchedEventListType to look like TravelEvent,
+      // although we can easily modify FetchedEventListType to look like Event,
       return eventObj.map((i) => {
         return {
           id: crypto.randomUUID(),
@@ -178,7 +152,7 @@ export const fetchConferenceList = async (
           eventEnd: i.endDate.match("TB")
             ? DateTime.fromISO(i.endDate)
             : i.startDate,
-        } as TravelEvent;
+        } as unknown as ConferenceEvent; // todo: fix this
       });
     } else {
       throw new Error(

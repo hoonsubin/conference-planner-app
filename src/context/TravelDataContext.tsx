@@ -1,26 +1,28 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { TravelEvent, Attendee } from "../types";
+import { ConferenceEvent, Attendee, FlightItinerary, AttendeeItinerary } from "../types";
 import * as utils from "../utils";
 import { appConfig } from "../config";
 
 interface TravelDataContextType {
   attendees: Attendee[];
-  travelEvents: TravelEvent[];
+  conferenceEvents: ConferenceEvent[];
   addAttendee: (newAttendee: Attendee) => void;
   removeAttendee: (attendeeToRemove: Attendee) => void;
   getAttendee: (attendeeId: string) => Attendee | null;
-  addTravelEvent: (newEvent: TravelEvent) => void;
-  removeTravelEvent: (eventToRemove: TravelEvent) => void;
+  getAttendeeItinerary: (eventId: string) => AttendeeItinerary | null;
+  addConferenceEvent: (newEvent: ConferenceEvent) => void;
+  removeConferenceEvent: (eventToRemove: ConferenceEvent) => void;
 }
 
 const TravelDataContext = React.createContext<TravelDataContextType>({
   attendees: [],
-  travelEvents: [],
+  conferenceEvents: [],
   addAttendee: () => {},
   removeAttendee: () => {},
+  getAttendeeItinerary: () => null,
   getAttendee: () => null,
-  addTravelEvent: () => {},
-  removeTravelEvent: () => {},
+  addConferenceEvent: () => {},
+  removeConferenceEvent: () => {},
 });
 
 export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -30,7 +32,7 @@ export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [attendees, setAttendees] = useState<Attendee[]>(
     utils.loadListLocally(appConfig.attendeeListSaveKey) || []
   );
-  const [travelEvents, setTravelEvents] = useState<TravelEvent[]>(
+  const [conferenceEvents, setConferenceEvents] = useState<ConferenceEvent[]>(
     utils.loadListLocally(appConfig.eventListSaveKey) || []
   );
 
@@ -84,37 +86,39 @@ export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
     [attendees]
   );
 
-  const addTravelEvent = useCallback(
-    (newEvent: TravelEvent) => {
-      setTravelEvents([...travelEvents, newEvent]);
+  const addConferenceEvent = useCallback(
+    (newEvent: ConferenceEvent) => {
+      setConferenceEvents([...conferenceEvents, newEvent]);
     },
-    [travelEvents]
+    [conferenceEvents]
   );
 
-  const removeTravelEvent = useCallback(
-    (eventToRemove: TravelEvent) => {
-      setTravelEvents(travelEvents.filter((event) => event !== eventToRemove));
+  const removeConferenceEvent = useCallback(
+    (eventToRemove: ConferenceEvent) => {
+      setConferenceEvents(
+        conferenceEvents.filter((event) => event !== eventToRemove)
+      );
     },
-    [travelEvents]
+    [conferenceEvents]
   );
 
   useEffect(() => {
     attendees.length > 0 &&
       utils.saveListLocally(attendees, appConfig.attendeeListSaveKey);
-    travelEvents.length > 0 &&
-      utils.saveListLocally(travelEvents, appConfig.eventListSaveKey);
-  }, [attendees, travelEvents]);
+    conferenceEvents.length > 0 &&
+      utils.saveListLocally(conferenceEvents, appConfig.eventListSaveKey);
+  }, [attendees, conferenceEvents]);
 
   return (
     <TravelDataContext.Provider
       value={{
         attendees,
-        travelEvents,
+        conferenceEvents,
         addAttendee,
         removeAttendee,
         getAttendee,
-        addTravelEvent,
-        removeTravelEvent,
+        addConferenceEvent,
+        removeConferenceEvent,
       }}
     >
       {children}

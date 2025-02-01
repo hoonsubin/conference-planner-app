@@ -1,6 +1,9 @@
-import { DateTime } from "luxon";
+import type { DateTime } from "luxon";
+import type { Location, PerplexityApiReq } from "../types";
+import { appConfig } from "../config";
 
-export const systemPrompt = `Only output the JSON list data without other messages.
+// todo: refactor the prompts so it uses the formatted output based on a JSON schema
+const systemPrompt = `Only output the JSON list data without other messages.
 Find at least 10 items per topic for all requests. If there is no item, output an empty JSON array.
 If you could not find a value for a specific property, say 'TBA' except for URLs.
 Do not format the JSON string. This means never add "\`\`\`" or "\`\`\`json". `;
@@ -21,11 +24,13 @@ const eventListTypeDescriptor = {
 
 export type FetchedEventListType = typeof eventListTypeDescriptor;
 
-export const getEventListPrompt = (
+const getEventListPrompt = (
   confType: string,
-  confLoc: string,
+  confLoc: Location,
   startDate: DateTime
-) => `Create a list of conferences and events regarding ${confType} or other related topics near ${confLoc} from ${startDate.toISO()} and onwards.
+) => `Create a list of conferences and events regarding ${confType} or other related topics near ${
+  confLoc.country
+}, ${confLoc.city}, ${confLoc.fullAddr} from ${startDate.toISO()} and onwards.
 
 The output should be a JSON data with the following properties:
 ${JSON.stringify(eventListTypeDescriptor)}
@@ -48,13 +53,65 @@ const transportListTypeDescriptor = {
 
 export type FetchedTransportListType = typeof transportListTypeDescriptor;
 
-export const getBestPathPrompt = (
-  confLoc: string,
-  startLoc: string,
+const getBestPathPrompt = (
+  confLoc: Location,
+  startLoc: Location,
   startDate: DateTime
-) => `I want to travel to ${confLoc} from ${startLoc} on ${startDate.toISO()}.
-Search for all flight options departing from ${startLoc} around ${startDate.toISO()} or other the closest time as a JSON file.
+) => `I want to travel to ${confLoc.country}, ${confLoc.city}, ${
+  confLoc.fullAddr
+} from ${startLoc.country}, ${startLoc.city}, ${
+  startLoc.fullAddr
+} on ${startDate.toISO()}.
+Search for all flight options departing from ${startLoc.country}, ${
+  startLoc.city
+}, ${
+  startLoc.fullAddr
+} around ${startDate.toISO()} or other the closest time as a JSON file.
 
 The output should be a JSON data with the following properties:
 ${JSON.stringify(transportListTypeDescriptor)}
 `;
+
+export const fetchEventsApiPayload = (
+  eventTags: string,
+  location: Location,
+  when: DateTime
+) => {
+  return {
+    model: appConfig.perplexityModel,
+    messages: [
+      {
+        role: "system",
+        content: systemPrompt,
+      },
+      {
+        role: "user",
+        content: getEventListPrompt(eventTags, location, when),
+      },
+    ],
+    max_tokens: 320,
+    temperature: 0.1,
+  } as PerplexityApiReq;
+};
+
+export const fetchFlightsApiPayload = (
+  eventAddress: Location,
+  departLocation: Location,
+  arrivalTime: DateTime
+) => {
+  return {
+    model: appConfig.perplexityModel,
+    messages: [
+      {
+        role: "system",
+        content: systemPrompt,
+      },
+      {
+        role: "user",
+        content: getBestPathPrompt(eventAddress, departLocation, arrivalTime),
+      },
+    ],
+    max_tokens: 320,
+    temperature: 0.1,
+  } as PerplexityApiReq;
+};

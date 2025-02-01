@@ -1,5 +1,5 @@
-const perplexityApi = import.meta.env.VITE_PERPLEXITY_API_KEY;
-const gmapApi = import.meta.env.VITE_GMAPS_API_KEY;
+const perplexityApi: string = import.meta.env.VITE_PERPLEXITY_API_KEY;
+const gmapApi: string = import.meta.env.VITE_GMAPS_API_KEY;
 
 export const appConfig = {
   perplexityApi: perplexityApi,
