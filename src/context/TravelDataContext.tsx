@@ -247,7 +247,17 @@ export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
 
       setAttendeeItinerary([...allAttendeeItinerary, itineraryToAdd]);
     },
-    [allAttendeeItinerary, getAttendee, addNewAttendee]
+    [
+      allAttendeeItinerary,
+      savedFlights,
+      setAttendeeItinerary,
+      getAttendee,
+      addNewAttendee,
+      getConferenceEvent,
+      saveConferenceEvent,
+      getFlightItinerary,
+      setSavedFlights,
+    ]
   );
 
   // ===background state updates and clean ups===
