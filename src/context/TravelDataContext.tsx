@@ -176,29 +176,28 @@ export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   // ===adder functions===
-  const addNewAttendee = (newAttendee: Attendee) => {
-    setAttendees((currentAttendees) => {
-      const existingAttendeeIndex = currentAttendees.findIndex(
-        (attendee) => attendee.id === newAttendee.id
-      );
-
-      // Update existing attendee if the ID exists
-      if (existingAttendeeIndex !== -1) {
-        const updatedAttendees = [...currentAttendees];
-        updatedAttendees[existingAttendeeIndex] = {
-          ...currentAttendees[existingAttendeeIndex],
-          ...newAttendee,
-        };
-        return updatedAttendees;
+  const addNewAttendee = useCallback(
+    (newAttendee: Attendee) => {
+      if (!!getAttendee(newAttendee.id)) {
+        console.warn(
+          `Attendee ${newAttendee.name} (ID: ${newAttendee.id}) already exists.`
+        );
+        return;
       }
 
-      // Add new attendee
-      return [...currentAttendees, newAttendee];
-    });
-  };
+      setAttendees([...allAttendees, newAttendee]);
+    },
+    [allAttendees]
+  );
 
   const saveConferenceEvent = useCallback(
     (newEvent: ConferenceEvent) => {
+      if (!!getConferenceEvent(newEvent.id)) {
+        console.warn(
+          `Conference ${newEvent.name} (ID: ${newEvent.id}) already exists.`
+        );
+        return;
+      }
       setSavedConferenceEvents([...savedConferenceEvents, newEvent]);
     },
     [savedConferenceEvents]
