@@ -55,5 +55,5 @@ export interface SavedItinerary {
 export interface Location {
   city: string;
   country: string;
-  fullAddr: string;
+  fullAddr: string; // street address
 }

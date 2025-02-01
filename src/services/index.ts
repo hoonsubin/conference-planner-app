@@ -74,13 +74,17 @@ export const fetchFlightSchedule = async (
           bookingLink: i.bookingLink,
           departAddress: {
             //todo: fix these
-            city: i.departLocation,
+            city: i.deportAddressCity,
+            country: i.deportAddressCountry,
+            fullAddr: i.deportAddressStreet,
           },
           arrivalAddress: {
-            city: i.arrivingLocation,
+            city: i.arrivalAddressCity,
+            country: i.arrivalAddressCountry,
+            fullAddr: i.arrivalAddressStreet,
           },
-          departTime: DateTime.fromISO(i.departDate),
-          arrivalTime: DateTime.fromISO(i.arrivalDate),
+          departTime: DateTime.fromISO(i.departTime),
+          arrivalTime: DateTime.fromISO(i.arrivalTime),
         };
       }) as FlightItinerary[];
     } else {
@@ -143,16 +147,21 @@ export const fetchConferenceList = async (
         return {
           id: crypto.randomUUID(),
           name: i.name,
-          description: i.description,
-          venueAddr: i.venueLocation,
-          eventLink: i.eventLink,
-          eventStart: i.startDate.match("TB")
-            ? DateTime.fromISO(i.startDate)
-            : i.startDate,
-          eventEnd: i.endDate.match("TB")
-            ? DateTime.fromISO(i.endDate)
-            : i.startDate,
-        } as unknown as ConferenceEvent; // todo: fix this
+          eventDescription: i.eventDescription,
+          venueAddress: {
+            city: i.venueAddressCity,
+            country: i.venueAddressCountry,
+            fullAddr: i.venueAddressStreet,
+          },
+          eventUrl: i.eventUrl,
+          eventStartDate: i.eventStartDate.match("TB")
+            ? DateTime.fromISO(i.eventStartDate)
+            : i.eventStartDate,
+          eventEndDate: i.eventEndDate.match("TB")
+            ? DateTime.fromISO(i.eventEndDate)
+            : i.eventStartDate,
+          thumbnail: i.thumbnail,
+        } as ConferenceEvent; // todo: fix this
       });
     } else {
       throw new Error(
