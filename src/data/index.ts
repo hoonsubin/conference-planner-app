@@ -15,7 +15,24 @@ export const supportedEventTypes = [
     "AI",
     "Investment",
     "Real-Estate",
-    "Custom Event"
+    "Health",
+    "Music",
+    "Sports",
+    "IoT",
+    "Virtual Reality",
+    "Augmented Reality",
+    "Education",
+    "Finance",
+    "Marketing",
+    "Science",
+    "Engineering",
+    "Literature",
+    "Art",
+    "Travel",
+    "Food",
+    "Fashion",
+    "Environment",
+    "Politics"
 ]
 
 export const supportedEventLocations = [
@@ -24,5 +41,21 @@ export const supportedEventLocations = [
     "Italy",
     "Japan",
     "Thailand",
-    "Custom Location"
+    "Australia",
+    "Canada",
+    "UK",
+    "France",
+    "Spain",
+    "Brazil",
+    "China",
+    "India",
+    "Russia",
+    "South Africa",
+    "Mexico",
+    "Argentina",
+    "Nigeria",
+    "Egypt",
+    "Saudi Arabia",
+    "UAE",
+    "Turkey",
 ]

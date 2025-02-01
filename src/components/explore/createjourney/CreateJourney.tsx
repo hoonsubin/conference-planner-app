@@ -22,17 +22,17 @@ import {
     IonRange,
     IonIcon,
 } from "@ionic/react";
-import { appConfig, supportedEventLocations, supportedEventTypes } from "../config";
+import { appConfig, supportedEventLocations, supportedEventTypes } from "../../../config";
 import { RouteComponentProps, useHistory, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { TravelEvent, Attendee } from "../types";
-import { loadListLocally } from "../utils";
+import { TravelEvent, Attendee } from "../../../types";
+import { loadListLocally } from "../../../utils";
 import { set } from "react-hook-form";
-import dummyData from "../config/dummyData";
+import dummyData from "../../../config/dummyData";
 import { logoEuro, logoUsd } from "ionicons/icons";
 import React from "react";
-import AddAttendeeModal from "./AddAttendeeModal";
-import { useTravelEventContext } from "../context/TravelDataContext";
+import AddAttendeeModal from "../../AddAttendeeModal";
+import { useTravelEventContext } from "../../../context/TravelDataContext";
 
 
 interface CreateJourneyProps extends RouteComponentProps<{}> {

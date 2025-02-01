@@ -29,7 +29,7 @@ import {
 } from "../config";
 import SelectAttendeesPage from "./SelectAttendeesPage";
 import { useLlmApiContext } from "../context/LlmApiContext";
-import EventSearch from "../components/EventSearch";
+import EventSearch from "../components/explore/eventsearch/EventSearch";
 
 const ExploreMainPage: React.FC = () => {
   const [eventList, setEventList] = useState<TravelEvent[]>([]);

@@ -19,16 +19,16 @@ import {
     IonButtons,
     IonIcon,
   } from "@ionic/react";
-import { TravelEvent } from "../types";
-import { useLlmApiContext } from "../context/LlmApiContext";
+import { TravelEvent } from "../../../types";
+import { useLlmApiContext } from "../../../context/LlmApiContext";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import * as utils from "../services";
+import * as utils from "../../../services";
 import { linkOutline, pinOutline, timeOutline} from "ionicons/icons";
 import Lottie from 'react-lottie';
-import animationData from '../../resources/lottie/loading-colorful.json';
-import CustomPopup from "./general/custompopup/CustomPopup";
-import EventCard from "./eventcard/EventCard";
+import animationData from '../../../../resources/lottie/loading-colorful.json';
+import CustomPopup from "../../general/custompopup/CustomPopup";
+import EventCard from "../../eventcard/EventCard";
 
 interface FetchEventsParams {
     event: string;
@@ -102,7 +102,7 @@ return (
                     <EventCard key={event.id} event={event} onClick={
                         () => history.push({
                             pathname: `/explore/event-detail`,
-                            state: { event: event }
+                            state: { event: event, isSaved: false }
                         })
                     } />
                 ))}

@@ -47,12 +47,11 @@ import "@ionic/react/css/palettes/dark.system.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/styles.css";
-import EventDetail from "./components/EventDetail";
-import EventSearch from "./components/EventSearch";
+import EventDetail from "./components/explore/eventdetail/EventDetail";
 import LocationSearch from "./components/LocationSearch";
-import EventResults from "./components/EventResults";
-import CreateJourney from "./components/CreateJourney";
-import Itinerary from "./components/Itinerary";
+import EventResults from "./components/explore/eventresults/EventResults";
+import CreateJourney from "./components/explore/createjourney/CreateJourney";
+import Itinerary from "./components/explore/itinerary/Itinerary";
 import EditName from "./components/account/EditName";
 import EditEmail from "./components/account/EditEmail";
 import EditLocation from "./components/account/EditLocation";
@@ -70,7 +69,7 @@ const App: React.FC = () => (
               <Route exact path="/upcoming">
                 <UpcomingTab />
               </Route>
-              <Route exact path="/upcoming/events/:id" component={EventDetail} />
+              <Route exact path="/upcoming/event/:id" component={EventDetail} />
               <Route exact path="/explore">
                 <ExploreTab />
               </Route>
