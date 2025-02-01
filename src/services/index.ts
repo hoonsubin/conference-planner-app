@@ -3,7 +3,6 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { appConfig } from "../config";
 import {
   PerplexityApiRes,
-  PerplexityApiReq,
   ConferenceEvent,
   Attendee,
   Location,

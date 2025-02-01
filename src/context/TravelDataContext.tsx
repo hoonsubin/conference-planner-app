@@ -9,6 +9,7 @@ interface TravelDataContextType {
   addAttendee: (newAttendee: Attendee) => void;
   removeAttendee: (attendeeToRemove: Attendee) => void;
   getAttendee: (attendeeId: string) => Attendee | null;
+  addAttendeeItinerary: (itineraryToAdd: AttendeeItinerary) => void;
   getAttendeeItinerary: (eventId: string) => AttendeeItinerary | null;
   addConferenceEvent: (newEvent: ConferenceEvent) => void;
   removeConferenceEvent: (eventToRemove: ConferenceEvent) => void;
@@ -21,6 +22,7 @@ const TravelDataContext = React.createContext<TravelDataContextType>({
   removeAttendee: () => {},
   getAttendeeItinerary: () => null,
   getAttendee: () => null,
+  addAttendeeItinerary: () => {},
   addConferenceEvent: () => {},
   removeConferenceEvent: () => {},
 });

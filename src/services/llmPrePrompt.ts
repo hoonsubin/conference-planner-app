@@ -41,10 +41,10 @@ ${JSON.stringify(eventListTypeDescriptor)}
 `;
 
 const transportListTypeDescriptor = {
-  name: "Booking provider",
-  flightNo: "Flight number",
-  airline: "The name of the airline company",
-  bookingLink: "Where to book it",
+  name: "The name of the booking website where the user can book this flight",
+  flightNo: "The flight number that will be used to search the current flight",
+  airline: "The name of the airline company for this flight",
+  bookingLink: "A URL string to the airplane booking site. This can be either the official website or a third-party booking website.",
   deportAddressCountry:
     "The name of the country where the deporting airport is in.",
   deportAddressCity: "The name of the city where the deporting airport is in.",
@@ -54,9 +54,9 @@ const transportListTypeDescriptor = {
   arrivalAddressCity: "The name of the city where the arrival airport is in.",
   arrivalAddressStreet: "The full street address of the arriving airport.",
   departTime:
-    "ISO standard time (year, month, day, time) of when I should depart",
+    "ISO standard time (year, month, day, time) of when the user should depart from the deporting country.",
   arrivalTime:
-    "ISO standard time (year, month, day, time) of when I will be arriving",
+    "ISO standard time (year, month, day, time) of when the user will be arriving at the destination airport.",
 };
 
 export type FetchedTransportListType = typeof transportListTypeDescriptor;
