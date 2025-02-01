@@ -12,7 +12,7 @@ import {
     IonInput,
     IonImg,
   } from "@ionic/react";
-import { supportedEventTypes } from "../../../data";
+import { supportedEventTypes } from "../../../config";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import "./EventSearch.css";

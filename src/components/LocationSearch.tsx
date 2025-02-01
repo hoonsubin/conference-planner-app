@@ -14,7 +14,7 @@ import {
     IonBackButton,
     IonButtons,
   } from "@ionic/react";
-import { supportedEventLocations, supportedEventTypes } from "../data";
+import { supportedEventLocations, supportedEventTypes } from "../config";
 import { useHistory, useLocation } from "react-router-dom";
 import { useState } from "react";
 
