@@ -1,8 +1,9 @@
-const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
+const perplexityApi = import.meta.env.VITE_PERPLEXITY_API_KEY;
+const gmapApi = import.meta.env.VITE_GMAPS_API_KEY;
 
 export const appConfig = {
-  perplexityApi: apiKey, // only for testing. Do not commit
-  mapsApi: "",
+  perplexityApi: perplexityApi,
+  mapsApi: gmapApi,
   perplexityEndpoint: "https://api.perplexity.ai",
   perplexityModel: "sonar-pro",
   attendeeListSaveKey: "ATT",
