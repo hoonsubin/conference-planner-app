@@ -1,5 +1,7 @@
+const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
+
 export const appConfig = {
-  perplexityApi: "", // only for testing. Do not commit
+  perplexityApi: apiKey, // only for testing. Do not commit
   mapsApi: "",
   perplexityEndpoint: "https://api.perplexity.ai",
   perplexityModel: "sonar-pro",
