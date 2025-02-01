@@ -1,46 +1,182 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { ConferenceEvent, Attendee, FlightItinerary, AttendeeItinerary } from "../types";
+import {
+  ConferenceEvent,
+  Attendee,
+  FlightItinerary,
+  AttendeeItinerary,
+  Budget,
+} from "../types";
 import * as utils from "../utils";
 import { appConfig } from "../config";
+import _ from "lodash";
 
 interface TravelDataContextType {
-  attendees: Attendee[];
-  conferenceEvents: ConferenceEvent[];
-  addAttendee: (newAttendee: Attendee) => void;
-  removeAttendee: (attendeeToRemove: Attendee) => void;
+  allAttendees: Attendee[];
+  savedConferenceEvents: ConferenceEvent[];
+  savedFlights: FlightItinerary[];
+  allAttendeeItinerary: AttendeeItinerary[];
+
+  addNewAttendee: (newAttendee: Attendee) => void;
+  saveConferenceEvent: (newEvent: ConferenceEvent) => void;
+  createNewAttendeeItinerary: (
+    eventToAttend: ConferenceEvent,
+    personAttending: Attendee,
+    flights: FlightItinerary[],
+    budget?: Budget
+  ) => void;
+
   getAttendee: (attendeeId: string) => Attendee | null;
-  addAttendeeItinerary: (itineraryToAdd: AttendeeItinerary) => void;
   getAttendeeItinerary: (eventId: string) => AttendeeItinerary | null;
-  addConferenceEvent: (newEvent: ConferenceEvent) => void;
-  removeConferenceEvent: (eventToRemove: ConferenceEvent) => void;
+  getFlightItinerary: (flightId: string) => FlightItinerary | null;
+  getConferenceEvent: (confId: string) => ConferenceEvent | null;
+
+  removeAttendee: (attendeeId: string) => void;
+  removeConferenceEvent: (confId: string) => void;
+  removeFlightItinerary: (flightId: string) => void;
 }
 
 const TravelDataContext = React.createContext<TravelDataContextType>({
-  attendees: [],
-  conferenceEvents: [],
-  addAttendee: () => {},
-  removeAttendee: () => {},
-  getAttendeeItinerary: () => null,
+  allAttendees: [],
+  savedConferenceEvents: [],
+  savedFlights: [],
+  allAttendeeItinerary: [],
+
+  addNewAttendee: () => {},
+  saveConferenceEvent: () => {},
+  createNewAttendeeItinerary: () => {},
+
   getAttendee: () => null,
-  addAttendeeItinerary: () => {},
-  addConferenceEvent: () => {},
+  getAttendeeItinerary: () => null,
+  getFlightItinerary: () => null,
+  getConferenceEvent: () => null,
+
+  removeAttendee: () => {},
   removeConferenceEvent: () => {},
+  removeFlightItinerary: () => {},
 });
 
 export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  // ===all state list===
   // todo: ensure that the first attendee is the current user profile
-  const [attendees, setAttendees] = useState<Attendee[]>(
+  const [allAttendees, setAttendees] = useState<Attendee[]>(
     utils.loadListLocally(appConfig.attendeeListSaveKey) || []
   );
-  const [conferenceEvents, setConferenceEvents] = useState<ConferenceEvent[]>(
-    utils.loadListLocally(appConfig.eventListSaveKey) || []
+
+  const [savedConferenceEvents, setSavedConferenceEvents] = useState<
+    ConferenceEvent[]
+  >(utils.loadListLocally(appConfig.eventListSaveKey) || []);
+
+  const [savedFlights, setSavedFlights] = useState<FlightItinerary[]>(
+    utils.loadListLocally(appConfig.savedFlightItineraryKey) || []
   );
 
-  const addAttendee = (newAttendee: Attendee) => {
-    //setAttendees([...attendees, newAttendee]);
+  const [allAttendeeItinerary, setAttendeeItinerary] = useState<
+    AttendeeItinerary[]
+  >(utils.loadListLocally(appConfig.attendeeItineraryListSaveKey) || []);
 
+  // ===getter functions===
+
+  const getAttendee = useCallback(
+    (attendeeId: string) => {
+      if (!attendeeId) {
+        return null;
+      }
+
+      const attendeeIndex = _.findIndex(
+        allAttendees,
+        (allAttendees) => allAttendees.id === attendeeId
+      );
+
+      if (attendeeIndex === -1) {
+        return null;
+      }
+      return allAttendees[attendeeIndex];
+    },
+    [allAttendees]
+  );
+
+  const getAttendeeItinerary = useCallback(
+    (eventId: string) => {
+      if (!eventId) {
+        return null;
+      }
+      const itineraryIndex = _.findIndex(
+        allAttendeeItinerary,
+        (i) => i.eventId === eventId
+      );
+
+      if (itineraryIndex === -1) {
+        return null;
+      }
+      return allAttendeeItinerary[itineraryIndex];
+    },
+    [allAttendeeItinerary]
+  );
+
+  const getFlightItinerary = useCallback(
+    (flightId: string) => {
+      if (!flightId) {
+        return null;
+      }
+
+      const flightIndex = _.findIndex(savedFlights, (i) => i.id === flightId);
+
+      if (flightIndex === -1) {
+        return null;
+      }
+      return savedFlights[flightIndex];
+    },
+    [savedFlights]
+  );
+
+  const getConferenceEvent = useCallback(
+    (confId: string) => {
+      if (!confId) {
+        return null;
+      }
+
+      const confIndex = _.findIndex(
+        savedConferenceEvents,
+        (i) => i.id === confId
+      );
+
+      if (confIndex === -1) {
+        return null;
+      }
+      return savedConferenceEvents[confIndex];
+    },
+    [savedConferenceEvents]
+  );
+
+  // ===remover functions===
+
+  const removeAttendee = useCallback(
+    (attendeeId: string) => {
+      setAttendees(_.remove(allAttendees, (i) => i.id === attendeeId));
+    },
+    [allAttendees]
+  );
+
+  const removeConferenceEvent = useCallback(
+    (confId: string) => {
+      setSavedConferenceEvents(
+        _.remove(savedConferenceEvents, (i) => i.id === confId)
+      );
+    },
+    [savedConferenceEvents]
+  );
+
+  const removeFlightItinerary = useCallback(
+    (flightId: string) => {
+      setSavedFlights(_.remove(savedFlights, (i) => i.id === flightId));
+    },
+    [savedFlights]
+  );
+
+  // ===adder functions===
+  const addNewAttendee = (newAttendee: Attendee) => {
     setAttendees((currentAttendees) => {
       const existingAttendeeIndex = currentAttendees.findIndex(
         (attendee) => attendee.id === newAttendee.id
@@ -61,66 +197,99 @@ export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
-  const removeAttendee = useCallback(
-    (attendeeToRemove: Attendee) => {
-      setAttendees(
-        attendees.filter((attendee) => attendee !== attendeeToRemove)
-      );
-    },
-    [attendees]
-  );
-
-  const getAttendee = useCallback(
-    (attendeeId: string) => {
-      if (!attendeeId) {
-        return null;
-      }
-
-      const attendeeIndex = attendees.findIndex(
-        (attendee) => attendee.id === attendeeId
-      );
-
-      if (attendeeIndex === -1) {
-        return null;
-      }
-      return attendees[attendeeIndex];
-    },
-    [attendees]
-  );
-
-  const addConferenceEvent = useCallback(
+  const saveConferenceEvent = useCallback(
     (newEvent: ConferenceEvent) => {
-      setConferenceEvents([...conferenceEvents, newEvent]);
+      setSavedConferenceEvents([...savedConferenceEvents, newEvent]);
     },
-    [conferenceEvents]
+    [savedConferenceEvents]
   );
 
-  const removeConferenceEvent = useCallback(
-    (eventToRemove: ConferenceEvent) => {
-      setConferenceEvents(
-        conferenceEvents.filter((event) => event !== eventToRemove)
-      );
+  const createNewAttendeeItinerary = useCallback(
+    (
+      eventToAttend: ConferenceEvent,
+      personAttending: Attendee,
+      flights: FlightItinerary[],
+      budget?: Budget
+    ) => {
+      // todo: check if the ref ID for all properties exist
+      // also, only save the flight object if it's part of an itinerary
+
+      if (!getAttendee(personAttending.id)) {
+        console.warn(
+          `Attendee ${personAttending.name} (ID: ${personAttending.id}) does not exist in the database. Saving them locally.`
+        );
+        addNewAttendee(personAttending);
+      }
+
+      if (!getConferenceEvent(eventToAttend.id)) {
+        console.warn(
+          `Conference ${eventToAttend.name} (ID: ${eventToAttend.id} does not exist in the database. Saving them locally.)`
+        );
+        saveConferenceEvent(eventToAttend);
+      }
+
+      const flightIds = _.map(flights, (i) => {
+        if (!getFlightItinerary(i.id)) {
+          console.log(
+            `Flight ${i.flightNo} (ID: ${i.id}) does not exist in the database. Saving them locally.`
+          );
+          setSavedFlights([...savedFlights, i]);
+        }
+        return i.id;
+      });
+
+      const itineraryToAdd: AttendeeItinerary = {
+        eventId: eventToAttend.id,
+        attendeeId: personAttending.id,
+        flightIds,
+        budget,
+      };
+
+      setAttendeeItinerary([...allAttendeeItinerary, itineraryToAdd]);
     },
-    [conferenceEvents]
+    [allAttendeeItinerary, getAttendee, addNewAttendee]
   );
 
+  // ===background state updates and clean ups===
+
+  // sync the active state data with the browser-saved data
   useEffect(() => {
-    attendees.length > 0 &&
-      utils.saveListLocally(attendees, appConfig.attendeeListSaveKey);
-    conferenceEvents.length > 0 &&
-      utils.saveListLocally(conferenceEvents, appConfig.eventListSaveKey);
-  }, [attendees, conferenceEvents]);
+    allAttendees.length > 0 &&
+      utils.saveListLocally(allAttendees, appConfig.attendeeListSaveKey);
+
+    savedConferenceEvents.length > 0 &&
+      utils.saveListLocally(savedConferenceEvents, appConfig.eventListSaveKey);
+
+    savedFlights.length > 0 &&
+      utils.saveListLocally(savedFlights, appConfig.savedFlightItineraryKey);
+
+    allAttendeeItinerary.length > 0 &&
+      utils.saveListLocally(
+        allAttendeeItinerary,
+        appConfig.attendeeItineraryListSaveKey
+      );
+  }, [allAttendees, savedConferenceEvents, savedFlights, allAttendeeItinerary]);
 
   return (
     <TravelDataContext.Provider
       value={{
-        attendees,
-        conferenceEvents,
-        addAttendee,
-        removeAttendee,
+        allAttendees,
+        savedConferenceEvents,
+        savedFlights,
+        allAttendeeItinerary,
+
+        addNewAttendee,
+        saveConferenceEvent,
+        createNewAttendeeItinerary,
+
         getAttendee,
-        addConferenceEvent,
+        getAttendeeItinerary,
+        getFlightItinerary,
+        getConferenceEvent,
+
+        removeAttendee,
         removeConferenceEvent,
+        removeFlightItinerary,
       }}
     >
       {children}

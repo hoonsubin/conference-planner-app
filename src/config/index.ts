@@ -7,7 +7,9 @@ export const appConfig = {
   perplexityEndpoint: "https://api.perplexity.ai",
   perplexityModel: "sonar-pro",
   attendeeListSaveKey: "ATT",
-  eventListSaveKey: "EV"
+  eventListSaveKey: "EV",
+  savedFlightItineraryKey: "FLIGHT",
+  attendeeItineraryListSaveKey: "ATTEVIT"
 };
 
 export const supportedEventTypes = [
