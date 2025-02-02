@@ -159,7 +159,7 @@ export const fetchConferenceList = async (
           eventEndDate: i.eventEndDate.match("TB")
             ? DateTime.fromISO(i.eventEndDate)
             : i.eventStartDate,
-          thumbnail: i.thumbnail,
+          //thumbnail: i.thumbnail,
         } as ConferenceEvent; // todo: fix this
       });
     } else {

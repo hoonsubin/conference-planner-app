@@ -5,18 +5,13 @@ export * from "./perplexityApi";
 export interface ConferenceEvent {
   id: string;
   name: string;
-  thumbnail: string; // assuming Image is another interface
+  thumbnail?: string; // assuming Image is another interface
   venueAddress: Location;
   eventStartDate: DateTime;
   eventEndDate?: DateTime;
   eventDescription: string;
   eventUrl: string;
 }
-
-type HomeCity = {
-  cityName: string;
-  countryName: string;
-};
 
 export interface Attendee {
   id: string;

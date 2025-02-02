@@ -4,26 +4,26 @@ import { appConfig } from "../config";
 
 const systemPrompt = `Only output the JSON list data without other messages.
 Find at least 10 items per topic for all requests. If there is no item, output an empty JSON array.
-If you could not find a value for a specific property, say 'TBA' except for URLs.
+If you could not find a value for a specific property, say 'TBA'.
 Do not format the JSON string. This means never add "\`\`\`" or "\`\`\`json". `;
 
 // we create a type descriptor here so that we can dynamically change the objects we expect from the LLM. This pattern only works with string props.
 const eventListTypeDescriptor = {
   name: "Name of the event",
   eventDescription:
-    "A long and detailed description of the event, agenda, the target audience, and what to expect from it",
+    "A comprehensive description of the event, agenda, the target audience, and what to expect from it",
   eventUrl: "The URL of the official event page",
   venueAddressCountry:
-    "The name of the country where the conference event is taking place.",
+    "Just the name of the country where the conference event is taking place.",
   venueAddressCity:
-    "The name of the city where the conference event is taking place.",
+    "Just the name of the city where the conference event is taking place.",
   venueAddressStreet:
-    "The full street address where the conference event is taking place.",
+    "Just the street address where the conference event is taking place.",
   eventStartDate:
     "ISO standard time (year, month, day, time) of when the event starts",
   eventEndDate:
     "ISO standard time (year, month, day, time) of when the event officially ends. If there is none, just say `TBA`",
-  thumbnail: "the URL to an image from the event",
+  // thumbnail: "the URL to an image from the event",
 };
 
 export type FetchedEventListType = typeof eventListTypeDescriptor;
