@@ -1,96 +1,106 @@
-import { Attendee } from "../types";
+import { Attendee, Location } from "../types";
 
-const attendees = [
+const attendees:Attendee[] = [
     {
                 id: "0",
                 name: "John Doe",
                 email: "example@example.com", 
-                homeCity: {
-                    cityName: "London",
-                    countryName: "UK"
+                departLocation:{
+                    city: "London",
+                    country: "UK",
+                    fullAddr: ""
                 }
             },
             {
                 id: "1",
                 name: "Jane Doe",
                 email: "",
-                homeCity: {
-                    cityName: "New York",
-                    countryName: "USA"
+                departLocation : {
+                    city: "New York",
+                    country: "USA",
+                    fullAddr: ""
                 }
             },
             {
                 id: "2",
                 name: "Jack Doe",
                 email: "",
-                homeCity: {
-                    cityName: "Paris",
-                    countryName: "France"
+                departLocation : {
+                    city: "Paris",
+                    country: "France",
+                    fullAddr: ""
                 }
             },
             {
                 id: "3",
                 name: "Jill Doe",
                 email: "",
-                homeCity: {
-                    cityName: "Berlin",
-                    countryName: "Germany"
+                departLocation : {
+                    city: "Berlin",
+                    country: "Germany",
+                    fullAddr: ""
                 }
             },
             {
                 id: "4",
                 name: "Jim Doe",
                 email: "",
-                homeCity: {
-                    cityName: "Tokyo",
-                    countryName: "Japan"
+                departLocation : {
+                    city: "Tokyo",
+                    country: "Japan",
+                    fullAddr: ""   
                 }
             },
             {
                 id: "5",
                 name: "Jenny Doe",
                 email: "",
-                homeCity: {
-                    cityName: "Sydney",
-                    countryName: "Australia"
+                departLocation : {
+                    city: "Sydney",
+                    country: "Australia",
+                    fullAddr: ""
                 }
             },
             {
                 id: "6",
                 name: "Jared Doe",
                 email: "",
-                homeCity: {
-                    cityName: "Rio de Janeiro",
-                    countryName: "Brazil"
+                departLocation : {
+                    city: "Toronto",
+                    country: "Canada",
+                    fullAddr: ""
                 }
             },
             {
                 id: "7",
                 name: "Jenna Doe",
                 email: "",
-                homeCity: {
-                    cityName: "Cape Town",
-                    countryName: "South Africa"
+                departLocation : {
+                    city: "Rome",
+                    country: "Italy",
+                    fullAddr: ""
                 }
             },
             {
                 id: "8",
                 name: "Jasper Doe",
                 email: "",
-                homeCity: {
-                    cityName: "Mumbai",
-                    countryName: "India"
+                departLocation : {
+                    city: "Barcelona",
+                    country: "Spain",
+                    fullAddr: ""
                 }
             },
             {
                 id: "9",
                 name: "Jasmine Doe",
                 email: "",
-                homeCity: {
-                    cityName: "Shanghai",
-                    countryName: "China"
+                departLocation : {
+                    city: "Sao Paulo",
+                    country: "Brazil",
+                    fullAddr: ""
                 }
             }
-] as Attendee[];
+]
 
 export default attendees;

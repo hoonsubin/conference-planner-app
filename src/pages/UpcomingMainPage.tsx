@@ -1,9 +1,9 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import EventList from '../components/upcoming/UpcomingEvents';
-import { useTravelEventContext } from '../context/TravelDataContext';
+import { useConferenceEventContext } from '../context/TravelDataContext';
 
 const UpcomingMainPage: React.FC = () => {
-  const { travelEvents } = useTravelEventContext();
+  const { savedConferenceEvents } = useConferenceEventContext();
   return (
     <IonPage>
       <IonHeader>
@@ -17,7 +17,7 @@ const UpcomingMainPage: React.FC = () => {
             <IonTitle size="large">Your events</IonTitle>
           </IonToolbar>
         </IonHeader>
-          <EventList events={travelEvents}>
+          <EventList events={savedConferenceEvents}>
           </EventList>
       </IonContent>
     </IonPage>

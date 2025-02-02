@@ -12,14 +12,14 @@ import {
     IonCard,
     IonCardContent,
   } from "@ionic/react";
-import { TravelEvent } from "../../../types";
+import { ConferenceEvent } from "../../../types";
 import { RouteComponentProps, useHistory, useLocation } from "react-router";
 import { calendarOutline, heart, heartOutline, locationOutline, openOutline, pinOutline, timeOutline } from "ionicons/icons";
 import "./EventDetail.css";
 import dayjs from "dayjs";
 import { appConfig } from "../../../config";
 import { useEffect, useState } from "react";
-import { useTravelEventContext } from "../../../context/TravelDataContext";
+import { useConferenceEventContext } from "../../../context/TravelDataContext";
 
 interface EventDetailProps 
 
@@ -28,15 +28,15 @@ extends RouteComponentProps<{
 }>
 
 {
-    // event: TravelEvent;
+    // event: ConferenceEvent;
 }
 
 const EventDetail: React.FC<EventDetailProps> = ({}) => {
     const history = useHistory();
     const loc = useLocation();
-    const data = loc.state as { event: TravelEvent, isSaved: boolean };
+    const data = loc.state as { event: ConferenceEvent, isSaved: boolean };
     const [isSaved, setIsSaved] = useState(data?.isSaved);
-    const { addTravelEvent, removeTravelEvent } = useTravelEventContext();
+    const { saveConferenceEvent, removeConferenceEvent } = useConferenceEventContext();
     const [imageSize, setImageSize] = useState(
         window.innerWidth < 768 ? Math.round(window.innerWidth * 0.25).toString() : Math.round(window.innerHeight * 0.15).toString()
     );
@@ -48,9 +48,10 @@ const EventDetail: React.FC<EventDetailProps> = ({}) => {
 
     function handleEventSave() {
         if (isSaved) {
-            removeTravelEvent(data.event);
+            // TODO: @kai check event id
+            removeConferenceEvent(data.event.id);
         } else {
-            addTravelEvent(data.event);
+            saveConferenceEvent(data.event);
         }
         setIsSaved(!isSaved);
     }
@@ -96,7 +97,7 @@ return (
                             <div>
                                 <span style={{'fontWeight': 'bold'}}>Date</span><br></br>
                                 <span>
-                                    {data.event.eventStart ? dayjs(data.event.eventStart.toLocaleString()).format('MMMM D, YYYY') : "no date available"}
+                                    {data.event.eventStartDate ? dayjs(data.event.eventStartDate.toLocaleString()).format('MMMM D, YYYY') : "no date available"}
                                 </span>
                             </div>
                         </div>
@@ -105,7 +106,7 @@ return (
                             <div>
                                 <span style={{'fontWeight': 'bold'}}>Time</span><br></br>
                                 <span>
-                                    {data.event.eventStart ? dayjs(data.event.eventStart.toLocaleString()).format('h:mm A') : "no date available"}
+                                    {data.event.eventStartDate ? dayjs(data.event.eventStartDate.toLocaleString()).format('h:mm A') : "no date available"}
                                 </span>
                             </div>
                         </div>
@@ -120,7 +121,7 @@ return (
                             <div>
                                 <h4 style={{'fontWeight': 'bold'}}>Location</h4>
                                 <h4>
-                                    {data.event.venueAddr}
+                                    {data.event.venueAddress.fullAddr}
                                 </h4>
                             </div>
                         </div>
@@ -128,7 +129,8 @@ return (
                             appConfig.mapsApi != "" &&
                             <img
                                 style={{'borderRadius': '10px', marginLeft: '16px'}}
-                                src={`https://maps.googleapis.com/maps/api/staticmap?center=1600+${data.event.venueAddr}&zoom=13&size=${imageSize}x${imageSize}&maptype=roadmap&markers=color:red|1600+${data.event.venueAddr}&key=${appConfig.mapsApi}`}
+                                // TODO: @kai check city usage for viewport
+                                src={`https://maps.googleapis.com/maps/api/staticmap?center=1600+${data.event.venueAddress.fullAddr}&zoom=13&size=${imageSize}x${imageSize}&maptype=roadmap&markers=color:red|1600+${data.event.venueAddress.fullAddr}&key=${appConfig.mapsApi}`}
                                 alt="Map view of event location"
                             />
                         }
@@ -139,7 +141,7 @@ return (
                         <div className="ion-padding">
                         <h3 style={{'fontWeight': 'bold'}}>About the event</h3>
                         <br></br>
-                        <p>{data.event.description}</p>
+                        <p>{data.event.eventDescription}</p>
                         </div>
                     </IonCardContent>
                 </IonCard>

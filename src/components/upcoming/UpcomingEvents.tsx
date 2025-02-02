@@ -4,13 +4,13 @@ import {
     IonButton,
     IonImg,
   } from "@ionic/react";
-import { TravelEvent } from "../../types";
+import { ConferenceEvent } from "../../types";
 import EventCard from "../eventcard/EventCard";
 import { useHistory } from "react-router-dom";
 
 
 interface EventListProps {
-    events: TravelEvent[];
+    events: ConferenceEvent[];
 }
 
 const EventList: React.FC<EventListProps> = ({ events }) => {

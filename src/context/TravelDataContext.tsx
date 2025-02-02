@@ -306,6 +306,6 @@ export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useTravelEventContext = () => {
+export const useConferenceEventContext = () => {
   return useContext(TravelDataContext);
 };

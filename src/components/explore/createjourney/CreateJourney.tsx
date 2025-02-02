@@ -25,14 +25,14 @@ import {
 import { appConfig, supportedEventLocations, supportedEventTypes } from "../../../config";
 import { RouteComponentProps, useHistory, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { TravelEvent, Attendee } from "../../../types";
+import { ConferenceEvent, Attendee } from "../../../types";
 import { loadListLocally } from "../../../utils";
 import { set } from "react-hook-form";
 import dummyData from "../../../config/dummyData";
 import { logoEuro, logoUsd } from "ionicons/icons";
 import React from "react";
 import AddAttendeeModal from "../../AddAttendeeModal";
-import { useTravelEventContext } from "../../../context/TravelDataContext";
+import { useConferenceEventContext } from "../../../context/TravelDataContext";
 
 
 interface CreateJourneyProps extends RouteComponentProps<{}> {
@@ -43,9 +43,9 @@ interface CreateJourneyProps extends RouteComponentProps<{}> {
 const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
     // const history = useHistory();
     const loc = useLocation();
-    const data = loc.state as { event: TravelEvent };
+    const data = loc.state as { event: ConferenceEvent };
     const event = data.event;
-    const { attendees, addAttendee, getAttendee } = useTravelEventContext();
+    const { allAttendees, addNewAttendee, getAttendee } = useConferenceEventContext();
     const [selectedAttendees, setSelectedAttendees] = useState<Attendee[]>([]);
     const [locations] = useState(supportedEventLocations);
     const [searchQuery, setSearchQuery] = useState("");
@@ -56,10 +56,12 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
         id: "",
         name: "",
         email: "",
-        homeCity: {
-            cityName: "",
-            countryName: ""
-        }
+        departLocation : 
+        {
+            city: "",
+            country: "",
+            fullAddr: ""
+        },
     });
     const [matchFlights, setMatchFlights] = useState(false);
 
@@ -71,18 +73,20 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
         //setAttendees(loadListLocally(appConfig.attendeeListSaveKey));
     }, []);
     function dismiss() {
-        setNewAttendee({ ...newAttendee, id: attendees.length.toString() });
+        setNewAttendee({ ...newAttendee, id: allAttendees.length.toString() });
         console.log("newAttendee", newAttendee);
-        addAttendee(newAttendee);
+        addNewAttendee(newAttendee);
         // clear newAttendee
         setNewAttendee({
             id: "",
             name: "",
             email: "",
-            homeCity: {
-                cityName: "",
-                countryName: ""
-            }
+            departLocation : 
+            {
+                city: "",
+                country: "",
+                fullAddr: ""
+            },
         });
         modal.current?.dismiss();
     }
@@ -102,7 +106,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
                 <h1>People</h1>
                 <p>Who are you going with?</p>
                 {
-                    attendees.length === 0 ?
+                    allAttendees.length === 0 ?
                         <div className="ion-padding ion-text-center ion-align-items-center ion-justify-content-center" style={{ height: "70%", display: "flex" }}>
                             <IonText>
                                 No attendees yet
@@ -113,7 +117,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
                         </div>
                         :
                         <IonList>
-                            {attendees.map((attendee, index) => (
+                            {allAttendees.map((attendee, index) => (
                                 <IonItem key={attendee.id} className="item item-text-wrap">
                                     <IonCheckbox
                                         slot="end"
@@ -134,7 +138,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
                                         <IonText></IonText>
                                         <br />
                                         <IonNote color="medium" className="ion-text-wrap">
-                                            {attendee.homeCity.cityName}, {attendee.homeCity.countryName}
+                                            {attendee.departLocation.city}, {attendee.departLocation.city}
                                         </IonNote>
                                     </IonLabel>
                                 </IonItem>

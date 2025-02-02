@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonInput, IonItem, IonLabel, IonButton, IonBackButton, IonButtons, IonList, IonToggle, IonNote, IonRange, IonText, IonFooter, IonChip } from '@ionic/react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Attendee, Budget, TravelEvent} from '../../../types';
+import { Attendee, Budget, ConferenceEvent} from '../../../types';
 import dummyData from '../../../config/dummyData';
 import "./SetBudget.css";
 
 const SetBudget: React.FC = () => {
     const history = useHistory();
     const loc = useLocation();
-    const data = loc.state as { event: TravelEvent, attendees: Attendee[], matchFlights: boolean };
+    const data = loc.state as { event: ConferenceEvent, attendees: Attendee[], matchFlights: boolean };
     const [universalBudget, setUniversalBudget] = useState<boolean>(true);
     const [attendees, setAttendees] = useState<Attendee[]>(data.attendees);
     const [budgets , setBudgets] = useState<Budget[]>([]);
@@ -38,13 +38,15 @@ const SetBudget: React.FC = () => {
                     universalBudget ?
                     <IonContent style={{marginTop: "16px"}}>
                         <IonRange labelPlacement="stacked" class="ion-padding" min={100} max={5000} // snaps={true}
-                            value={(budgets.reduce((sum, budget) => sum + (budget?.amount ? budget?.amount! : 0), 0))/attendees.length}
+                            value={(budgets.reduce((sum, budget) => sum + (budget?.maxBudget ? budget?.maxBudget! : 0), 0))/attendees.length}
                             step={100} pin={true} pinFormatter={(value: number) => `${value}€`} onIonChange={
                                 (e: any) => 
                                 {
                                     const b:Budget[] = attendees.map((i) => ({
-                                        amount: e.detail.value,
-                                        currency: "EUR"
+                                        // TODO: @kai allow user to set minBudget?
+                                        minBudget: 0,
+                                        maxBudget: e.detail.value,
+                                        currencySymbol: "EUR"
                                     }) );
                                     setBudgets(b);
                                 }
@@ -65,7 +67,7 @@ const SetBudget: React.FC = () => {
                         <div style={{display: "flex", justifyContent: "center"}}>
                             <IonChip class="budget-chip">
                                 <h6 style={{textAlign: "center"}}>Total budget: {
-                                    budgets.reduce((sum, budget) => sum + (budget?.amount ? budget?.amount! : 0), 0)
+                                    budgets.reduce((sum, budget) => sum + (budget?.maxBudget ? budget?.maxBudget! : 0), 0)
                                 }€</h6>
                             </IonChip>
                         </div>
@@ -81,14 +83,15 @@ const SetBudget: React.FC = () => {
                                     return (
                                         <IonItem key={index}>
                                             <IonRange labelPlacement="stacked" min={100} max={5000} // snaps={true}
-                                                value={budgets[index]?.amount}
+                                                value={budgets[index]?.maxBudget}
                                                 step={100} pin={true} pinFormatter={(value: number) => `${value}€`} onIonChange={
                                                     (e: any) => 
                                                     {
                                                         const b:Budget[] = [...budgets];
                                                         b[index] = {
-                                                            amount: e.detail.value,
-                                                            currency: "EUR"
+                                                            minBudget: 0,
+                                                            maxBudget: e.detail.value,
+                                                            currencySymbol: "EUR"
                                                         };
                                                         setBudgets(b);
                                                     }
@@ -113,7 +116,7 @@ const SetBudget: React.FC = () => {
                             <div style={{display: "flex", justifyContent: "center"}}>
                                 <IonChip class="budget-chip">
                                     <h6 style={{textAlign: "center"}}>Total budget: {
-                                        budgets.reduce((sum, budget) => sum + (budget?.amount ? budget?.amount! : 0), 0)
+                                        budgets.reduce((sum, budget) => sum + (budget?.maxBudget ? budget?.maxBudget! : 0), 0)
                                     }€</h6>
                                 </IonChip>
                             </div>

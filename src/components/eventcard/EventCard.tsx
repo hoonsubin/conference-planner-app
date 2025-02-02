@@ -1,11 +1,12 @@
 import React from "react";
 import { IonCard, IonCardContent, IonText, IonIcon } from "@ionic/react";
 import { calendarOutline, locationOutline, linkOutline } from "ionicons/icons";
-import { TravelEvent } from "../../types";
+import { ConferenceEvent } from "../../types";
 import "./EventCard.css";
+import dayjs from "dayjs";
 
 interface EventCardProps {
-  event: TravelEvent;
+  event: ConferenceEvent;
   onClick?: () => void;
 }
 
@@ -26,16 +27,17 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
                 <div className="event-info">
                     <IonIcon icon={calendarOutline} className="icon" />
                     <IonText>
-                    {event.eventStart.toLocaleString().split('T')[0]}
-                    {/* - {event.eventEnd.toLocaleString().split('T')[0]} */}
+                    {dayjs(event.eventStartDate.toString()).format('DD.MM.YYYY')}
+                    -
+                    {dayjs(event.eventEndDate?.toString()).format('DD.MM.YYYY')}
                     </IonText>
                 </div>
 
-                <p>{event.description.substring(0, 300) + " ..."}</p>
+                <p>{event.eventDescription.substring(0, 300) + " ..."}</p>
 
                 <div className="event-info">
                     <IonIcon icon={locationOutline} className="icon" />
-                    <IonText>{event.venueAddr}</IonText>
+                    <IonText>{event.venueAddress.fullAddr}</IonText>
                 </div>
 
                 {/* <a href={event.eventLink} target="_blank" rel="noopener noreferrer" className="link">

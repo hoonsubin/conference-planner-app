@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IonAlert, IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonIcon, IonLoading, IonPage, IonText, IonTitle, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import { useHistory, useLocation } from 'react-router';
-<<<<<<< HEAD
-import { Attendee, FlightPlan, TravelEvent } from '../../../types';
+import { Attendee, FlightItinerary, ConferenceEvent, Budget } from '../../../types';
 import * as services from "../../../services";
-=======
-import { Attendee, FlightPlan, TravelEvent, Budget } from '../../../types';
-import * as utils from "../../../services";
->>>>>>> ui
 import { useLlmApiContext } from '../../../context/LlmApiContext';
 import { airplane, bookmarkOutline, link, location, shareOutline } from 'ionicons/icons';
 import dayjs, { Dayjs } from 'dayjs';
@@ -19,9 +14,9 @@ interface ItineraryProps {
 const Itinerary: React.FC<ItineraryProps> = ({ }) => {
     const history = useHistory();
     const loc = useLocation();
-    const data = loc.state as { event: TravelEvent, attendees: Attendee[], budgets: Budget, matchFlights: boolean };
-    const { api } = useLlmApiContext();
-    const [flightPlans, setFlightPlans] = useState<FlightPlan[]>([]);
+    const data = loc.state as { event: ConferenceEvent, attendees: Attendee[], budgets: Budget, matchFlights: boolean };
+    const { perplexityApi } = useLlmApiContext();
+    const [FlightItinerarys, setFlightItinerarys] = useState<FlightItinerary[]>([]);
     const [matchFlights, setMatchFlights] = useState(data.matchFlights);
     const [showAlert, setShowAlert] = useState(false);
 
@@ -29,13 +24,16 @@ const Itinerary: React.FC<ItineraryProps> = ({ }) => {
         //console.log("Itinerary data", data);
         const fetchItinerariesAsync = async () => {
             console.log("fetching itineraries");
-            const fetchedFlightPlans = await services.fetchFlightPath(api, data.event, data.attendees);
-            return fetchedFlightPlans;
+            // TODO: @kai implement for multiple attendees
+            // TODO: check for matchFlights
+            // TODO: check for arrival time
+            const fetchedFlightItinerarys = await services.fetchFlightSchedule(perplexityApi, data.event, data.attendees[0], data.event.eventStartDate);
+            return fetchedFlightItinerarys;
         }
         fetchItinerariesAsync()
         .then((e) => {
-            setFlightPlans(e);
-            console.log("flightPlans", flightPlans);
+            setFlightItinerarys(e);
+            console.log("FlightItinerarys", FlightItinerarys);
         })
     }, [useIonViewDidEnter]);
 
@@ -87,13 +85,13 @@ const Itinerary: React.FC<ItineraryProps> = ({ }) => {
                 </IonToolbar>
             </IonHeader>
             {
-                flightPlans.length === 0 ?
+                FlightItinerarys.length === 0 ?
                 // loading spinnner
                 <IonContent>
                     <IonLoading
                         message="Fetching itineraries..."
                         spinner="circles"
-                        isOpen={flightPlans.length === 0}
+                        isOpen={FlightItinerarys.length === 0}
                     />
                 </IonContent>
                 :   
@@ -109,9 +107,9 @@ const Itinerary: React.FC<ItineraryProps> = ({ }) => {
                         }
                     }>
                     {
-                        flightPlans.map((fp) => {
+                        FlightItinerarys.map((fp) => {
                             return (
-                                <div key={fp.attendeeId} style={
+                                <div key={fp.id} style={
                                     {
                                         display: 'flex',
                                         flexDirection: 'column',
@@ -119,7 +117,7 @@ const Itinerary: React.FC<ItineraryProps> = ({ }) => {
                                     }}
                                     >
                                     <IonCard
-                                        key={fp.attendeeId}
+                                        key={fp.id}
                                         className='ion-padding'
                                         style={
                                             {
@@ -128,19 +126,19 @@ const Itinerary: React.FC<ItineraryProps> = ({ }) => {
                                                 maxHeight: "800px",
                                             }
                                         }>
-                                        <IonCardTitle>{fp.name}</IonCardTitle>
-                                        <IonCardSubtitle>{fp.attendeeId}</IonCardSubtitle>
+                                        <IonCardTitle>{fp.id}</IonCardTitle>
+                                        <IonCardSubtitle>{fp.id}</IonCardSubtitle>
                                         <IonCardContent>
                                             <br />
                                             <IonText style={ {display: 'flex', flexDirection: 'row', justifyContent:'space-between', alignItems: 'center' } }>
-                                                <h2>{dayjs(fp.departDate).format('DD.MM.YYYY')}</h2>
-                                                <h1>{dayjs(fp.departDate).format('HH:mm')}</h1>
+                                                <h2>{dayjs(fp.departTime.toString()).format('DD.MM.YYYY')}</h2>
+                                                <h1>{dayjs(fp.departTime.toString()).format('HH:mm')}</h1>
                                             </IonText>
                                             <br />
                                             <div style={ {display: 'flex', flexDirection: 'row'} }>
                                                 <IonIcon icon={location} className="ion-padding-end"></IonIcon>
                                                 <IonText>
-                                                    <h4>{fp.departLocation}</h4>
+                                                    <h4>{fp.departAddress.country} {fp.departAddress.city} {fp.departAddress.fullAddr}</h4>
                                                 </IonText>
                                             </div>
                                             <br />
@@ -158,13 +156,13 @@ const Itinerary: React.FC<ItineraryProps> = ({ }) => {
                                             <div style={ {display: 'flex', flexDirection: 'row'} }>
                                                 <IonIcon icon={location} className="ion-padding-end"></IonIcon>
                                                 <IonText>
-                                                    <h4>{fp.arrivingLocation}</h4>
+                                                <h4>{fp.arrivalAddress.country} {fp.arrivalAddress.city} {fp.arrivalAddress.fullAddr}</h4>
                                                 </IonText>
                                             </div>
                                             <br />
                                             <IonText style={ {display: 'flex', flexDirection: 'row', justifyContent:'space-between', alignItems: 'center' } }>
-                                                <h2>{dayjs(fp.arrivalDate).format('DD.MM.YYYY')}</h2>
-                                                <h1>{dayjs(fp.arrivalDate).format('HH:mm')}</h1>
+                                                <h2>{dayjs(fp.arrivalTime.toString()).format('DD.MM.YYYY')}</h2>
+                                                <h1>{dayjs(fp.arrivalTime.toString()).format('HH:mm')}</h1>
                                             </IonText>
                                             <br />
                                             <br />

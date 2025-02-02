@@ -36,24 +36,24 @@ class AddAttendeeModal extends React.Component<AddAttendeeModalProps> {
                     })} fill="outline" className="ion-padding-top">
                     </IonInput>
                     <br></br>
-                    <IonInput label="City" labelPlacement="floating" clearInput={true} placeholder="Attendee city" value={this.props.newAttendee.homeCity.cityName} onIonInput={(e: any) => this.props.setNewAttendee({
+                    <IonInput label="City" labelPlacement="floating" clearInput={true} placeholder="Attendee city" value={this.props.newAttendee.departLocation.city} onIonInput={(e: any) => this.props.setNewAttendee({
                         ...this.props.newAttendee,
-                        homeCity: {
-                            ...this.props.newAttendee.homeCity,
-                            cityName: e.target.value
+                        departLocation: {
+                            ...this.props.newAttendee.departLocation,
+                            city: e.target.value
                         }
                     })} fill="outline" className="ion-padding-top">
                     </IonInput>
                     <br></br>
-                    <IonInput label="Country" labelPlacement="floating" clearInput={true} placeholder="Attendee country" value={this.props.newAttendee.homeCity.countryName} onIonInput={(e: any) => this.props.setNewAttendee({
+                    <IonInput label="Country" labelPlacement="floating" clearInput={true} placeholder="Attendee country" value={this.props.newAttendee.departLocation.city} onIonInput={(e: any) => this.props.setNewAttendee({
                         ...this.props.newAttendee,
-                        homeCity: { 
-                            ...this.props.newAttendee.homeCity,
-                            countryName: e.target.value
+                        departLocation: {
+                            ...this.props.newAttendee.departLocation,
+                            country: e.target.value
                         }
                     })} fill="outline" className="ion-padding-top">
                     </IonInput>
-                    <br></br>
+                    {/* <br></br>
                     <IonRange labelPlacement="stacked" class="ion-padding" min={100} max={5000} // snaps={true}
                         step={100} pin={true} pinFormatter={(value: number) => `${value}€`} onIonChange={(e: any) => this.props.setNewAttendee({
                             ...this.props.newAttendee,
@@ -69,10 +69,10 @@ class AddAttendeeModal extends React.Component<AddAttendeeModalProps> {
                         <IonText slot="start">100</IonText>
                         <IonText slot="end">5.000</IonText>
                         {
-                            /* <IonIcon slot="end" icon={logoEuro}></IonIcon> */
+                            <IonIcon slot="end" icon={logoEuro}></IonIcon>
                         }
                     </IonRange>
-                    <IonText className="ion-padding-start">Budget: {this.props.newAttendee.maxBudget?.toString()}€</IonText>
+                    <IonText className="ion-padding-start">Budget: {this.props.newAttendee.maxBudget?.toString()}€</IonText> */}
                     <br></br>
                     <IonButton onClick={
                         () => {

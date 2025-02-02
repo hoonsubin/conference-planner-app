@@ -10,11 +10,10 @@ import {
     IonBackButton,
     IonButtons,
   } from "@ionic/react";
-import { supportedEventLocations, supportedEventTypes } from "../../config";
 import { useHistory, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Attendee } from "../../types";
-import { useTravelEventContext } from "../../context/TravelDataContext";
+import { useConferenceEventContext } from "../../context/TravelDataContext";
 
 interface EditLocationProps {
     
@@ -25,10 +24,10 @@ const EditLocation: React.FC<EditLocationProps> = ({ }) => {
     const loc = useLocation();
     const data = loc.state as { attendee: Attendee};
     const [attendee, setAttendee] = useState<Attendee>(data?.attendee ?? "");
-    const { attendees, addAttendee, getAttendee } = useTravelEventContext();
+    const { allAttendees, addNewAttendee, getAttendee } = useConferenceEventContext();
     function saveAttendee() {
         console.log(attendee);
-        addAttendee(attendee);
+        addNewAttendee(attendee);
     }
     
 return (
@@ -51,8 +50,8 @@ return (
                 labelPlacement="floating"
                 clearInput={true}
                 placeholder="Enter your city"
-                value={attendee?.homeCity?.cityName}
-                onIonInput={(e: any) => setAttendee({ ...attendee, homeCity: { cityName: e.target.value, countryName: attendee.homeCity.countryName } })}
+                value={attendee?.departLocation?.city}
+                onIonInput={(e: any) => setAttendee({ ...attendee, departLocation: { city: e.target.value, country: attendee.departLocation.country, fullAddr: "" } })}
                 fill="outline"
                 className="ion-padding-top">
             </IonInput>
@@ -61,8 +60,8 @@ return (
                 labelPlacement="floating"
                 clearInput={true}
                 placeholder="Enter your country"
-                value={attendee?.homeCity?.countryName}
-                onIonInput={(e: any) => setAttendee({ ...attendee, homeCity: { cityName: attendee.homeCity.cityName, countryName: e.target.value } })}
+                value={attendee?.departLocation?.country}
+                onIonInput={(e: any) => setAttendee({ ...attendee, departLocation: { city: attendee.departLocation.city, country: e.target.value, fullAddr: "" } })}
                 fill="outline"
                 className="ion-padding-top">
             </IonInput>

@@ -1,11 +1,6 @@
 import React, { ReactNode } from "react";
 import {
   IonModal,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButton,
-  IonButtons,
   IonText,
 } from "@ionic/react";
 import "./CustomPopup.css";

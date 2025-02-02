@@ -19,7 +19,7 @@ import {
     IonButtons,
     IonIcon,
   } from "@ionic/react";
-import { TravelEvent } from "../../../types";
+import { ConferenceEvent } from "../../../types";
 import { useLlmApiContext } from "../../../context/LlmApiContext";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -38,15 +38,20 @@ interface FetchEventsParams {
 const EventResults: React.FC = () => {
     const history = useHistory();
     const loc = useLocation();
-    const { api } = useLlmApiContext();
+    const { perplexityApi } = useLlmApiContext();
     const data = loc.state as { event: string, location: string };
-    const [events, setEvents] = useState<TravelEvent[]>([]);
+    const [events, setEvents] = useState<ConferenceEvent[]>([]);
 
     useEffect(() => {
         console.log("triggerd useEffect");
         const fetchEventsAsync = async () => {
             console.log("fetching events");
-            const fetchedEvents = await utils.fetchConferenceList(api, data.event, data.location);
+            // TODO: @kai infer location data
+            const fetchedEvents = await utils.fetchConferenceList(perplexityApi, data.event, {
+                country: data.location,
+                city: data.location,
+                fullAddr: data.location
+            });
             // console.log("fetchedEvents", fetchedEvents);
             // setEvents(fetchedEvents);
             // console.log("events", events);

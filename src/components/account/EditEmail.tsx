@@ -10,11 +10,10 @@ import {
     IonBackButton,
     IonButtons,
   } from "@ionic/react";
-import { supportedEventLocations, supportedEventTypes } from "../../config";
 import { useHistory, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Attendee } from "../../types";
-import { useTravelEventContext } from "../../context/TravelDataContext";
+import { useConferenceEventContext } from "../../context/TravelDataContext";
 
 interface EditEmailProps {
     
@@ -25,9 +24,9 @@ const EditEmail: React.FC<EditEmailProps> = ({ }) => {
     const loc = useLocation();
     const data = loc.state as { attendee: Attendee};
     const [attendee, setAttendee] = useState<Attendee>(data?.attendee ?? "");
-    const { attendees, addAttendee, getAttendee } = useTravelEventContext();
+    const { allAttendees, addNewAttendee, getAttendee } = useConferenceEventContext();
     function saveAttendee() {
-        addAttendee(attendee);
+        addNewAttendee(attendee);
     }
     
 return (
