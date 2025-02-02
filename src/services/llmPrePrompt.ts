@@ -12,7 +12,8 @@ const eventListTypeDescriptor = {
   name: "Name of the event",
   eventDescription:
     "A comprehensive description of the event, agenda, the target audience, and what to expect from it",
-  eventUrl: "The URL of the official event page, or a link to where user can read about the event. Never make this a TBA.",
+  eventUrl:
+    "The URL of the official event page, or a link to where user can read about the event. Never make this a TBA.",
   venueAddressCountry:
     "Just the name of the country where the conference event is taking place.",
   venueAddressCity:
@@ -44,7 +45,8 @@ const transportListTypeDescriptor = {
   name: "The name of the booking website where the user can book this flight",
   flightNo: "The flight number that will be used to search the current flight",
   airline: "The name of the airline company for this flight",
-  bookingLink: "A URL string to the airplane booking site. This can be either the official website or a third-party booking website.",
+  bookingLink:
+    "A URL string to the airplane booking site. This can be either the official website or a third-party booking website.",
   deportAddressCountry:
     "The name of the country where the deporting airport is in.",
   deportAddressCity: "The name of the city where the deporting airport is in.",
@@ -80,13 +82,27 @@ The output should be a structure JSON array string with the following properties
 ${JSON.stringify(transportListTypeDescriptor)}
 `;
 
+const perplexityApiReqTemplate: PerplexityApiReq = {
+  model: appConfig.perplexityModel,
+  messages: [], // this will be overwritten with the functions below
+  top_p: 0.9,
+  return_images: false,
+  return_related_questions: false,
+  search_recency_filter: "week",
+  stream: false,
+  presence_penalty: 0,
+  frequency_penalty: 1,
+  max_tokens: 1500,
+  temperature: 0.1,
+};
+
 export const fetchEventsApiPayload = (
   eventTags: string,
   location: Location,
   when: DateTime
 ) => {
   return {
-    model: appConfig.perplexityModel,
+    ...perplexityApiReqTemplate,
     messages: [
       {
         role: "system",
@@ -97,8 +113,6 @@ export const fetchEventsApiPayload = (
         content: getEventListPrompt(eventTags, location, when),
       },
     ],
-    max_tokens: 320,
-    temperature: 0.1,
   } as PerplexityApiReq;
 };
 
@@ -108,7 +122,7 @@ export const fetchFlightsApiPayload = (
   arrivalTime: DateTime
 ) => {
   return {
-    model: appConfig.perplexityModel,
+    ...perplexityApiReqTemplate,
     messages: [
       {
         role: "system",
@@ -123,7 +137,5 @@ export const fetchFlightsApiPayload = (
         ),
       },
     ],
-    max_tokens: 320,
-    temperature: 0.1,
   } as PerplexityApiReq;
 };
