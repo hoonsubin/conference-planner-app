@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonAlert, IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonIcon, IonLoading, IonPage, IonText, IonTitle, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import { useHistory, useLocation } from 'react-router';
-import { Attendee, FlightPlan, TravelEvent } from '../../../types';
+import { Attendee, FlightPlan, TravelEvent, Budget } from '../../../types';
 import * as utils from "../../../services";
 import { useLlmApiContext } from '../../../context/LlmApiContext';
 import { airplane, bookmarkOutline, link, location, shareOutline } from 'ionicons/icons';
@@ -14,7 +14,7 @@ interface ItineraryProps {
 const Itinerary: React.FC<ItineraryProps> = ({ }) => {
     const history = useHistory();
     const loc = useLocation();
-    const data = loc.state as { event: TravelEvent, attendees: Attendee[], matchFlights: boolean };
+    const data = loc.state as { event: TravelEvent, attendees: Attendee[], budgets: Budget, matchFlights: boolean };
     const { api } = useLlmApiContext();
     const [flightPlans, setFlightPlans] = useState<FlightPlan[]>([]);
     const [matchFlights, setMatchFlights] = useState(data.matchFlights);

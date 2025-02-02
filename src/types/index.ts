@@ -12,7 +12,7 @@ export interface TravelEvent {
   eventEnd: DateTime | "TBD";
 }
 
-type Budget = {
+export type Budget = {
   amount: number;
   currency: string;
 };
