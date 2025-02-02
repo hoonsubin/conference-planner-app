@@ -115,6 +115,7 @@ export const fetchConferenceList = async (
   // create a prompt for the LLM
   const newReq = llmPrompts.fetchEventsApiPayload(eventTags, location, when);
 
+  console.log(`Sending the following request\n${JSON.stringify(newReq)}`);
   try {
     // todo: handle timeout errors or when the AI cannot find any results
     // send the prompts to the LLM API
@@ -159,7 +160,7 @@ export const fetchConferenceList = async (
           eventEndDate: i.eventEndDate.match("TB")
             ? DateTime.fromISO(i.eventEndDate)
             : i.eventStartDate,
-          thumbnail: i.thumbnail,
+          //thumbnail: i.thumbnail,
         } as ConferenceEvent; // todo: fix this
       });
     } else {

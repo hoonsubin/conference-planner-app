@@ -4,26 +4,27 @@ import { appConfig } from "../config";
 
 const systemPrompt = `Only output the JSON list data without other messages.
 Find at least 10 items per topic for all requests. If there is no item, output an empty JSON array.
-If you could not find a value for a specific property, say 'TBA' except for URLs.
+If you could not find a value for a specific property, say 'TBA'.
 Do not format the JSON string. This means never add "\`\`\`" or "\`\`\`json". `;
 
 // we create a type descriptor here so that we can dynamically change the objects we expect from the LLM. This pattern only works with string props.
 const eventListTypeDescriptor = {
   name: "Name of the event",
   eventDescription:
-    "A long and detailed description of the event, agenda, the target audience, and what to expect from it",
-  eventUrl: "The URL of the official event page",
+    "A comprehensive description of the event, agenda, the target audience, and what to expect from it",
+  eventUrl:
+    "The URL of the official event page, or a link to where user can read about the event. Never make this a TBA.",
   venueAddressCountry:
-    "The name of the country where the conference event is taking place.",
+    "Just the name of the country where the conference event is taking place.",
   venueAddressCity:
-    "The name of the city where the conference event is taking place.",
+    "Just the name of the city where the conference event is taking place.",
   venueAddressStreet:
-    "The full street address where the conference event is taking place.",
+    "Just the street address where the conference event is taking place.",
   eventStartDate:
     "ISO standard time (year, month, day, time) of when the event starts",
   eventEndDate:
     "ISO standard time (year, month, day, time) of when the event officially ends. If there is none, just say `TBA`",
-  thumbnail: "the URL to an image from the event",
+  // thumbnail: "the URL to an image from the event",
 };
 
 export type FetchedEventListType = typeof eventListTypeDescriptor;
@@ -44,7 +45,8 @@ const transportListTypeDescriptor = {
   name: "The name of the booking website where the user can book this flight",
   flightNo: "The flight number that will be used to search the current flight",
   airline: "The name of the airline company for this flight",
-  bookingLink: "A URL string to the airplane booking site. This can be either the official website or a third-party booking website.",
+  bookingLink:
+    "A URL string to the airplane booking site. This can be either the official website or a third-party booking website.",
   deportAddressCountry:
     "The name of the country where the deporting airport is in.",
   deportAddressCity: "The name of the city where the deporting airport is in.",
@@ -80,13 +82,27 @@ The output should be a structure JSON array string with the following properties
 ${JSON.stringify(transportListTypeDescriptor)}
 `;
 
+const perplexityApiReqTemplate: PerplexityApiReq = {
+  model: appConfig.perplexityModel,
+  messages: [], // this will be overwritten with the functions below
+  top_p: 0.9,
+  return_images: false,
+  return_related_questions: false,
+  search_recency_filter: "week",
+  stream: false,
+  presence_penalty: 0,
+  frequency_penalty: 1,
+  max_tokens: 1500,
+  temperature: 0.1,
+};
+
 export const fetchEventsApiPayload = (
   eventTags: string,
   location: Location,
   when: DateTime
 ) => {
   return {
-    model: appConfig.perplexityModel,
+    ...perplexityApiReqTemplate,
     messages: [
       {
         role: "system",
@@ -97,8 +113,6 @@ export const fetchEventsApiPayload = (
         content: getEventListPrompt(eventTags, location, when),
       },
     ],
-    max_tokens: 320,
-    temperature: 0.1,
   } as PerplexityApiReq;
 };
 
@@ -108,7 +122,7 @@ export const fetchFlightsApiPayload = (
   arrivalTime: DateTime
 ) => {
   return {
-    model: appConfig.perplexityModel,
+    ...perplexityApiReqTemplate,
     messages: [
       {
         role: "system",
@@ -123,7 +137,5 @@ export const fetchFlightsApiPayload = (
         ),
       },
     ],
-    max_tokens: 320,
-    temperature: 0.1,
   } as PerplexityApiReq;
 };
