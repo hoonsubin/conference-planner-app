@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 import { appConfig } from "../../../config";
 import { useEffect, useState } from "react";
 import { useConferenceEventContext } from "../../../context/TravelDataContext";
+import { Browser } from '@capacitor/browser';
 
 interface EventDetailProps 
 
@@ -54,6 +55,16 @@ const EventDetail: React.FC<EventDetailProps> = ({}) => {
             saveConferenceEvent(data.event);
         }
         setIsSaved(!isSaved);
+    }
+
+    async function openMaps(address: string) {
+        const url = `https://www.google.com/maps?q=${address}`;
+        await Browser.open({ url });
+    }
+
+    function openNativeMaps(address: string) {
+        const url = `geo:${0},${0}?q=${address}`;
+        window.open(url, '_system');
     }
     
 return (
@@ -121,7 +132,7 @@ return (
                             <div>
                                 <h4 style={{'fontWeight': 'bold'}}>Location</h4>
                                 <h4>
-                                    {data.event.venueAddress.fullAddr}
+                                    {data.event.venueAddress?.fullAddr}
                                 </h4>
                             </div>
                         </div>
@@ -130,8 +141,9 @@ return (
                             <img
                                 style={{'borderRadius': '10px', marginLeft: '16px'}}
                                 // TODO: @kai check city usage for viewport
-                                src={`https://maps.googleapis.com/maps/api/staticmap?center=1600+${data.event.venueAddress.fullAddr}&zoom=13&size=${imageSize}x${imageSize}&maptype=roadmap&markers=color:red|1600+${data.event.venueAddress.fullAddr}&key=${appConfig.mapsApi}`}
+                                src={`https://maps.googleapis.com/maps/api/staticmap?center=1600+${data.event.venueAddress?.fullAddr}&zoom=13&size=${imageSize}x${imageSize}&maptype=roadmap&markers=color:red|1600+${data.event.venueAddress?.fullAddr}&key=${appConfig.mapsApi}`}
                                 alt="Map view of event location"
+                                onClick={() => openMaps(data.event.venueAddress?.fullAddr)}
                             />
                         }
                     </IonCardContent>
@@ -165,7 +177,11 @@ return (
                         </div>
                         <IonIcon icon={openOutline} size="large" style={
                             {'marginRight': '8px'}
-                        }></IonIcon>
+                        }
+                        onClick={() => {
+                            Browser.open({ url: data.event.eventUrl });
+                        }}
+                        ></IonIcon>
                     </IonCardContent>
                 </IonCard>
                 <IonButton

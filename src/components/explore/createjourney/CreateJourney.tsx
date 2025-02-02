@@ -187,7 +187,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
                         });
                     }
                 } expand="block">
-                    Create itinerary
+                    Set budget
                 </IonButton>
             </IonFooter>
         </IonPage>
