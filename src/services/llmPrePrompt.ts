@@ -12,7 +12,7 @@ const eventListTypeDescriptor = {
   name: "Name of the event",
   eventDescription:
     "A comprehensive description of the event, agenda, the target audience, and what to expect from it",
-  eventUrl: "The URL of the official event page",
+  eventUrl: "The URL of the official event page, or a link to where user can read about the event. Never make this a TBA.",
   venueAddressCountry:
     "Just the name of the country where the conference event is taking place.",
   venueAddressCity:
