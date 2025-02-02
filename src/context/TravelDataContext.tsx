@@ -178,14 +178,25 @@ export const TravelDataProvider: React.FC<{ children: React.ReactNode }> = ({
   // ===adder functions===
   const addNewAttendee = useCallback(
     (newAttendee: Attendee) => {
-      if (!!getAttendee(newAttendee.id)) {
-        console.warn(
-          `Attendee ${newAttendee.name} (ID: ${newAttendee.id}) already exists.`
+      const oldAttendee = getAttendee(newAttendee.id);
+      if (!!oldAttendee) {
+        console.log(
+          `Attendee ${newAttendee.name} (ID: ${newAttendee.id}) already exists. Updating instead.`
         );
-        return;
-      }
 
-      setAttendees([...allAttendees, newAttendee]);
+        // remove the attendee first
+        removeAttendee(newAttendee.id);
+
+        setAttendees([
+          ...allAttendees,
+          {
+            ...oldAttendee,
+            ...newAttendee, // overwrite the old attendee info with the new attendee
+          },
+        ]);
+      } else {
+        setAttendees([...allAttendees, newAttendee]);
+      }
     },
     [allAttendees]
   );
