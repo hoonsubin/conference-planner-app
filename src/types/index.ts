@@ -5,7 +5,7 @@ export * from "./perplexityApi";
 export interface ConferenceEvent {
   id: string;
   name: string;
-  thumbnail?: string; // assuming Image is another interface
+  thumbnail?: string;
   venueAddress: Location;
   eventStartDate: DateTime;
   eventEndDate?: DateTime;
