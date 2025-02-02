@@ -13,6 +13,19 @@ export interface ConferenceEvent {
   eventUrl: string;
 }
 
+<<<<<<< HEAD
+=======
+export type Budget = {
+  amount: number;
+  currency: string;
+};
+
+type HomeCity = {
+  cityName: string;
+  countryName: string;
+};
+
+>>>>>>> ui
 export interface Attendee {
   id: string;
   name: string;

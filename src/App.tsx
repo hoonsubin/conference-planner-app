@@ -56,6 +56,7 @@ import EditName from "./components/account/EditName";
 import EditEmail from "./components/account/EditEmail";
 import EditLocation from "./components/account/EditLocation";
 import EditBudget from "./components/account/EditBudget";
+import SetBudget from "./components/explore/setbudget/SetBudget";
 
 setupIonicReact();
 
@@ -79,6 +80,7 @@ const App: React.FC = () => (
               <Route exact path="/explore/event-detail" component={EventDetail} />
               <Route exact path="/explore/journey" component={CreateJourney} />
               <Route exact path="/explore/itinerary" component={Itinerary} />
+              <Route exact path="/explore/budget" component={SetBudget} />
               {/* <Route path="/explore/journey/:id/budget" component={} /> */}
               <Route path="/account">
                 <AccountTab />

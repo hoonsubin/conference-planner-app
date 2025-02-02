@@ -178,7 +178,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
                 <IonButton className="ion-padding" onClick={
                     () => {
                         history.push({
-                            pathname: '/explore/itinerary',
+                            pathname: '/explore/budget',
                             state: { event: event, attendees: selectedAttendees, matchFlights: matchFlights }
                         });
                     }
