@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonAlert, IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonIcon, IonLoading, IonPage, IonText, IonTitle, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import { useHistory, useLocation } from 'react-router';
 import { Attendee, FlightPlan, TravelEvent } from '../../../types';
-import * as utils from "../../../services";
+import * as services from "../../../services";
 import { useLlmApiContext } from '../../../context/LlmApiContext';
 import { airplane, bookmarkOutline, link, location, shareOutline } from 'ionicons/icons';
 import dayjs, { Dayjs } from 'dayjs';
@@ -24,7 +24,7 @@ const Itinerary: React.FC<ItineraryProps> = ({ }) => {
         //console.log("Itinerary data", data);
         const fetchItinerariesAsync = async () => {
             console.log("fetching itineraries");
-            const fetchedFlightPlans = await utils.fetchFlightPath(api, data.event, data.attendees);
+            const fetchedFlightPlans = await services.fetchFlightPath(api, data.event, data.attendees);
             return fetchedFlightPlans;
         }
         fetchItinerariesAsync()

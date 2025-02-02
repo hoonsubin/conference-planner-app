@@ -2,44 +2,58 @@ import { DateTime } from "luxon";
 
 export * from "./perplexityApi";
 
-export interface TravelEvent {
+export interface ConferenceEvent {
   id: string;
   name: string;
-  venueAddr: string;
-  eventLink: string;
-  description: string;
-  eventStart: DateTime | "TBD";
-  eventEnd: DateTime | "TBD";
+  thumbnail: string; // assuming Image is another interface
+  venueAddress: Location;
+  eventStartDate: DateTime;
+  eventEndDate?: DateTime;
+  eventDescription: string;
+  eventUrl: string;
 }
-
-type Budget = {
-  amount: number;
-  currency: string;
-};
-
-type HomeCity = {
-  cityName: string;
-  countryName: string;
-};
 
 export interface Attendee {
   id: string;
   name: string;
   email: string;
-  homeCity: HomeCity;
-  departTime?: string;
-  arriveTime?: string;
-  maxBudget?: Budget;
+  departLocation: Location;
 }
 
-export interface FlightPlan {
-  attendeeId: string;
-  name: string;
+export interface Budget {
+  minBudget: number;
+  maxBudget: number;
+  currencySymbol: string;
+}
+
+export interface FlightItinerary {
+  id: string;
   flightNo: string;
   airline: string;
   bookingLink: string;
-  departLocation: string;
-  arrivingLocation: string;
-  departDate: string;
-  arrivalDate: string;
+  departAddress: Location;
+  arrivalAddress: Location;
+  departTime: DateTime;
+  arrivalTime: DateTime;
+}
+
+export interface AttendeeItinerary {
+  eventId: string;
+  attendeeId: string;
+  flightIds: string[];
+  budget?: Budget;
+}
+
+export interface LikedEvents {
+  savedEvents: ConferenceEvent[];
+}
+
+export interface SavedItinerary {
+  savedItinerary: AttendeeItinerary[];
+}
+
+export interface Location {
+  city: string;
+  country: string;
+  fullAddr: string; // street address
 }
