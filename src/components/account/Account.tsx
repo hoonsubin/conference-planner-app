@@ -40,14 +40,15 @@ const Account: React.FC<AccountProps> = ({ }) => {
     useEffect(() => {
         setAddAttendeePresent(page.current);
         if (allAttendees.length === 0) {
+            // TDOO: @kai handle first attendee
             addNewAttendee({
                 id: "0",
-                name: "",
-                email: "",
+                name: "Kai",
+                email: "test@test.de",
                 departLocation :
                 {
-                    city: "",
-                    country: "",
+                    city: "Munich",
+                    country: "Germany",
                     fullAddr: ""
                 },
             });

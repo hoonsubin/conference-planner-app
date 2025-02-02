@@ -26,6 +26,7 @@ const EditName: React.FC<EditNameProps> = ({ }) => {
     const [attendee, setAttendee] = useState<Attendee>(data?.attendee ?? "");
     const { allAttendees, addNewAttendee, getAttendee } = useConferenceEventContext();
     function saveAttendee() {
+        // TODO: Implement the function to modify existing attendee
         addNewAttendee(attendee);
     }
     

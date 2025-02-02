@@ -45,7 +45,7 @@ class AddAttendeeModal extends React.Component<AddAttendeeModalProps> {
                     })} fill="outline" className="ion-padding-top">
                     </IonInput>
                     <br></br>
-                    <IonInput label="Country" labelPlacement="floating" clearInput={true} placeholder="Attendee country" value={this.props.newAttendee.departLocation.city} onIonInput={(e: any) => this.props.setNewAttendee({
+                    <IonInput label="Country" labelPlacement="floating" clearInput={true} placeholder="Attendee country" value={this.props.newAttendee.departLocation.country} onIonInput={(e: any) => this.props.setNewAttendee({
                         ...this.props.newAttendee,
                         departLocation: {
                             ...this.props.newAttendee.departLocation,
