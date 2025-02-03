@@ -44,7 +44,7 @@ const Account: React.FC<AccountProps> = ({ }) => {
             addNewAttendee({
                 id: "0",
                 name: "Kai",
-                email: "test@test.de",
+                email: "kai@example.com",
                 departLocation :
                 {
                     city: "Munich",
@@ -52,6 +52,7 @@ const Account: React.FC<AccountProps> = ({ }) => {
                     fullAddr: ""
                 },
             });
+            
         }
     }, []);
     function dismissAddAttendeeModal() {
@@ -60,7 +61,7 @@ const Account: React.FC<AccountProps> = ({ }) => {
     }
 
 return (
-    <IonContent>
+    <IonContent style={{paddingBottom: "240px"}}>
         <IonHeader class="ion-padding">
         <h3>Personal Information</h3>
         </IonHeader>
@@ -133,7 +134,9 @@ return (
         <IonList>
             {
             allAttendees[0]?.name != "" &&
-            allAttendees.map((attendee) => (
+            allAttendees.sort(
+                (a, b) => a.id.localeCompare(b.id)
+            ).map((attendee) => (
                 <IonItem key={attendee.id} button={true}>
                     <IonLabel>
                         {attendee.name}
@@ -148,6 +151,9 @@ return (
             ))
             }
         </IonList>
+        <IonButton expand="block" id="open-modal" className="ion-padding">
+            <IonLabel>Add employee</IonLabel>
+        </IonButton>
         <AddAttendeeModal
             newAttendee={newAttendee} 
             setNewAttendee={setNewAttendee} 
@@ -156,9 +162,6 @@ return (
             dismiss={dismissAddAttendeeModal}
         ></AddAttendeeModal>
         <IonFooter class="ion-padding ion-padding-vertical">
-            <IonButton expand="block" id="open-modal">
-                <IonLabel>Add employee</IonLabel>
-            </IonButton>
         </IonFooter>
     </IonContent>
 );

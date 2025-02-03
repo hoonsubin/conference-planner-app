@@ -28,3 +28,26 @@
     transform: scale(1.01);
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
   } */
+
+ion-button {
+  --background: linear-gradient(135deg, #3b82f6, #22c55e);
+  --background-hover: linear-gradient(135deg, #2563eb, #1e9c4b);
+  --border-radius: 12px;
+  --color: white;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* ion-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+  --background: linear-gradient(135deg, #2563eb, #1e9c4b, #dc5f0e, #d12c2c);
+} */
+
+ion-button:active {
+  transform: scale(0.98);
+}

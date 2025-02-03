@@ -44,7 +44,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
     // const history = useHistory();
     const loc = useLocation();
     const data = loc.state as { event: ConferenceEvent };
-    const event = data.event;
+    const event = data?.event;
     const { allAttendees, addNewAttendee, getAttendee } = useConferenceEventContext();
     const [selectedAttendees, setSelectedAttendees] = useState<Attendee[]>([]);
     const [locations] = useState(supportedEventLocations);
@@ -73,7 +73,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
         //setAttendees(loadListLocally(appConfig.attendeeListSaveKey));
     }, []);
     function dismiss() {
-        setNewAttendee({ ...newAttendee, id: allAttendees.length.toString() });
+        // setNewAttendee({ ...newAttendee, id: allAttendees.length.toString() });
         console.log("newAttendee", newAttendee);
         addNewAttendee(newAttendee);
         // clear newAttendee
@@ -147,7 +147,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
                 }
                 <AddAttendeeModal newAttendee={newAttendee} setNewAttendee={setNewAttendee} modal={modal} presentingElement={presentingElement} dismiss={dismiss}></AddAttendeeModal>
             </IonContent>
-            <IonFooter class="ion-padding" color="primary" style={{ backgroundColor: "#000000" }}>
+            <IonFooter class="ion-padding" color="primary">
                 <br></br>
                 <IonButton className="ion-padding" id="open-modal" expand="block" fill="outline">
                     Add attendee

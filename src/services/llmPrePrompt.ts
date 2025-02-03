@@ -39,6 +39,7 @@ const getEventListPrompt = (
 
 The output should be a JSON data with the following properties:
 ${JSON.stringify(eventListTypeDescriptor)}
+Limit the output to 5 items per request.
 `;
 
 const transportListTypeDescriptor = {
@@ -71,15 +72,16 @@ const getFlightOptionsPrompt = (
   confLoc.fullAddr
 } from ${startLoc.country}, ${startLoc.city}, ${
   startLoc.fullAddr
-} on ${startDate.toISO()}.
+} on ${startDate}.
 Search for all flight options departing from ${startLoc.country}, ${
   startLoc.city
 }, ${
   startLoc.fullAddr
-} around ${startDate.toISO()} or other the closest time, including layovers.
+} around ${startDate} or other the closest time, including layovers.
 
 The output should be a structure JSON array string with the following properties per item:
 ${JSON.stringify(transportListTypeDescriptor)}
+Limit the output to 3-5 items per request.
 `;
 
 const perplexityApiReqTemplate: PerplexityApiReq = {

@@ -59,7 +59,7 @@ const SetBudget: React.FC = () => {
                                 Set the budget for each attendee
                             </div>
                             <IonText slot="start">100</IonText>
-                            <IonText slot="end">5.000</IonText>
+                            <IonText slot="end">{attendees.length * 5000}</IonText>
                             {
                                 /* <IonIcon slot="end" icon={logoEuro}></IonIcon> */
                             }

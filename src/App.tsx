@@ -8,6 +8,7 @@ import {
   IonTabButton,
   IonTabs,
   setupIonicReact,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { person, compass, calendar } from "ionicons/icons";
@@ -56,6 +57,7 @@ import EditName from "./components/account/EditName";
 import EditEmail from "./components/account/EditEmail";
 import EditLocation from "./components/account/EditLocation";
 import SetBudget from "./components/explore/setbudget/SetBudget";
+import SplashScreen from "./pages/SplashScreen";
 
 setupIonicReact();
 
@@ -64,6 +66,9 @@ const App: React.FC = () => (
     <TravelDataProvider>
       <LlmApiContextProvider>
         <IonReactRouter>
+          <Route exact path="/splash">
+            <SplashScreen />
+          </Route>
           <IonTabs>
             <IonRouterOutlet>
               <Route exact path="/upcoming">

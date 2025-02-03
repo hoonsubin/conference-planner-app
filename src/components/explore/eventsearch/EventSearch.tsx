@@ -34,7 +34,7 @@ const EventSearch: React.FC<EventSearchProps> = ({  }) => {
 return (
     <IonContent class="ion-padding">
         {/* <IonImg src="../../resources/search.png" style={{height: "30%"}}/> */}
-        <Lottie
+        {/* <Lottie
             // speed={0.5}
             height={window.innerHeight*0.25}
             width={window.innerHeight*0.25}
@@ -45,7 +45,9 @@ return (
                 rendererSettings: {
                     preserveAspectRatio: 'xMidYMid slice'
                 }
-            }}/>
+            }}/> */}
+        <IonImg src="../../resources/Logo.png" style={{height: "30%"}}/>
+        <br></br>
         <IonSearchbar animated={true} placeholder="What are you looking for?"
         value={searchQuery}
         onIonInput={
