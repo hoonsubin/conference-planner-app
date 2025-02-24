@@ -1,5 +1,5 @@
-import { IonModal, IonContent, IonInput, IonText, IonButton } from "@ionic/react";
-import React from "react";
+import { IonModal, IonContent, IonInput, IonButton } from "@ionic/react";
+import React, { useState, useEffect } from "react";
 import { Attendee } from "../types";
 import { useConferenceEventContext } from "../context/TravelDataContext";
 
@@ -8,7 +8,7 @@ interface AddAttendeeModalProps {
     setNewAttendee: React.Dispatch<React.SetStateAction<Attendee>>;
     modal: React.RefObject<HTMLIonModalElement>;
     presentingElement: HTMLElement | null;
-    dismiss: () => void;
+    dismiss: (updatedAttendee: Attendee) => void;
 }
 
 const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
@@ -19,9 +19,45 @@ const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
     dismiss
 }) => {
     const { allAttendees } = useConferenceEventContext();
+    const [localAttendee, setLocalAttendee] = useState(newAttendee);
+
+    useEffect(() => {
+        setLocalAttendee(newAttendee);
+    }, [newAttendee]);
+
+    const handleSave = () => {
+        console.log(allAttendees.length.toString());
+        console.log("before", localAttendee);
+        let updatedAttendee = localAttendee;
+        if (!localAttendee.id) {
+            console.log("setting id");
+            updatedAttendee = {
+                ...localAttendee,
+                id: crypto.randomUUID()
+            };
+            setLocalAttendee(updatedAttendee);
+            setNewAttendee(updatedAttendee);
+            console.log("new attendee", updatedAttendee);
+        } else {
+            setNewAttendee(localAttendee);
+            console.log("new attendee", localAttendee);
+        }
+        // Pass the updated attendee to the parent's dismiss callback
+        setTimeout(() => {
+            dismiss(updatedAttendee);
+        }, 0);
+    };
 
     return (
-        <IonModal ref={modal} trigger="open-modal" canDismiss={true} presentingElement={presentingElement!} initialBreakpoint={0.9} breakpoints={[0.5, 0.75, 0.9]} backdropDismiss={true}>
+        <IonModal
+            ref={modal}
+            trigger="open-modal"
+            canDismiss={true}
+            presentingElement={presentingElement!}
+            initialBreakpoint={0.9}
+            breakpoints={[0.5, 0.75, 0.9]}
+            backdropDismiss={true}
+        >
             <IonContent className="ion-padding">
                 <br />
                 <h3>Personal information</h3>
@@ -30,8 +66,10 @@ const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
                     labelPlacement="floating"
                     clearInput={true}
                     placeholder="Attendee name"
-                    value={newAttendee.name}
-                    onIonInput={(e: any) => setNewAttendee({ ...newAttendee, name: e.target.value })}
+                    value={localAttendee.name}
+                    onIonInput={(e: any) =>
+                        setLocalAttendee({ ...localAttendee, name: e.detail.value })
+                    }
                     fill="outline"
                     className="ion-padding-top"
                 />
@@ -41,8 +79,10 @@ const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
                     labelPlacement="floating"
                     clearInput={true}
                     placeholder="Attendee email"
-                    value={newAttendee.email}
-                    onIonInput={(e: any) => setNewAttendee({ ...newAttendee, email: e.target.value })}
+                    value={localAttendee.email}
+                    onIonInput={(e: any) =>
+                        setLocalAttendee({ ...localAttendee, email: e.detail.value })
+                    }
                     fill="outline"
                     className="ion-padding-top"
                 />
@@ -52,11 +92,11 @@ const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
                     labelPlacement="floating"
                     clearInput={true}
                     placeholder="Attendee city"
-                    value={newAttendee.departLocation.city}
+                    value={localAttendee.departLocation.city}
                     onIonInput={(e: any) =>
-                        setNewAttendee({
-                            ...newAttendee,
-                            departLocation: { ...newAttendee.departLocation, city: e.target.value }
+                        setLocalAttendee({
+                            ...localAttendee,
+                            departLocation: { ...localAttendee.departLocation, city: e.detail.value }
                         })
                     }
                     fill="outline"
@@ -68,11 +108,11 @@ const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
                     labelPlacement="floating"
                     clearInput={true}
                     placeholder="Attendee country"
-                    value={newAttendee.departLocation.country}
+                    value={localAttendee.departLocation.country}
                     onIonInput={(e: any) =>
-                        setNewAttendee({
-                            ...newAttendee,
-                            departLocation: { ...newAttendee.departLocation, country: e.target.value }
+                        setLocalAttendee({
+                            ...localAttendee,
+                            departLocation: { ...localAttendee.departLocation, country: e.detail.value }
                         })
                     }
                     fill="outline"
@@ -80,24 +120,11 @@ const AddAttendeeModal: React.FC<AddAttendeeModalProps> = ({
                 />
                 <br />
                 <IonButton
-                    onClick={() => {
-                        console.log(allAttendees.length.toString());
-                        console.log("before", newAttendee);
-                        if (newAttendee.id == "" || newAttendee.id == undefined || newAttendee.id == '') {
-                            console.log("setting id")
-                            // TODO: @kai fix setting id 
-                            setNewAttendee({
-                                ...newAttendee,
-                                id: allAttendees.length.toString()
-                            });
-                        }
-                        console.log("new attendee", newAttendee);
-                        dismiss();
-                    }}
+                    onClick={handleSave}
                     expand="block"
                     className="ion-padding-top"
                 >
-                    {newAttendee.id ? "Save" : "Add attendee"}
+                    {localAttendee.id ? "Save" : "Add attendee"}
                 </IonButton>
             </IonContent>
         </IonModal>

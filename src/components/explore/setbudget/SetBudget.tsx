@@ -10,12 +10,12 @@ const SetBudget: React.FC = () => {
     const loc = useLocation();
     const data = loc.state as { event: ConferenceEvent, attendees: Attendee[], matchFlights: boolean };
     const [universalBudget, setUniversalBudget] = useState<boolean>(true);
-    const [attendees, setAttendees] = useState<Attendee[]>(data.attendees);
+    const [attendees, setAttendees] = useState<Attendee[]>(data?.attendees);
     const [budgets , setBudgets] = useState<Budget[]>([]);
     function creatItineraries() {
         history.push({
             pathname: '/explore/itinerary',
-            state: { event: data.event, attendees: attendees, budgets: budgets, matchFlights: data.matchFlights }
+            state: { event: data?.event, attendees: attendees, budgets: budgets, matchFlights: data?.matchFlights }
         });
     }
 
@@ -28,12 +28,14 @@ const SetBudget: React.FC = () => {
                     </IonButtons>
                     <IonTitle>Set Budgets</IonTitle>
                 </IonToolbar>
-            </IonHeader>
-            <IonContent className="ion-padding">
+                <div className="ion-padding" style={{ background: "var(--ion-background-color)" }}>
                 <h2>How much 💸</h2>
                 <IonNote color="medium" className="ion-text-wrap">
                     Set the budget for each attendee
                 </IonNote>
+                </div>
+            </IonHeader>
+            <IonContent className="ion-padding">
                 {
                     universalBudget ?
                     <IonContent style={{marginTop: "16px"}}>

@@ -52,7 +52,7 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({ itinerary, allItineraryOp
             selectMode ?
             <IonCheckbox checked={isSelected}></IonCheckbox>
             :
-            <IonBadge id="open-select-flight-plan-modal" style={{ padding: '8px' }} color="warning" onClick={() => setModalOpen(true)}>
+            <IonBadge id="open-select-flight-plan-modal" role="button" style={{ padding: '8px', cursor: 'pointer' }} color="warning" onClick={() => setModalOpen(true)}>
               Change
             </IonBadge>
         }
@@ -98,8 +98,8 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({ itinerary, allItineraryOp
           <IonIcon icon={location} style={{fontSize: "24px"}} className="ion-padding-end" />
           <IonText>
             <h4>
-              {itinerary.departAddress.country} {itinerary.departAddress.city}{' '}
-              {itinerary.departAddress.fullAddr}
+              {itinerary.departAddress?.country} {itinerary.departAddress?.city}{' '}
+              {itinerary.departAddress?.fullAddr}
             </h4>
           </IonText>
         </div>
@@ -136,8 +136,8 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({ itinerary, allItineraryOp
           <IonIcon icon={location} className="ion-padding-end" style={{fontSize: "24px"}} />
           <IonText>
             <h4>
-              {itinerary.arrivalAddress.country} {itinerary.arrivalAddress.city}{' '}
-              {itinerary.arrivalAddress.fullAddr}
+              {itinerary.arrivalAddress?.country} {itinerary.arrivalAddress?.city}{' '}
+              {itinerary.arrivalAddress?.fullAddr}
             </h4>
           </IonText>
         </div>

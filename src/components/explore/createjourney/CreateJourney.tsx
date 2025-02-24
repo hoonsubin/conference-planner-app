@@ -53,15 +53,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
         item.toLowerCase().includes(searchQuery.toLowerCase())
     );
     const [newAttendee, setNewAttendee] = useState<Attendee>({
-        id: "",
-        name: "",
-        email: "",
-        departLocation : 
-        {
-            city: "",
-            country: "",
-            fullAddr: ""
-        },
+        id: "", name: "", email: "", departLocation : { city: "", country: "", fullAddr: ""},
     });
     const [matchFlights, setMatchFlights] = useState(false);
 
@@ -72,25 +64,14 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
         setPresentingElement(page.current);
         //setAttendees(loadListLocally(appConfig.attendeeListSaveKey));
     }, []);
-    function dismiss() {
-        // setNewAttendee({ ...newAttendee, id: allAttendees.length.toString() });
-        console.log("newAttendee", newAttendee);
-        addNewAttendee(newAttendee);
-        // clear newAttendee
+    function dismiss(updatedAttendee: Attendee) {
+        console.log("newAttendee", updatedAttendee);
+        addNewAttendee(updatedAttendee);
         setNewAttendee({
-            id: "",
-            name: "",
-            email: "",
-            departLocation : 
-            {
-                city: "",
-                country: "",
-                fullAddr: ""
-            },
+            id: "", name: "", email: "", departLocation : { city: "", country: "", fullAddr: ""},
         });
         modal.current?.dismiss();
     }
-
 
     return (
         <IonPage>
@@ -99,12 +80,14 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
                     <IonButtons slot="start">
                         <IonBackButton></IonBackButton>
                     </IonButtons>
-                    <IonTitle>{event.name}</IonTitle>
+                    <IonTitle>{event?.name}</IonTitle>
                 </IonToolbar>
-            </IonHeader>
-            <IonContent class="ion-padding" fullscreen>
+                <div className="ion-padding" style={{ background: "var(--ion-background-color)" }}>
                 <h1>People</h1>
                 <p>Who are you going with?</p>
+                </div>
+            </IonHeader>
+            <IonContent class="ion-padding" fullscreen>
                 {
                     allAttendees.length === 0 ?
                         <div className="ion-padding ion-text-center ion-align-items-center ion-justify-content-center" style={{ height: "70%", display: "flex" }}>
@@ -138,7 +121,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
                                         <IonText></IonText>
                                         <br />
                                         <IonNote color="medium" className="ion-text-wrap">
-                                            {attendee.departLocation.city}, {attendee.departLocation.city}
+                                            {attendee?.departLocation?.city}, {attendee?.departLocation?.country}
                                         </IonNote>
                                     </IonLabel>
                                 </IonItem>
@@ -147,7 +130,7 @@ const CreateJourney: React.FC<CreateJourneyProps> = ({ history }) => {
                 }
                 <AddAttendeeModal newAttendee={newAttendee} setNewAttendee={setNewAttendee} modal={modal} presentingElement={presentingElement} dismiss={dismiss}></AddAttendeeModal>
             </IonContent>
-            <IonFooter class="ion-padding" color="primary">
+            <IonFooter class="ion-padding" color="primary" style={{ background: "var(--ion-background-color)" }}>
                 <br></br>
                 <IonButton className="ion-padding" id="open-modal" expand="block" fill="outline">
                     Add attendee

@@ -58,6 +58,7 @@ import EditEmail from "./components/account/EditEmail";
 import EditLocation from "./components/account/EditLocation";
 import SetBudget from "./components/explore/setbudget/SetBudget";
 import SplashScreen from "./pages/SplashScreen";
+import PersonalItinerary from "./components/explore/itinerary/PersonalItinerary";
 
 setupIonicReact();
 
@@ -74,7 +75,8 @@ const App: React.FC = () => (
               <Route exact path="/upcoming">
                 <UpcomingTab />
               </Route>
-              <Route exact path="/upcoming/event/:id" component={EventDetail} />
+              <Route exact path="/upcoming/event/:eventId" component={EventDetail} />
+              <Route exact path="/upcoming/event/:eventId/attendee/:attendeeId" component={PersonalItinerary} />
               <Route exact path="/explore">
                 <ExploreTab />
               </Route>
