@@ -12,7 +12,7 @@
     "test.unit": "vitest",
     "lint": "eslint",
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -d dist -a"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@capacitor/app": "6.0.1",
