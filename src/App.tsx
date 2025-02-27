@@ -10,7 +10,7 @@ import {
   setupIonicReact,
   useIonViewWillEnter,
 } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
+import { IonReactHashRouter } from "@ionic/react-router";
 import { person, compass, calendar } from "ionicons/icons";
 import AccountTab from "./tabs/AccountTab";
 import ExploreTab from "./tabs/ExploreTab";
@@ -66,7 +66,7 @@ const App: React.FC = () => (
   <IonApp>
     <TravelDataProvider>
       <LlmApiContextProvider>
-        <IonReactRouter>
+        <IonReactHashRouter>
           <Route exact path="/splash">
             <SplashScreen />
           </Route>
@@ -114,7 +114,7 @@ const App: React.FC = () => (
               </IonTabButton>
             </IonTabBar>
           </IonTabs>
-        </IonReactRouter>
+        </IonReactHashRouter>
       </LlmApiContextProvider>
     </TravelDataProvider>
   </IonApp>
