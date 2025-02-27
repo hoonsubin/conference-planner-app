@@ -12,9 +12,11 @@
 
 ion-modal.wide-modal::part(content) {    
     --height: 90%;
-    position: absolute; 
     top: 5%;
     --width: 90%;
     border-radius: 25px;
     display: block;
+    @media screen and (max-width: 768px) {
+        --width: 100%;
+    }
  }
