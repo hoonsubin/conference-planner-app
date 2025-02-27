@@ -42,7 +42,7 @@ const EventSearch: React.FC<EventSearchProps> = ({}) => {
                     preserveAspectRatio: 'xMidYMid slice'
                 }
             }}/> */}
-      <IonImg src="../../../assets/Logo.png" style={{ height: "30%" }} />
+      <IonImg src="assets/Logo.png" style={{ height: "30%" }} />
       <br></br>
       <IonSearchbar
         animated={true}

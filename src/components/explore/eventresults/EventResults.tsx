@@ -24,7 +24,7 @@ import { useLlmApiContext } from "../../../context/LlmApiContext";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Lottie from "react-lottie";
-import animationData from "../../../assets/lottie/loading-colorful.json";
+import animationData from "../../../lottie/loading-colorful.json";
 import CustomPopup from "../../general/custompopup/CustomPopup";
 import EventCard from "../../eventcard/EventCard";
 

@@ -24,8 +24,8 @@ import { useConferenceEventContext } from "../../../context/TravelDataContext";
 import ItineraryCard from "./ItineraryCard";
 import CustomPopup from "../../general/custompopup/CustomPopup";
 import Lottie from "react-lottie";
-import paperAnimated from "../../../assets/lottie/paper-animated.json";
-import paperPlane from "../../../assets/lottie/paper-plane.json";
+import paperAnimated from "../../../lottie/paper-animated.json";
+import paperPlane from "../../../lottie/paper-plane.json";
 import ReactConfetti from "react-confetti";
 
 interface ItineraryProps {}

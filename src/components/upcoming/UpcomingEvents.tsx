@@ -19,7 +19,7 @@ return (
     events.length === 0 ?
     <IonContent class="ion-text-center ion-justify-content-around">
         <div style={{paddingTop: "35%", height: "100%"}}>
-            <IonImg src="../../assets/no-event.webp" style={{height: "30%"}}/>
+            <IonImg src="assets/no-event.webp" style={{height: "30%"}}/>
             <h3>No events yet</h3>
             <br></br>
             <IonButton routerLink="/explore">Explore</IonButton>
