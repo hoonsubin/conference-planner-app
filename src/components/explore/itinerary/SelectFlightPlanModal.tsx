@@ -2,6 +2,7 @@ import { IonModal, IonContent, IonButton } from "@ionic/react";
 import React, { useState } from "react";
 import { FlightItinerary } from "../../../types";
 import ItineraryCard from "./ItineraryCard";
+import "./SelectFlightPlanModal.css";
 
 interface SelectFlightPlanModalProps {
     allFlightPlans: FlightItinerary[];
@@ -17,8 +18,8 @@ const SelectFlightPlanModal: React.FC<{
     setSelectedFlightPlan: React.Dispatch<React.SetStateAction<FlightItinerary>> 
 }> = ({ isOpen, dismiss, allFlightPlans, selectedFlightPlan, setSelectedFlightPlan }) => {
     return (
-        <IonModal isOpen={isOpen} onDidDismiss={dismiss} initialBreakpoint={0.9} breakpoints={[0.9]} backdropDismiss={true}>
-            <IonContent className="ion-padding">
+        <IonModal className="wide-modal" isOpen={isOpen} onDidDismiss={dismiss} initialBreakpoint={0.9} breakpoints={[0.9]} backdropDismiss={true}>
+            <IonContent className="ion-padding" style={{ width: "90%"}}>
                 <div
                 style={{
                     display: 'flex',

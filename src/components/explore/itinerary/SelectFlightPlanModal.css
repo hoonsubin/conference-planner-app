@@ -1,0 +1,20 @@
+.wide-modal{
+    .modal-wrapper{
+        width: 90%;
+        --width: 90%;
+    }
+}
+
+.modal-wrapper {
+    --width: 90%;
+    --height: 90%;
+}
+
+ion-modal.wide-modal::part(content) {    
+    --height: 90%;
+    position: absolute; 
+    top: 5%;
+    --width: 90%;
+    border-radius: 25px;
+    display: block;
+ }

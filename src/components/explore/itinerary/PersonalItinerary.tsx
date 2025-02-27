@@ -41,7 +41,7 @@ const PersonalItinerary: React.FC<PersonalItineraryProps> = () => {
   const [attendeeItinerary, setAttendeeItinerary] = useState<
     AttendeeItinerary | undefined
   >();
-  const [itineraryOptions, setItineraryOptions] = useState<FlightItinerary[]>();
+  const [itineraryOptions, setItineraryOptions] = useState<FlightItinerary[]>([]);
   const [selectedFlightPlan, setSelectedFlightPlan] = useState<FlightItinerary>(
     {} as FlightItinerary
   );
@@ -101,12 +101,11 @@ const PersonalItinerary: React.FC<PersonalItineraryProps> = () => {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <ItineraryCard
             key={selectedFlightPlan.id}
-            itinerary={selectedFlightPlan}
+            itinerary={itineraryOptions[0]}
             allItineraryOptions={itineraryOptions}
             attendee={attendee}
             selectMode={false}
             triggerFlightPlanSelection={() => {
-              // @Kai0711er TODO: Add a way to select the flight plan
               //setEditAttendeeIndex(i);
             }}
             setSelectedFlightPlan={setSelectedFlightPlan}

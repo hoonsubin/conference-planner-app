@@ -59,7 +59,7 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
         }}
       >
         <IonCardTitle>
-          {attendee ? attendee?.name : itinerary.airline}
+          {attendee ? attendee?.name : itinerary?.airline}
         </IonCardTitle>
         {selectMode ? (
           <IonCheckbox checked={isSelected}></IonCheckbox>
@@ -77,7 +77,7 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
       </div>
 
       {/* Flight Itinerary ID as Subtitle */}
-      {/* <IonCardSubtitle>{itinerary.id}</IonCardSubtitle> */}
+      {/* <IonCardSubtitle>{itinerary?.id}</IonCardSubtitle> */}
 
       <IonCardContent
         style={{
@@ -114,8 +114,8 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
             ></IonIcon>
             <div>
               <span>
-                {itinerary.departTime
-                  ? dayjs(itinerary.departTime.toLocaleString()).format(
+                {itinerary?.departTime
+                  ? dayjs(itinerary?.departTime.toLocaleString()).format(
                       "DD.MM.YYYY"
                     )
                   : "no date available"}
@@ -141,8 +141,8 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
             ></IonIcon>
             <div>
               <span>
-                {itinerary.departTime
-                  ? dayjs(itinerary.departTime.toLocaleString()).format("h:mm")
+                {itinerary?.departTime
+                  ? dayjs(itinerary?.departTime.toLocaleString()).format("h:mm")
                   : "no date available"}
               </span>
             </div>
@@ -159,8 +159,8 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
           />
           <IonText>
             <h4>
-              {itinerary.departAddress?.country} {itinerary.departAddress?.city}{" "}
-              {itinerary.departAddress?.fullAddr}
+              {itinerary?.departAddress?.country} {itinerary?.departAddress?.city}{" "}
+              {itinerary?.departAddress?.fullAddr}
             </h4>
           </IonText>
         </div>
@@ -189,10 +189,10 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
           />
           <div>
             <IonText>
-              <h2>{itinerary.airline}</h2>
+              <h2>{itinerary?.airline}</h2>
             </IonText>
           </div>
-          <IonText>{itinerary.flightNo}</IonText>
+          <IonText>{itinerary?.flightNo}</IonText>
         </div>
         <br />
 
@@ -205,9 +205,9 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
           />
           <IonText>
             <h4>
-              {itinerary.arrivalAddress?.country}{" "}
-              {itinerary.arrivalAddress?.city}{" "}
-              {itinerary.arrivalAddress?.fullAddr}
+              {itinerary?.arrivalAddress?.country}{" "}
+              {itinerary?.arrivalAddress?.city}{" "}
+              {itinerary?.arrivalAddress?.fullAddr}
             </h4>
           </IonText>
         </div>
@@ -240,8 +240,8 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
             ></IonIcon>
             <div>
               <span>
-                {itinerary.arrivalTime
-                  ? dayjs(itinerary.arrivalTime.toLocaleString()).format(
+                {itinerary?.arrivalTime
+                  ? dayjs(itinerary?.arrivalTime.toLocaleString()).format(
                       "DD.MM.YYYY"
                     )
                   : "no date available"}
@@ -267,8 +267,8 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
             ></IonIcon>
             <div>
               <span>
-                {itinerary.arrivalTime
-                  ? dayjs(itinerary.arrivalTime.toLocaleString()).format("h:mm")
+                {itinerary?.arrivalTime
+                  ? dayjs(itinerary?.arrivalTime.toLocaleString()).format("h:mm")
                   : "no date available"}
               </span>
             </div>
@@ -289,11 +289,11 @@ const ItineraryCard: React.FC<ItineraryCardProps> = ({
         <br />
         <IonText>
           <a
-            href={itinerary.bookingLink}
+            href={itinerary?.bookingLink}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {itinerary.bookingLink}
+            {itinerary?.bookingLink}
           </a>
         </IonText>
       </IonCardContent>
