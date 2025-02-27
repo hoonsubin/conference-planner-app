@@ -1,7 +1,0 @@
-{
-  "name": "conference-planner-app",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react-vite"
-}
