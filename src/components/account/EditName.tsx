@@ -26,7 +26,19 @@ const EditName: React.FC<EditNameProps> = ({ }) => {
     const [attendee, setAttendee] = useState<Attendee>(data?.attendee ?? "");
     const { allAttendees, addNewAttendee, getAttendee } = useConferenceEventContext();
     function saveAttendee() {
-        addNewAttendee(attendee);
+        // If attendee has no id or cannot be found in the context, add as new
+        if (!attendee.id || !getAttendee(attendee.id)) {
+            const newAttendeeWithId = {
+            ...attendee,
+            id: crypto.randomUUID()
+            };
+            addNewAttendee(newAttendeeWithId);
+            console.log("Added new attendee", newAttendeeWithId);
+        } else {
+            // Otherwise update the existing attendee (addNewAttendee handles updates)
+            addNewAttendee(attendee);
+            console.log("Updated attendee", attendee);
+        }
     }
     
 return (

@@ -8,8 +8,9 @@ import {
   IonTabButton,
   IonTabs,
   setupIonicReact,
+  useIonViewWillEnter,
 } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
+import { IonReactHashRouter } from "@ionic/react-router";
 import { person, compass, calendar } from "ionicons/icons";
 import AccountTab from "./tabs/AccountTab";
 import ExploreTab from "./tabs/ExploreTab";
@@ -56,6 +57,8 @@ import EditName from "./components/account/EditName";
 import EditEmail from "./components/account/EditEmail";
 import EditLocation from "./components/account/EditLocation";
 import SetBudget from "./components/explore/setbudget/SetBudget";
+import SplashScreen from "./pages/SplashScreen";
+import PersonalItinerary from "./components/explore/itinerary/PersonalItinerary";
 
 setupIonicReact();
 
@@ -63,13 +66,17 @@ const App: React.FC = () => (
   <IonApp>
     <TravelDataProvider>
       <LlmApiContextProvider>
-        <IonReactRouter>
+        <IonReactHashRouter>
+          <Route exact path="/splash">
+            <SplashScreen />
+          </Route>
           <IonTabs>
             <IonRouterOutlet>
               <Route exact path="/upcoming">
                 <UpcomingTab />
               </Route>
-              <Route exact path="/upcoming/event/:id" component={EventDetail} />
+              <Route exact path="/upcoming/event/:eventId" component={EventDetail} />
+              <Route exact path="/upcoming/event/:eventId/attendee/:attendeeId" component={PersonalItinerary} />
               <Route exact path="/explore">
                 <ExploreTab />
               </Route>
@@ -107,7 +114,7 @@ const App: React.FC = () => (
               </IonTabButton>
             </IonTabBar>
           </IonTabs>
-        </IonReactRouter>
+        </IonReactHashRouter>
       </LlmApiContextProvider>
     </TravelDataProvider>
   </IonApp>

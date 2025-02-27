@@ -5,6 +5,7 @@ export const appConfig = {
   perplexityApi: perplexityApi,
   mapsApi: gmapApi,
   perplexityEndpoint: "https://api.perplexity.ai",
+  backendEndpoint: "https://omkfhiqdyqkloogygxdf.supabase.co/functions/v1/conf-travel-fetch",
   perplexityModel: "sonar-pro",
   attendeeListSaveKey: "ATT",
   eventListSaveKey: "EV",

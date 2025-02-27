@@ -21,7 +21,7 @@ interface LlmApiContextType {
     conference: ConferenceEvent,
     attendee: Attendee,
     flightArrivalTime?: DateTime
-  ) => Promise<FlightItinerary[]> | null;
+  ) => Promise<FlightItinerary[]>;
 }
 
 // Create a new context for LlmApiContextType with initial values
@@ -39,8 +39,10 @@ export const LlmApiContextProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   // Use useMemo to create an instance of Perplexity API with app configuration
   const perplexityApi = useMemo(
-    () => services.perplexityApiInst(appConfig.perplexityApi),
-    [appConfig.perplexityApi]
+    // () => services.perplexityApiInst(appConfig.perplexityApi),
+    // [appConfig.perplexityApi]
+    () => services.backendApiInst(),
+    []
   );
 
   // Use useCallback to create a memoized version of fetchConferenceEventApi function, it accepts event tags, location and fromWhen as arguments
