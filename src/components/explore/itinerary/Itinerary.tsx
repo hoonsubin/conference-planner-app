@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   IonAlert,
   IonBackButton,
@@ -10,31 +10,43 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonLoading
-} from '@ionic/react';
-import { useHistory, useLocation } from 'react-router';
-import { Attendee, FlightItinerary, ConferenceEvent, Budget } from '../../../types';
-import * as services from "../../../services";
-import { useLlmApiContext } from '../../../context/LlmApiContext';
+  IonLoading,
+} from "@ionic/react";
+import { useHistory, useLocation } from "react-router";
+import {
+  Attendee,
+  FlightItinerary,
+  ConferenceEvent,
+  Budget,
+} from "../../../types";
+import { useLlmApiContext } from "../../../context/LlmApiContext";
 import { useConferenceEventContext } from "../../../context/TravelDataContext";
-import ItineraryCard from './ItineraryCard';
-import CustomPopup from '../../general/custompopup/CustomPopup';
-import Lottie from 'react-lottie';
-import paperAnimated from '../../../../resources/lottie/paper-animated.json';
-import paperPlane from '../../../../resources/lottie/paper-plane.json';
-import ReactConfetti from 'react-confetti';
+import ItineraryCard from "./ItineraryCard";
+import CustomPopup from "../../general/custompopup/CustomPopup";
+import Lottie from "react-lottie";
+import paperAnimated from "../../../../resources/lottie/paper-animated.json";
+import paperPlane from "../../../../resources/lottie/paper-plane.json";
+import ReactConfetti from "react-confetti";
 
 interface ItineraryProps {}
 
 const Itinerary: React.FC<ItineraryProps> = () => {
   const history = useHistory();
   const loc = useLocation();
-  const data = loc.state as { event: ConferenceEvent, attendees: Attendee[], budgets: Budget, matchFlights: boolean };
-  const { perplexityApi } = useLlmApiContext();
-  const { saveConferenceEvent, createNewAttendeeItinerary } = useConferenceEventContext();
-  
+  const data = loc.state as {
+    event: ConferenceEvent;
+    attendees: Attendee[];
+    budgets: Budget;
+    matchFlights: boolean;
+  };
+  const { perplexityApi, fetchFlightItineraryApi } = useLlmApiContext();
+  const { saveConferenceEvent, createNewAttendeeItinerary } =
+    useConferenceEventContext();
+
   // State to store itineraries as a map: key -> attendee.id, value -> FlightItinerary[]
-  const [itineraryMap, setItineraryMap] = useState<{ [attendeeId: string]: FlightItinerary[] }>({});
+  const [itineraryMap, setItineraryMap] = useState<{
+    [attendeeId: string]: FlightItinerary[];
+  }>({});
   const [matchFlights, setMatchFlights] = useState(data?.matchFlights);
   const [showAlert, setShowAlert] = useState(false);
   const [sentItineraries, setSentItineraries] = useState(false);
@@ -48,7 +60,11 @@ const Itinerary: React.FC<ItineraryProps> = () => {
         // Fetch an array of FlightItinerary arrays, one per attendee (assume same order)
         const itineraryArrays: FlightItinerary[][] = await Promise.all(
           data?.attendees?.map(async (attendee) => {
-            return services.fetchFlightSchedule(perplexityApi, data?.event, attendee, data?.event?.eventStartDate);
+            return await fetchFlightItineraryApi(
+              data?.event,
+              attendee,
+              data?.event?.eventStartDate
+            );
           })
         );
         // Build map using attendee.id as key
@@ -57,7 +73,9 @@ const Itinerary: React.FC<ItineraryProps> = () => {
           if (itineraryArrays[index] && itineraryArrays[index].length > 0) {
             newMap[attendee?.id] = itineraryArrays[index];
           } else {
-            console.warn(`No itinerary data for attendee with id ${attendee?.id}`);
+            console.warn(
+              `No itinerary data for attendee with id ${attendee?.id}`
+            );
           }
         });
         setItineraryMap(newMap);
@@ -85,15 +103,22 @@ const Itinerary: React.FC<ItineraryProps> = () => {
     console.log("Save event");
     saveConferenceEvent(data?.event);
     console.log("Save all itineraries");
-    
+
     // Iterate over the itinerary map and save each attendee's itinerary
     Object.entries(itineraryMap).forEach(([attendeeId, flightItineraries]) => {
-      const attendee = data?.attendees?.find(a => a.id === attendeeId);
+      const attendee = data?.attendees?.find((a) => a.id === attendeeId);
       if (attendee && flightItineraries && flightItineraries.length > 0) {
-        createNewAttendeeItinerary(data?.event, attendee, flightItineraries, data?.budgets);
+        createNewAttendeeItinerary(
+          data?.event,
+          attendee,
+          flightItineraries,
+          data?.budgets
+        );
         console.log(`Saved itinerary for attendee ${attendee.id}`);
       } else {
-        console.warn(`No itinerary options found for attendee with id ${attendeeId}`);
+        console.warn(
+          `No itinerary options found for attendee with id ${attendeeId}`
+        );
       }
     });
   }
@@ -103,32 +128,34 @@ const Itinerary: React.FC<ItineraryProps> = () => {
       <IonAlert
         isOpen={showAlert}
         onDidDismiss={() => setShowAlert(false)}
-        header={'Do you want to save this journey?'}
-        message={'You can just save it or share all itineraries with your attendees.'}
+        header={"Do you want to save this journey?"}
+        message={
+          "You can just save it or share all itineraries with your attendees."
+        }
         buttons={[
           {
-            text: 'Save & Share',
-            role: 'save-share',
+            text: "Save & Share",
+            role: "save-share",
             handler: () => {
-              console.log('Save & Share clicked');
+              console.log("Save & Share clicked");
               shareItineraries();
-            }
+            },
           },
           {
-            text: 'Save',
-            role: 'save',
+            text: "Save",
+            role: "save",
             handler: () => {
-              console.log('Save clicked');
+              console.log("Save clicked");
               saveItineraries();
-            }
+            },
           },
           {
-            text: 'Cancel',
-            role: 'cancel',
+            text: "Cancel",
+            role: "cancel",
             handler: () => {
-              console.log('Cancel clicked');
-            }
-          }
+              console.log("Cancel clicked");
+            },
+          },
         ]}
       />
       <IonHeader>
@@ -140,7 +167,7 @@ const Itinerary: React.FC<ItineraryProps> = () => {
         </IonToolbar>
       </IonHeader>
 
-      { isLoading ? (
+      {isLoading ? (
         <CustomPopup
           isOpen={isLoading}
           onClose={() => {}}
@@ -153,8 +180,8 @@ const Itinerary: React.FC<ItineraryProps> = () => {
               autoplay: true,
               animationData: paperAnimated,
               rendererSettings: {
-                preserveAspectRatio: 'xMidYMid slice'
-              }
+                preserveAspectRatio: "xMidYMid slice",
+              },
             }}
           />
         </CustomPopup>
@@ -163,8 +190,8 @@ const Itinerary: React.FC<ItineraryProps> = () => {
           <div
             className="ion-padding"
             style={{
-              display: 'flex',
-              flexDirection: 'row',
+              display: "flex",
+              flexDirection: "row",
               flexWrap: "nowrap",
               overflowX: "auto",
               WebkitOverflowScrolling: "touch",
@@ -172,33 +199,40 @@ const Itinerary: React.FC<ItineraryProps> = () => {
           >
             {
               // Iterate over the map entries
-              Object.entries(itineraryMap).map(([attendeeId, itineraryOptions]) => {
-                const attendee = data?.attendees?.find(a => a.id === attendeeId);
-                if (!itineraryOptions || !attendee) return null;
-                // Assume we use the first itinerary option for display
-                const fp = itineraryOptions[0];
-                if (!fp) return null;
-                return (
-                  <div key={attendeeId} style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexWrap: "nowrap",
-                    marginRight: '16px'
-                  }}>
-                    <ItineraryCard
-                      key={fp.id}
-                      itinerary={fp}
-                      allItineraryOptions={itineraryOptions}
-                      attendee={attendee}
-                      selectMode={false}
-                      triggerFlightPlanSelection={() => {
-                        // TODO: Add a way to select the flight plan
+              Object.entries(itineraryMap).map(
+                ([attendeeId, itineraryOptions]) => {
+                  const attendee = data?.attendees?.find(
+                    (a) => a.id === attendeeId
+                  );
+                  if (!itineraryOptions || !attendee) return null;
+                  // Assume we use the first itinerary option for display
+                  const fp = itineraryOptions[0];
+                  if (!fp) return null;
+                  return (
+                    <div
+                      key={attendeeId}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flexWrap: "nowrap",
+                        marginRight: "16px",
                       }}
-                      setSelectedFlightPlan={() => {}}
-                    />
-                  </div>
-                );
-              })
+                    >
+                      <ItineraryCard
+                        key={fp.id}
+                        itinerary={fp}
+                        allItineraryOptions={itineraryOptions}
+                        attendee={attendee}
+                        selectMode={false}
+                        triggerFlightPlanSelection={() => {
+                          // TODO: Add a way to select the flight plan
+                        }}
+                        setSelectedFlightPlan={() => {}}
+                      />
+                    </div>
+                  );
+                }
+              )
             }
           </div>
           <CustomPopup
@@ -213,8 +247,8 @@ const Itinerary: React.FC<ItineraryProps> = () => {
                 autoplay: true,
                 animationData: paperPlane,
                 rendererSettings: {
-                  preserveAspectRatio: 'xMidYMid slice'
-                }
+                  preserveAspectRatio: "xMidYMid slice",
+                },
               }}
             />
           </CustomPopup>
@@ -226,7 +260,7 @@ const Itinerary: React.FC<ItineraryProps> = () => {
           )}
         </IonContent>
       )}
-      <IonFooter className='ion-padding'>
+      <IonFooter className="ion-padding">
         <IonButton expand="block" onClick={shareItineraries}>
           Share all itineraries via email
         </IonButton>

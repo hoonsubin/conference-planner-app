@@ -24,6 +24,18 @@ export const perplexityApiInst = (apiKey: string) => {
   return apiInst;
 };
 
+export const backendApiInst = () => {
+  const apiInst = axios.create({
+    baseURL: appConfig.backendEndpoint,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    timeout: 60000,
+  });
+
+  return apiInst;
+};
+
 export const fetchFlightSchedule = async (
   api: AxiosInstance,
   conference: ConferenceEvent,
@@ -32,13 +44,45 @@ export const fetchFlightSchedule = async (
 ) => {
   const arrivalTime = flightArrivalTime || conference.eventStartDate;
 
-  const newReq = llmPrompts.fetchFlightsApiPayload(
-    conference.venueAddress,
-    attendee.departLocation,
-    arrivalTime
-  );
-
   try {
+
+    console.log(arrivalTime);
+    // const formattedIsoString =
+    //   arrivalTime.toISO({
+    //     suppressMilliseconds: true,
+    //     includeOffset: false,
+    //   }) + "Z";
+
+    const payload = {
+      conferenceCity: conference.venueAddress.city,
+      conferenceCountry: conference.venueAddress.country,
+      departCity: attendee.departLocation.city,
+      departCountry: attendee.departLocation.country,
+      fromWhen: arrivalTime,
+    };
+    const res: AxiosResponse<{ success: boolean; data: FlightItinerary[] }> =
+      await api.post("/flights", payload);
+
+    const fetchedFlights = res.data.data;
+
+    console.log(fetchedFlights);
+
+    if (fetchedFlights) {
+      return fetchedFlights;
+    } else {
+      throw new Error(
+        `Failed to fetch flight data!\nClient payload: ${JSON.stringify(
+          payload
+        )}`
+      );
+    }
+
+    /*
+    const newReq = llmPrompts.fetchFlightsApiPayload(
+      conference.venueAddress,
+      attendee.departLocation,
+      arrivalTime
+    );
     // todo: handle timeout errors or when the AI cannot find any results
     // send the prompts to the LLM API
     const res: AxiosResponse<PerplexityApiRes> = await api.post(
@@ -91,6 +135,7 @@ export const fetchFlightSchedule = async (
         "Error with the response. Status: " + res.status.toString()
       );
     }
+    */
   } catch (err) {
     // todo: retry the API call if the result was not desirable.
     console.error(err);
@@ -112,11 +157,41 @@ export const fetchConferenceList = async (
     throw new Error("No event location was provided");
   }
 
-  // create a prompt for the LLM
-  const newReq = llmPrompts.fetchEventsApiPayload(eventTags, location, when);
-
-  console.log(`Sending the following request\n${JSON.stringify(newReq)}`);
   try {
+    const formattedIsoString =
+      when.toISO({
+        suppressMilliseconds: true,
+        includeOffset: false,
+      }) + "Z";
+
+    const payload = {
+      eventTags: eventTags,
+      city: location.city,
+      country: location.country,
+      fromWhen: formattedIsoString,
+    };
+    const res: AxiosResponse<{ success: boolean; data: ConferenceEvent[] }> =
+      await api.post("/events", payload);
+
+    const fetchedEv = res.data.data;
+
+    console.log(fetchedEv);
+
+    if (Array.isArray(fetchedEv)) {
+      return fetchedEv;
+    } else {
+      throw new Error(
+        `Failed to fetch event data!\nClient payload: ${JSON.stringify(
+          payload
+        )}`
+      );
+    }
+
+    /*
+    // create a prompt for the LLM
+    const newReq = llmPrompts.fetchEventsApiPayload(eventTags, location, when);
+
+    console.log(`Sending the following request\n${JSON.stringify(newReq)}`);
     // todo: handle timeout errors or when the AI cannot find any results
     // send the prompts to the LLM API
     const res: AxiosResponse<PerplexityApiRes> = await api.post(
@@ -168,6 +243,7 @@ export const fetchConferenceList = async (
         "Error with the response. Status: " + res.status.toString()
       );
     }
+    */
   } catch (err) {
     // todo: retry the API call if the result was not desirable.
     console.error(err);

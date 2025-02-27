@@ -5,8 +5,10 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 
 const container = document.getElementById("root");
 const root = createRoot(container!);
-StatusBar.setStyle({ style: Style.Dark });
+StatusBar.setStyle({ style: Style.Dark }).catch(() => {
+  // ignoring the error on web environments
+});
 root.render(
   // removed the <React.StrictMode> tag
-      <App />
+  <App />
 );
