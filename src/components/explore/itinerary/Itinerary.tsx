@@ -31,7 +31,6 @@ import ReactConfetti from "react-confetti";
 interface ItineraryProps {}
 
 const Itinerary: React.FC<ItineraryProps> = () => {
-  const history = useHistory();
   const loc = useLocation();
   const data = loc.state as {
     event: ConferenceEvent;

@@ -1,6 +1,5 @@
 import React, { useContext, useMemo, useCallback } from "react";
 import * as services from "../services";
-import { appConfig } from "../config";
 import { AxiosInstance } from "axios";
 import { FlightItinerary, ConferenceEvent, Attendee, Location } from "../types";
 import { DateTime } from "luxon";

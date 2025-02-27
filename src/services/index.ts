@@ -47,19 +47,21 @@ export const fetchFlightSchedule = async (
   try {
 
     console.log(arrivalTime);
-    // const formattedIsoString =
-    //   arrivalTime.toISO({
-    //     suppressMilliseconds: true,
-    //     includeOffset: false,
-    //   }) + "Z";
+    const formattedIsoString =
+      DateTime.fromISO(arrivalTime.toString()).toISO({ // more strict enforcement
+        suppressMilliseconds: true,
+        includeOffset: false,
+      }) + "Z";
 
     const payload = {
       conferenceCity: conference.venueAddress.city,
       conferenceCountry: conference.venueAddress.country,
       departCity: attendee.departLocation.city,
       departCountry: attendee.departLocation.country,
-      fromWhen: arrivalTime,
+      fromWhen: formattedIsoString,
     };
+    console.log(`Sending ${JSON.stringify(payload)} to /flights`)
+    
     const res: AxiosResponse<{ success: boolean; data: FlightItinerary[] }> =
       await api.post("/flights", payload);
 
@@ -159,7 +161,7 @@ export const fetchConferenceList = async (
 
   try {
     const formattedIsoString =
-      when.toISO({
+      DateTime.fromISO(when.toString()).toISO({ // more strict enforcement
         suppressMilliseconds: true,
         includeOffset: false,
       }) + "Z";

@@ -9,7 +9,6 @@ import {
   IonButton,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { i } from "vite/dist/node/types.d-aGj9QkWt";
 import ItineraryCard from "./ItineraryCard";
 import { useHistory, useLocation, useParams } from "react-router";
 import {
@@ -19,7 +18,6 @@ import {
   AttendeeItinerary,
 } from "../../../types";
 import { useConferenceEventContext } from "../../../context/TravelDataContext";
-import { get, set } from "lodash";
 
 interface PersonalItineraryProps {
   // Add any props if necessary

@@ -18,7 +18,7 @@
 // import { useConferenceEventContext } from "../../context/TravelDataContext";
 
 // interface EditBudgetProps {
-    
+
 // }
 
 // const EditBudget: React.FC<EditBudgetProps> = ({ }) => {
@@ -30,7 +30,7 @@
 //     function saveAttendee() {
 //         addNewAttendee(attendee);
 //     }
-    
+
 // return (
 //     <IonPage>
 //         <IonHeader>
