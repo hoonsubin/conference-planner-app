@@ -15,7 +15,7 @@ const EventList: React.FC<EventListProps> = ({ events }) => {
         <IonImg src="assets/no-event.webp" style={{ height: "30%" }} />
         <h3>No events yet</h3>
         <br></br>
-        <IonButton routerLink="/explore">Explore</IonButton>
+        <IonButton routerLink="/explore"  routerDirection="none">Explore</IonButton>
       </div>
     </IonContent>
   ) : (
